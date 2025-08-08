@@ -1239,28 +1239,127 @@ function generateSQL11() {
   document.getElementById("output11").value = sql;
 }
 
-// Scenario 12
 function generateSQL12() {
   const startDt = document.getElementById("input12_start_dt").value.trim();
-  const procQueueId = document.getElementById("input12_proc_queue_id").value.trim();
+  const procQueueIdRaw = document.getElementById("input12_proc_queue_id").value.trim();
   const updtDt = document.getElementById("input12_updt_dt").value.trim();
   const processPeriod = document.getElementById("input12_process_period").value.trim();
-  let sql = `--Review the processes tied to the JB005 for an accounting month:\nSELECT * FROM QARCH_QUEU_PROCESS WHERE START_DT >= '${startDt}' ORDER BY QUEUE_DT DESC;\n\n`;
-  if (procQueueId) {
-    const idList = procQueueId.split(',').map(i => `'${i.trim()}'`).join(',');
-    sql += `--Review the JIB journal tables in QCA:\nSELECT * FROM JBTRN_JIB_JOURNAL WHERE PROCESS_QUEUE_ID IN (${idList});\n`;
-    sql += `SELECT SUM(JOURNAL_AMOUNT) FROM JBTRN_JIB_JOURNAL WHERE PROCESS_QUEUE_ID IN (${idList});\n`;
-    sql += `SELECT * FROM JBSTG_CORE_INTFC_EXP WHERE PROCESS_QUEUE_ID IN (${idList});\n\n`;
+
+  const listify = (csv) =>
+    csv.split(",").map(s => s.trim()).filter(Boolean).map(s => `'${s.replace(/'/g, "''")}'`).join(", ");
+
+  const parts = [];
+
+  // Query 1 (requires START_DT)
+  if (startDt) {
+    parts.push(
+`--Review the processes tied to the JB005 for an accounting month:
+SELECT MASTER_PROCESS_QUEUE_ID, PROCESS_QUEUE_ID, PROCESS_ID, STATUS_CD, START_DT, END_DT,
+       DATEDIFF(MINUTE, START_DT, END_DT) AS TIMEDIFF_IN_MIN, USER_ID, *
+FROM QARCH_QUEU_PROCESS A
+WHERE PROCESS_ID IN ('JBLDWCVOL','JBCALCCOMP','JBMISCOH','JBOPENBILL','JBPRODOH','JBVEHCALC',
+                     'JBGLIMPORT','JBLOADCSL','JBPROPALLC','JBREBILL','JBOWNALLOC','JBRBINVMN',
+                     'JBINVMNPRC','JBJOURNAL','JBLDJE2CAS','JBROLLDATE')
+  AND START_DT >= '${startDt}'
+ORDER BY QUEUE_DT DESC;`
+    );
   }
-  sql += `--JIB Batches pending to post from Batch Journal Entry:\nSELECT A.ID, A.USERKEY, A.NAME, COUNT(*) FROM BATCHJOURNALENTRYMASTER A JOIN BATCHJOURNALENTRYDETAIL B ON A.ID = B.IDBATJE JOIN BATCHJOURNALENTRYLINE C ON B.ID = C.IDBATJEDETAIL JOIN BATCHJECUSTOMCODEBLOCKUPSTREAM D ON C.ID = D.IDBATJELINE JOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID WHERE A.NAME LIKE 'JIB%' GROUP BY A.USERKEY, A.NAME, A.ID ORDER BY A.ID DESC;\n\n`;
-  sql += `--JIB Batches pending to post from Batch Invoice Master:\nSELECT A.ID, A.USERKEY, A.NAME, COUNT(*) FROM BATCHINVOICEMASTER A JOIN BATCHINVOICEDETAIL B ON A.ID = B.IDBATINVMASTER JOIN BATCHINVOICELINEITEM C ON B.ID = C.IDBATINVDETAIL JOIN BATCHINVOICECUSTOMCODEBLOCKUPSTREAM D ON C.ID = D.IDBATINVLINEITEM JOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID WHERE A.NAME LIKE 'JIB%' GROUP BY A.USERKEY, A.NAME, A.ID ORDER BY A.ID DESC;\n\n`;
-  sql += `--Trace JIB Accounting Entries in the STRAN Tables:\nSELECT * FROM STRAN_CORE_INTFC A JOIN SEXTN_CORE_INTFC_JIB B ON A.ID = B.IDCOREINTFC WHERE JOURNAL_ID = 'QCFS' AND TRANS_TYPE = 'PP' AND UPDT_DT >= '${updtDt}';\n\n`;
-  sql += `--Review the path and count data of the JIBLINK Export:\nSELECT EXPORTED_ROWS, UPDT_DT, * FROM CEN_PRD16UPS_QFC..QARCH_TRAN_IMPEXP_STATUS WHERE IMPEXP_ID = 'JIBLINKEXP' ORDER BY EXPORTED_ROWS DESC;\n\n`;
-  sql += `--Number of records for OA and rebillings processed:\nSELECT SYSTEM_SOURCE, PROCESS_PERIOD, COUNT(*) FROM JBTRN_INVOICE_DETAIL GROUP BY SYSTEM_SOURCE, PROCESS_PERIOD ORDER BY PROCESS_PERIOD DESC;\nSELECT SYSTEM_SOURCE, PROCESS_PERIOD, COUNT(*) FROM JBTRN_INVOICE_HEADER GROUP BY SYSTEM_SOURCE, PROCESS_PERIOD ORDER BY PROCESS_PERIOD DESC;\n\n`;
-  ['JBTRN_CTF','JBTRN_COST_SUBLEDGER','JBTRN_JIB_JOURNAL','JBADT_JIB_JOURNAL_HISTORY'].forEach(tbl => {
-    sql += `--Review ${tbl} for PROCESS_PERIOD:\nSELECT COUNT(*) FROM ${tbl} WHERE PROCESS_PERIOD = '${processPeriod}';\n\n`;
-  });
-  document.getElementById("output12").value = sql;
+
+  // Query 2 (requires PROCESS_QUEUE_ID)
+  if (procQueueIdRaw) {
+    const idList = listify(procQueueIdRaw);
+    parts.push(
+`--Review the JIB journal tables in QCA:
+SELECT * FROM JBTRN_JIB_JOURNAL WHERE PROCESS_QUEUE_ID IN (${idList});
+SELECT SUM(JOURNAL_AMOUNT) FROM JBTRN_JIB_JOURNAL WHERE PROCESS_QUEUE_ID IN (${idList});
+SELECT * FROM JBSTG_CORE_INTFC_EXP WHERE PROCESS_QUEUE_ID IN (${idList});`
+    );
+  }
+
+  // Query 3 (no input — always include)
+  parts.push(
+`--JIB Batches pending to post from Batch Journal Entry
+SELECT A.ID, A.USERKEY, A.NAME, COUNT(*)
+FROM BATCHJOURNALENTRYMASTER A
+JOIN BATCHJOURNALENTRYDETAIL B ON A.ID = B.IDBATJE
+JOIN BATCHJOURNALENTRYLINE C ON B.ID = C.IDBATJEDETAIL
+JOIN BATCHJECUSTOMCODEBLOCKUPSTREAM D ON C.ID = D.IDBATJELINE
+JOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID
+WHERE A.NAME LIKE 'JIB%'
+GROUP BY A.USERKEY, A.NAME, A.ID
+ORDER BY A.ID DESC;`
+  );
+
+  // Query 4 (no input — always include)
+  parts.push(
+`--JIB Batches pending to post from Batch Invoice Master
+SELECT A.ID, A.USERKEY, A.NAME, COUNT(*)
+FROM BATCHINVOICEMASTER A
+JOIN BATCHINVOICEDETAIL B ON A.ID = B.IDBATINVMASTER
+JOIN BATCHINVOICELINEITEM C ON B.ID = C.IDBATINVDETAIL
+JOIN BATCHINVOICECUSTOMCODEBLOCKUPSTREAM D ON C.ID = D.IDBATINVLINEITEM
+JOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID
+WHERE A.NAME LIKE 'JIB%'
+GROUP BY A.USERKEY, A.NAME, A.ID
+ORDER BY A.ID DESC;`
+  );
+
+  // Query 5 (requires UPDT_DT)
+  if (updtDt) {
+    parts.push(
+`--Trace JIB Accounting Entries in the STRAN Tables. These entries will post after running QCFSIMPCYC and POSTWKFL:
+SELECT *
+FROM STRAN_CORE_INTFC A
+JOIN SEXTN_CORE_INTFC_JIB B ON A.ID = B.IDCOREINTFC
+WHERE JOURNAL_ID = 'QCFS'
+  AND TRANS_TYPE = 'PP'
+  AND UPDT_DT >= '${updtDt}';`
+    );
+  }
+
+  // Query 7 (no input — always include)
+  parts.push(
+`--Review the path and count data of the JIBLINK Export
+SELECT EXPORTED_ROWS, UPDT_DT, *
+FROM CEN_PRD16UPS_QFC..QARCH_TRAN_IMPEXP_STATUS A
+WHERE IMPEXP_ID = 'JIBLINKEXP'
+ORDER BY A.EXPORTED_ROWS DESC;`
+  );
+
+  // Query 8 & 9 (no input — always include)
+  parts.push(
+`--Number of records for Owner Allocation (OA) and rebillings (REB) processed
+SELECT SYSTEM_SOURCE, PROCESS_PERIOD, COUNT(*)
+FROM JBTRN_INVOICE_DETAIL
+GROUP BY SYSTEM_SOURCE, PROCESS_PERIOD
+ORDER BY PROCESS_PERIOD DESC;
+
+SELECT SYSTEM_SOURCE, PROCESS_PERIOD, COUNT(*)
+FROM JBTRN_INVOICE_HEADER
+GROUP BY SYSTEM_SOURCE, PROCESS_PERIOD
+ORDER BY PROCESS_PERIOD DESC;`
+  );
+
+  // Queries 10–16 (require PROCESS_PERIOD)
+  if (processPeriod) {
+    [
+      'JBTRN_CTF',
+      'JBTRN_COST_SUBLEDGER',
+      'JBTRN_JIB_JOURNAL',
+      'JBADT_JIB_JOURNAL_HISTORY',
+      // If you want to mirror 13 & 14 duplicates, you can add again,
+      // but the single pass covers the same intent.
+    ].forEach(tbl => {
+      parts.push(
+`--Review ${tbl} for CTF/JIB counts
+SELECT COUNT(1)
+FROM ${tbl}
+WHERE PROCESS_PERIOD = '${processPeriod}';`
+      );
+    });
+  }
+
+  document.getElementById("output12").value = parts.join("\n\n");
 }
 
 
