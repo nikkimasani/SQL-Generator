@@ -431,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {name:'ACCTG_MTH', label:'Accounting Month (YYYY-MM-DD)', type:'date', required:false, multi:false}
       ],
       queries: [
-        {comment:'--Query invoices by USERKEY', sql:'SELECT * FROM INVOICE WHERE USERKEY IN ({{USERKEY_csv}})'},
+        {comment:'--Query invoices by USERKEY', sql:'SELECT * FROM BATCHINVOICEMASTER WHERE USERKEY IN ({{USERKEY_csv}})'},
         {comment:'--Optional month filter', sql:"SELECT * FROM STRAN_CORE_INTFC WHERE ACCTG_MTH = '{{ACCTG_MTH}}'"}
       ],
       createdAt: Date.now(), updatedAt: Date.now()
