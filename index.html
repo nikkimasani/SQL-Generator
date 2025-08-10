@@ -816,7 +816,7 @@ function generateSQL1() {
     sql += `SELECT LOG_MSG, LOG_DATE, PROCESS_QUEUE_ID, PROCESS_STEP_QUEUE_ID, LOG_MSG_TYPE_CD, *\n`;
     sql += `FROM QARCH_PROCESS_MSG_LOG\nWHERE PROCESS_QUEUE_ID IN ('${pqid}')\nORDER BY PROCESS_LOG_ID ASC;\n\n`;
     sql += `--Query the Process Step table to see what steps were successful.:\n`;
-    sql += `SELECT * FROM QARCH_QUEU_PROCESS_STEP\nWHERE PROCESS_STEP_QUEUE_ID = ('${pqid}')\nORDER BY SEQ_NO ASC;\n\n`;
+    sql += `SELECT * FROM QARCH_QUEU_PROCESS_STEP\nWHERE PROCESS_QUEUE_ID = ('${pqid}')\nORDER BY SEQ_NO ASC;\n\n`;
     sql += `--Query the SQL Trace to see if any sql was logged for any of the process steps.:\n`;
     sql += `SELECT REGISTERED_SQL_NAME, SQL_STATEMENT_PART1, *\n`;
     sql += `FROM QARCH_QFCBATCH_SQL_TRACE\nWHERE PROCESS_QUEUE_ID in ('${pqid}')\nORDER BY SQL_SUCCESS_IND ASC;\n\n`;
