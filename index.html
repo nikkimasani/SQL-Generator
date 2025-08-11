@@ -729,38 +729,43 @@ textarea[id^="sqlOutput"] {
 
 </div>
 
- 
- <!-- Scenario 17 -->
+
+<!-- Scenario 17 -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">Scenario 17: Cross Reference (MT100) / Journal Definitions (SM021) / Workflow Definitions (SM093) / Voucher Payment Term Definition (AP047)</button>
 <div class="tab-content" id="scenario17">
-  <h2>Scenario 17: Cross Reference MT100 / SM021 / SM093 / AP047</h2>
+  <h2>Scenario 17: Cross Reference MT100 / SM021 / SM093 / AP100 / AP047</h2>
 
   <h3 style="margin-top:0">MT100 </h3>
-  <div class="footnote">Inputs required: <strong>TRANS_TYPE</strong> and <strong>JOURNAL_ID</strong>. Query 1 has no inputs and will always populate.</div>
+  <div class="footnote">Inputs required: <strong>TRANS_TYPE</strong> and <strong>JOURNAL_ID</strong>.</div>
 
   <label>TRANS_TYPE :</label>
-  <input id="input17_trans_type" placeholder="e.g., GL, AP, AR" />
+  <input id="input17_trans_type" placeholder="e.g., GL, AP, AR"/>
 
-  <label>JOURNAL_ID :</label>
-  <input id="input17_journal_id" placeholder="e.g., JIB, AFE, DDA" />
+  <label>JOURNAL_ID:</label>
+  <input id="input17_journal_id" placeholder="e.g., JIB, AFE, DDA"  />
 
-  <h3>SM021 / SM093 / AP100 / AP047 </h3>
-  <div class="footnote">Inputs required: <strong>IDBEOWNER</strong> and <strong>USERKEY</strong>.</div>
+  <h3>SM021 / SM093 / AP100 / AP047</h3>
+  <div class="footnote">
+    Queries <strong>8–10</strong> require: <strong>IDBEOWNER</strong> + <strong>USERKEY (General)</strong>.<br/>
+    Query <strong>11</strong> (AP047) requires: <strong>IDBEOWNER</strong> + <strong>USERKEY (Payment Terms)</strong>.<br/>
+  </div>
 
   <label>IDBEOWNER:</label>
   <input id="input17_idbeowner" placeholder="e.g., 11, 17" />
 
-  <label>USERKEY:</label>
-  <input id="input17_userkey" placeholder="e.g., JENORMAL, JEJIB" />
+  <label>USERKEY (General) – used for SM021/SM093/AP100:</label>
+  <input id="input17_userkey_general" placeholder="e.g., JENORMAL, JEJIB" />
+
+  <label>USERKEY (Payment Terms) – used only for AP047:</label>
+  <input id="input17_userkey_pt" placeholder="e.g., NET15, DUEONREC" />
 
   <button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
   <textarea id="output17" readonly placeholder="SQL will appear here..."></textarea>
   <button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('input17_trans_type','input17_journal_id','input17_idbeowner','input17_userkey','output17')">🔄 Reset</button>
+  <button class="btn reset" onclick="resetFields('input17_trans_type','input17_journal_id','input17_idbeowner','input17_userkey_general','input17_userkey_pt','output17')">🔄 Reset</button>
   <button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
   <div class="copy-success" id="output17_success">✅ Copied!</div>
 </div>
-
 
 
 
@@ -1880,26 +1885,28 @@ function exportSQL16() {
 
 
 // Scenario 17
+// Scenario 17
 function generateSQL17() {
-  // helpers
-  const splitCSV = (v) => v.trim()
+  const splitCSV = (v) => (v || '')
+    .trim()
     .split(',')
     .map(s => s.trim())
     .filter(Boolean);
 
-  const transTypes  = splitCSV(document.getElementById('input17_trans_type').value || '');
-  const journalIds  = splitCSV(document.getElementById('input17_journal_id').value || '');
-  const idbeowners  = splitCSV(document.getElementById('input17_idbeowner').value || '');
-  const userkeys    = splitCSV(document.getElementById('input17_userkey').value || '');
+  const transTypes   = splitCSV(document.getElementById('input17_trans_type').value);
+  const journalIds   = splitCSV(document.getElementById('input17_journal_id').value);
+  const idbeowners   = splitCSV(document.getElementById('input17_idbeowner').value);
+  const userkeysGen  = splitCSV(document.getElementById('input17_userkey_general').value); // for Queries 8–10
+  const userkeysPT   = splitCSV(document.getElementById('input17_userkey_pt').value);      // for Query 11 only
 
   let sql = '';
 
-  // Query 1 (always populate; no inputs)
+  // Query 1 (no inputs; always populate)
   sql += `--QSTAGXLSIMP - JOURNAL_ID & TRANS_ID will determine what type of file is being uploaded (AR, AP, GL)\n`;
   sql += `--This query will retrieve the current MT100 Configuration:\n`;
   sql += `SELECT * FROM JOURNAL_ID_IMPORT;\n\n`;
 
-  // Queries 2–7 (require TRANS_TYPE & JOURNAL_ID). Multiple inputs -> generate per combination.
+  // Queries 2–7 (require TRANS_TYPE & JOURNAL_ID). Emit per combination.
   if (transTypes.length && journalIds.length) {
     transTypes.forEach(tt => {
       journalIds.forEach(jid => {
@@ -1930,10 +1937,10 @@ function generateSQL17() {
     });
   }
 
-  // Queries 8–11 (require IDBEOWNER & USERKEY). Generate per combination.
-  if (idbeowners.length && userkeys.length) {
+  // Queries 8–10 (require IDBEOWNER + USERKEY (General)). Emit per combination.
+  if (idbeowners.length && userkeysGen.length) {
     idbeowners.forEach(idbe => {
-      userkeys.forEach(uk => {
+      userkeysGen.forEach(uk => {
         // Query 8
         sql += `--SM021: Journal Definitions Maintenance\n`;
         sql += `SELECT * FROM JOURNALDEFINITION\nWHERE IDBEOWNER = ${idbe}\nAND USERKEY = '${uk}';\n\n`;
@@ -1945,10 +1952,16 @@ function generateSQL17() {
         // Query 10
         sql += `--AP100: Voucher Document Type\n`;
         sql += `SELECT * FROM VOUCHERDOCUMENTTYPE\nWHERE IDBEOWNER = ${idbe}\nAND USERKEY = '${uk}';\n\n`;
+      });
+    });
+  }
 
-        // Query 11
+  // Query 11 (AP047) — requires IDBEOWNER + USERKEY (Payment Terms) ONLY
+  if (idbeowners.length && userkeysPT.length) {
+    idbeowners.forEach(idbe => {
+      userkeysPT.forEach(ukPT => {
         sql += `--AP047: Voucher Payment Term Definition Maintenance\n`;
-        sql += `SELECT * FROM VENDORPAYMENTTERMSDEFINITION\nWHERE IDBEOWNER = ${idbe}\nAND USERKEY = '${uk}';\n\n`;
+        sql += `SELECT * FROM VENDORPAYMENTTERMSDEFINITION\nWHERE IDBEOWNER = ${idbe}\nAND USERKEY = '${ukPT}';\n\n`;
       });
     });
   }
@@ -1956,11 +1969,6 @@ function generateSQL17() {
   // Always include - autopopulated (no inputs)
   sql += `--Imports that have been stamped with the XREF Config\n`;
   sql += `SELECT * FROM COREINTERFACECONFIGIMPORT;\n`;
-
-  // Global rule handling notes (no code changes needed here because we emitted separate statements):
-  // - Multiple values handled via per-combination emission above.
-  // - If a query had an OR condition and only one param was present, we'd comment out the other.
-  //   (Not applicable to these specific queries.)
 
   document.getElementById('output17').value = sql;
 }
