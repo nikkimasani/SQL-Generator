@@ -116,6 +116,10 @@ h1{color:var(--header)}
   <div class="container">
     <div class="topbar"><h1>✨ SQL Generator — Custom Scenarios</h1><div class="right"><a href="index.html" class="btn small">↩️ Back to main</a><button id="themeToggle" class="btn small">🌗 Toggle</button></div></div>
     <p class="muted">This page is standalone and uses your browser storage. Build scenarios with inputs and SQL templates, then generate filled queries. Use Export/Import to share with your team.</p>
+<p style="margin-top: 10px; font-size: 15px; color: var(--fg); background: var(--card); padding: 12px; border-left: 5px solid var(--primary); border-radius: 6px;">
+  🧠 <strong>Instructions:</strong> Use this tool to create and manage your own custom SQL scenarios. Click <strong>＋ New</strong> to build a new scenario with your desired inputs and SQL templates. Select a saved scenario from the left panel to populate the form. You can then generate queries, <strong>copy</strong>, or <strong>export</strong> them. Use template variables like <code>{{USERKEY_csv}}</code> to dynamically inject values from inputs.
+</p>
+
 
     <div class="grid">
       <!-- Sidebar -->
@@ -327,7 +331,7 @@ function newScenario(){
   const sc = {
     id: uuid(), title: 'New Scenario', description: '', tags: [],
     inputs: [{name:'USERKEY', label:'USERKEY', type:'text', required:true, multi:true}],
-    queries: [{comment:'--Example: query by USERKEY', sql:'SELECT * FROM BATCHINVOICEMASTER WHERE USERKEY IN ({{USERKEY_csv}})'}],
+    queries: [{comment:'--Example: query by USERKEY', sql:'SELECT * FROM SOME_TABLE WHERE USERKEY IN ({{USERKEY_csv}})'}],
     createdAt: Date.now(), updatedAt: Date.now()
   };
   customState.items.unshift(sc); saveCustomScenarios(customState.items);
@@ -435,7 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const seed = {
       id: uuid(),
       title: 'Example: Invoices by USERKEY & Month',
-      description: 'Input all required placeholders like {{USERKEY}}. Add "_csv" for multiple values.',
+      description: 'Input placeholders like {{USERKEY_csv}}.',
       tags: ['demo','example'],
       inputs: [
         {name:'USERKEY', label:'USERKEY', type:'text', required:true, multi:true},
