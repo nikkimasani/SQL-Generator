@@ -846,45 +846,56 @@ function generateSQL2() {
   const wfRouteNm = document.getElementById("route2").value.trim();
   const idWfRouteSmplStep = document.getElementById("step2").value.trim();
   const deskNm = document.getElementById("desk2").value.trim();
+
   const afeList = afeNo ? afeNo.split(',').map(x => `'${x.trim()}'`).join(', ') : null;
   const inboxList = idWfInbox ? idWfInbox.split(',').map(x => `'${x.trim()}'`).join(', ') : null;
   const routeList = wfRouteNm ? wfRouteNm.split(',').map(x => `'${x.trim()}'`).join(', ') : null;
   const deskList = deskNm ? deskNm.split(',').map(x => `'${x.trim()}'`).join(', ') : null;
 
   let sql = "";
+
   if (afeList) {
     sql += `--View AFE Details :\n`;
-    sql += `SELECT AFE_NO, ORIG_DESKID_NO, APRV_DESKID_NO, ENGR_DESKID_NO,WF_ROUTE_NM_SELECTED,WF_ROUTE_NM_OVERRIDE, *\n`;
+    sql += `SELECT AFE_NO, ORIG_DESKID_NO, APRV_DESKID_NO, ENGR_DESKID_NO, WF_ROUTE_NM_SELECTED, WF_ROUTE_NM_OVERRIDE, *\n`;
     sql += `FROM dbo.QCTRL_AFE_HDR\nWHERE AFE_NO IN (${afeList});\n\n`;
+
     sql += `--View the AFE Workflow for a specific AFE:\n`;
     sql += `SELECT * FROM QWF_TRAN_INBOX_AFE QW\nJOIN QARCH_WF_TRAN_INBOX_BASE QA ON QW.ID_WF_INBOX = QA.ID_WF_INBOX\nWHERE AFE_NO IN (${afeList});\n\n`;
   }
+
   if (inboxList) {
     sql += `--Using the RESULT of the ID_WF_INBOX populated from the last query, retreive the WF Inbox Details :\n`;
-    sql += `SELECT QUEUE_DT, ACTION_DT, ASSIGNED_DESK_NM, ASSIGNED_USER_ID,APRV_LIMIT, INBOX_ACTION_CD, INBOX_TYPE_CD, INBOX_ACTION_CD,*\n`;
+    sql += `SELECT QUEUE_DT, ACTION_DT, ASSIGNED_DESK_NM, ASSIGNED_USER_ID, APRV_LIMIT, INBOX_ACTION_CD, INBOX_TYPE_CD, INBOX_ACTION_CD, *\n`;
     sql += `FROM QARCH_WF_TRAN_INBOX_BASE\nWHERE ID_WF_INBOX IN (${inboxList});\n\n`;
   }
-  if (wfRouteNm) {
-    sql += `--View the audit steps taken for the AFE Approval:\n`;
-    sql += `SELECT AFE.AFE_NO, WF_AUDIT.SYSTEM_COMMENT, WF_AUDIT.WF_INSTANCE_ID, WF_AUDIT.ACTION_DT, WF_AUDIT.ACTION_USER_ID, WF_AUDIT.*\n`;
-    sql += `FROM QCTRL_AFE_HDR AS AFE\nJOIN QWF_TRAN_AUDIT_AFE AS WF ON WF.AFE_NO = AFE.AFE_NO\nJOIN QARCH_WF_TRAN_ROUTE_AUDIT_BASE AS WF_AUDIT\nWHERE AFE.AFE_NO = '${afeNo}'\nORDER BY WF_AUDIT.ACTION_DT ASC;\n\n`;
+
+  if (routeList) {
     sql += `--View the AFE Route Steps\n`;
-    sql += `SELECT DESK_NM, * FROM QARCH_WF_ROUTE_SMPL_STEP AS A\nLEFT JOIN QARCH_WF_ROUTE_SMPL_STEP_DESK AS B\non A.ID_WF_ROUTE_SMPL_STEP = B.ID_WF_ROUTE_SMPL_STEP\nWHERE WF_ROUTE_NM = '${wfRouteNm}'\nORDER BY A.ROUTE_STEP_SEQ_NO;\n\n`;
+    sql += `SELECT DESK_NM, * FROM QARCH_WF_ROUTE_SMPL_STEP AS A\n`;
+    sql += `LEFT JOIN QARCH_WF_ROUTE_SMPL_STEP_DESK AS B ON A.ID_WF_ROUTE_SMPL_STEP = B.ID_WF_ROUTE_SMPL_STEP\n`;
+    sql += `WHERE WF_ROUTE_NM IN (${routeList})\nORDER BY A.ROUTE_STEP_SEQ_NO;\n\n`;
   }
-  if (idWfRouteSmplStep) {
-    sql += `--View the DESK Details for those on an AFE Route:\n`;
-    sql += `SELECT * FROM QARCH_WF_DESK WHERE DESK_NM IN (${idWfRouteSmplStep});\n`;
-    sql += `SELECT * FROM QARCH_WF_DESK_DELEGATE WHERE DESK_NM IN (${idWfRouteSmplStep});\n\n`;
-  }
+
   if (deskList) {
-    sql += `--View the AFE Desks and Approvals on an AFE\n`;
-    sql += `SELECT AFE.AFE_NO, WF_AUDIT.SYSTEM_COMMENT, WF_AUDIT.WF_INSTANCE_ID, WF_AUDIT.ACTION_DT, WF_AUDIT.ACTION_USER_ID,  WF_AUDIT.*\n`;
-    sql += `FROM QCTRL_AFE_HDR AS AFE\nJOIN QWF_TRAN_AUDIT_AFE AS WF ON WF.AFE_NO = AFE.AFE_NO\nJOIN QARCH_WF_TRAN_ROUTE_AUDIT_BASE AS WF_AUDIT ON WF.ID_WF_AUDIT = WF_AUDIT.ID_WF_AUDIT\nWHERE AFE.AFE_NO = '${afeNo}'\nORDER BY WF_AUDIT.ACTION_DT ASC;\n\n`;
-    sql += `--View the AFE Affiliates for any AFE:\n`;
-    sql += `SELECT * FROM QXREF_AFE_AFFILIATES WHERE PRIMARY_AFE_NO = '${afeNo}';\n\n`;
+    sql += `--View the DESK Details for those on an AFE Route:\n`;
+    sql += `SELECT * FROM QARCH_WF_DESK WHERE DESK_NM IN (${deskList});\n`;
+    sql += `SELECT * FROM QARCH_WF_DESK_DELEGATE WHERE DESK_NM IN (${deskList});\n\n`;
   }
+
+  if (afeList) {
+    sql += `--View the AFE Desks and Approvals on an AFE\n`;
+    sql += `SELECT AFE.AFE_NO, WF_AUDIT.SYSTEM_COMMENT, WF_AUDIT.WF_INSTANCE_ID, WF_AUDIT.ACTION_DT, WF_AUDIT.ACTION_USER_ID, WF_AUDIT.*\n`;
+    sql += `FROM QCTRL_AFE_HDR AS AFE\nJOIN QWF_TRAN_AUDIT_AFE AS WF ON WF.AFE_NO = AFE.AFE_NO\n`;
+    sql += `JOIN QARCH_WF_TRAN_ROUTE_AUDIT_BASE AS WF_AUDIT ON WF.ID_WF_AUDIT = WF_AUDIT.ID_WF_AUDIT\n`;
+    sql += `WHERE AFE.AFE_NO IN (${afeList})\nORDER BY WF_AUDIT.ACTION_DT ASC;\n\n`;
+
+    sql += `--View the AFE Affiliates for any AFE:\n`;
+    sql += `SELECT * FROM QXREF_AFE_AFFILIATES WHERE PRIMARY_AFE_NO IN (${afeList});\n\n`;
+  }
+
   document.getElementById("output2").value = sql;
 }
+
 
 // Scenario 3
 function generateSQL3() {
