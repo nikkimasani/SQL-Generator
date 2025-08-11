@@ -327,7 +327,7 @@ function newScenario(){
   const sc = {
     id: uuid(), title: 'New Scenario', description: '', tags: [],
     inputs: [{name:'USERKEY', label:'USERKEY', type:'text', required:true, multi:true}],
-    queries: [{comment:'--Example: query by USERKEY', sql:'SELECT * FROM SOME_TABLE WHERE USERKEY IN ({{USERKEY_csv}})'}],
+    queries: [{comment:'--Example: query by USERKEY', sql:'SELECT * FROM BATCHINVOICEMASTER WHERE USERKEY IN ({{USERKEY_csv}})'}],
     createdAt: Date.now(), updatedAt: Date.now()
   };
   customState.items.unshift(sc); saveCustomScenarios(customState.items);
