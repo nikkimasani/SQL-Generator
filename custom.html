@@ -287,12 +287,13 @@ function moveRow(btn, dir){
   const sib = dir<0 ? row.previousElementSibling : row.nextElementSibling;
   if(sib){ wrap.insertBefore(row, dir<0 ? sib : sib.nextSibling); }
 }
+
 function saveEditor(){
   const sc = customState.items.find(i => i.id===customState.currentId) || {id: uuid(), createdAt: Date.now()};
   sc.title = document.getElementById('e_title').value.trim();
   sc.description = document.getElementById('e_description').value.trim();
   sc.tags = document.getElementById('e_tags').value.split(',').map(s=>s.trim()).filter(Boolean);
-  sc.inputs = Array.from(document.querySelectorAll('#inputsWrap .input-row')).map(r => {
+  const _inputs = Array.from(document.querySelectorAll('#inputsWrap .input-row')).map(r => {
     const val = k => r.querySelector(`[data-k="${k}"]`);
     return {
       name: (val('name')?.value||'').trim(),
@@ -302,15 +303,25 @@ function saveEditor(){
       multi: r.querySelector('[data-k="multi"]')?.checked || false
     };
   }).filter(i=>i.name);
-  sc.queries = Array.from(document.querySelectorAll('#queriesWrap .query-row')).map(r => ({
+  const _queries = Array.from(document.querySelectorAll('#queriesWrap .query-row')).map(r => ({
     comment: r.querySelector('[data-k="comment"]')?.value||'--Query',
     sql: r.querySelector('[data-k="sql"]')?.value||''
   })).filter(q=>q.sql.trim());
+
+  // Guard: warn if both inputs and queries are empty
+  if(!_inputs.length && !_queries.length){
+    if(!confirm('Inputs and queries are empty. Save anyway?')) return;
+  }
+
+  sc.inputs = _inputs;
+  sc.queries = _queries;
   sc.updatedAt = Date.now();
   const idx = customState.items.findIndex(i => i.id===sc.id);
   if(idx>=0){ customState.items[idx]=sc; } else { customState.items.unshift(sc); }
   saveCustomScenarios(customState.items); customState.currentId = sc.id;
-  renderList(); alert('Saved ✔');
+  renderList();
+  renderRunner(sc); // keep runner in sync
+  alert('Saved ✔');
 }
 function newScenario(){
   const sc = {
@@ -485,6 +496,16 @@ function deleteCustomScenario(id){
     alert('Delete failed: ' + e.message);
   }
 }
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const genBtn = document.querySelector('#runner button.btn.primary');
+  if(genBtn){
+    genBtn.addEventListener('click', () => { try{ saveEditor(false); }catch(e){} });
+  }
+});
 </script>
 
 </body>
