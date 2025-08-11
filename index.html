@@ -2165,5 +2165,52 @@ SELECT A.USERKEY, A.NAME, COUNT(*) FROM BATCHVOUCHERMASTER A JOIN BATCHVOUCHERDE
 }
 
 </script>
+
+<script>
+function filterScenarios() {
+  const input = document.getElementById("searchInput").value.toLowerCase().trim();
+  const groupContainers = document.querySelectorAll(".scenario-group");
+  const groupButtons = document.querySelectorAll(".group-btn");
+  const scenarioButtons = document.querySelectorAll(".accordion-btn:not(.group-btn)");
+  const tabContents = document.querySelectorAll(".tab-content");
+
+  // Reset all visibility
+  groupContainers.forEach(group => group.style.display = "none");
+  scenarioButtons.forEach(btn => btn.style.display = "none");
+  tabContents.forEach(content => content.classList.remove("active"));
+  scenarioButtons.forEach(btn => btn.classList.remove("active"));
+
+  if (input === "") {
+    // If search is empty, restore default collapsed view
+    groupButtons.forEach(btn => btn.style.display = "block");
+    collapseAll();
+    return;
+  }
+
+  let found = false;
+
+  scenarioButtons.forEach(btn => {
+    const content = btn.nextElementSibling;
+    const combinedText = (btn.textContent + " " + content.textContent).toLowerCase();
+
+    if (combinedText.includes(input)) {
+      btn.style.display = "block";
+      btn.classList.add("active");
+      content.classList.add("active");
+
+      const group = btn.closest(".scenario-group");
+      if (group) group.style.display = "block";
+
+      found = true;
+    }
+  });
+}
+
+function clearSearch() {
+  document.getElementById("searchInput").value = "";
+  filterScenarios();
+}
+</script>
+
 </body>
 </html>
