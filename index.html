@@ -702,6 +702,26 @@ textarea {
   <div class="copy-success" id="output17_success">✅ Copied!</div>
 </div>
 
+<!-- Scenario 18 -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario18')">Scenario 18: Resolve BU Information</button>
+<div class="tab-content" id="scenario18">
+  <h2>Scenario 18: Resolve BU Information</h2>
+  
+  <label>USERKEY (BU Number):</label>
+  <input id="input18_userkey" placeholder="e.g., 118"/>
+  <div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
+    The USERKEY input represents the BU (Business Unit) number used to retrieve BU-related data.
+  </div>
+
+  <button class="btn generate" onclick="generateSQL18()">⚙️ Generate SQL</button>
+  <textarea id="output18" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output18')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input18_userkey','output18')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output18')">💾 Export</button>
+  <div class="copy-success" id="output18_success">✅ Copied!</div>
+</div>
+
+
 <!-- ✅ BEGIN Group 2 -->
 </div> 
 <button class="accordion-btn group-btn" onclick="toggleGroup('group2')">📂 Group 2: QRA, QDO</button>
@@ -1810,7 +1830,7 @@ function exportSQL16() {
 }
 
 
-// Scenario 17
+
 // Scenario 17
 function generateSQL17() {
   const splitCSV = (v) => (v || '')
@@ -1897,6 +1917,28 @@ function generateSQL17() {
   sql += `SELECT * FROM COREINTERFACECONFIGIMPORT;\n`;
 
   document.getElementById('output17').value = sql;
+}
+
+function generateSQL18() {
+  const userkey = document.getElementById('input18_userkey').value.trim();
+
+  let sql = `--Match the BU to the Userkey in the DB\n`;
+  sql += `SELECT \n`;
+  sql += `    BE.USERKEY,\n`;
+  sql += `    BE.NAME,\n`;
+  sql += `    C.IDBEOWNER,\n`;
+  sql += `    C.ID,\n`;
+  sql += `    C.*\n`;
+  sql += `FROM BUSINESSENTITY BE\n`;
+  sql += `JOIN CUSTOMER C\n`;
+  sql += `    ON BE.ID = C.ID\n`;
+  if (userkey) {
+    sql += `WHERE BE.USERKEY = '${userkey}';\n`;
+  } else {
+    sql += `--WHERE BE.USERKEY = ' ' -- Please enter USERKEY above\n`;
+  }
+
+  document.getElementById('output18').value = sql;
 }
 
 
