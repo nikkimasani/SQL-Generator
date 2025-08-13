@@ -340,9 +340,8 @@ textarea {
 </style>
 </head>
 <body>
-
-
-
+<!-- Begin HTML Blocks -->
+<!-- Search Bar -->
 <div class="search-container" style="text-align:center; margin: 20px auto;">
 <input id="searchInput" oninput="filterScenarios()" placeholder="🔍 Search scenarios..." type="text"/>
 <span class="clear-btn" onclick="clearSearch()">×</span>
@@ -352,7 +351,12 @@ textarea {
 <button class="btn reset" onclick="collapseAll()">Collapse All</button>
 <button class="btn export" onclick="toggleTheme()">🌓 Toggle Theme</button>
 <button class="btn reset" onclick="resetAllInputs()">🧹 Reset All</button>
-</div><button class="accordion-btn group-btn" onclick="toggleGroup('group1')">📂 Group 1: ESuite, QCA, QCFS</button><div class="scenario-group" id="group1" style="display: none;"><button class="accordion-btn" data-keywords="step process queue message log trace lock" onclick="toggleAccordion(this,'scenario1')">Scenario 1: Triage Failing Process</button><div class="tab-content" id="scenario1">
+
+<!-- Group 1: ESUITE, QCA, QCFS -->
+</div><button class="accordion-btn group-btn" onclick="toggleGroup('group1')">📂 Group 1: ESuite, QCA, QCFS</button><div class="scenario-group" id="group1" style="display: none;">
+
+<!-- Scenario 1 -->
+<button class="accordion-btn" data-keywords="step process queue message log trace lock" onclick="toggleAccordion(this,'scenario1')">Scenario 1: Triage Failing Process</button><div class="tab-content" id="scenario1">
 <h2>Scenario 1: Triage Failing Process</h2>
 <label>PROCESS_QUEUE_ID(If multiple values, please separate with commas.)</label>
 <input id="processQueueId" placeholder="e.g., 1371670,1371671 "/>
@@ -366,6 +370,8 @@ textarea {
 <button class="btn reset" onclick="resetFields('processQueueId','processId','masterProcessQueueId','output1')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output1')">💾 Export</button>
 <div class="copy-success" id="output1_success">✅ Copied!</div>
+
+<!-- Scenario 2 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario2')">Scenario 2: AFE Workflow Triage</button><div class="tab-content" id="scenario2">
 <h2>Scenario 2: AFE Workflow Triage</h2>
 <label>AFE_NO (If multiple values, please separate with commas.)</label>
@@ -384,6 +390,8 @@ textarea {
 <button class="btn reset" onclick="resetFields('afe2','inbox2','route2','step2','desk2','output2')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output2')">💾 Export</button>
 <div class="copy-success" id="output2_success">✅ Copied!</div>
+
+<!-- Scenario 3 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario3')">Scenario 3: User Management Triage</button><div class="tab-content" id="scenario3">
 <h2>Scenario 3: User Management Triage</h2>
 <label>SEC_USER_ID</label>
@@ -394,6 +402,8 @@ textarea {
 <button class="btn reset" onclick="resetFields('secuserid3','output3')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output3')">💾 Export</button>
 <div class="copy-success" id="output3_success">✅ Copied!</div>
+
+<!-- Scenario 4 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario4')">Scenario 4: GL025 Batch Triage</button><div class="tab-content" id="scenario4">
 <h2>Scenario 4: GL025 Batch Triage</h2>
 <label>ACCTG_MTH (YYYY-MM-DD)</label>
@@ -414,6 +424,8 @@ textarea {
 <button class="btn reset" onclick="resetFields('acctgMth4','userkey4','idbeowner4','batchname4','dateFrom4','dateTo4','output4')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output4')">💾 Export</button>
 <div class="copy-success" id="output4_success">✅ Copied!</div>
+
+<!-- Scenario 5 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario5')">Scenario 5: AP055 Batch Triage</button><div class="tab-content" id="scenario5">
 <h2>Scenario 5: AP055 Batch Triage</h2>
 <label>ACCTG_MTH (YYYY-MM-DD)</label>
@@ -434,6 +446,8 @@ textarea {
 <button class="btn reset" onclick="resetFields('acctgMth5','userkey5','idbeowner5','batchname5','dateFrom5','dateTo5','output5')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output5')">💾 Export</button>
 <div class="copy-success" id="output5_success">✅ Copied!</div>
+
+<!-- Scenario 6 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario6')">Scenario 6: BR005 Bank Reconcilation</button><div class="tab-content" id="scenario6">
 <h2>Scenario 6: BR005 Bank Reconcilation</h2>
 <label>USERKEY (If multiple values, please separate with commas.)</label>
@@ -444,6 +458,8 @@ textarea {
 <button class="btn reset" onclick="resetFields('userkey6','output6')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output6')">💾 Export</button>
 <div class="copy-success" id="output6_success">✅ Copied!</div>
+
+<!-- Scenario 7 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario7')">Scenario 7: Check Run (AP061) Batches</button><div class="tab-content" id="scenario7">
 <h2>Scenario 7: Check Run (AP061) Batches</h2>
 <label>USERKEY (If multiple values, please separate with commas.):</label>
@@ -460,6 +476,8 @@ textarea {
 <button class="btn reset" onclick="resetFields('input7_userkey','input7_idbatcheckrunmaster','input7_checknum','input7_payamt','output7')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output7')">💾 Export</button>
 <div class="copy-success" id="output7_success">✅ Copied!</div>
+
+<!-- Scenario 8 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario8')">Scenario 8: QCFS Imports</button><div class="tab-content" id="scenario8">
 <h2>Scenario 8: QCFS Imports</h2>
 <div class="footnote">All three inputs (JOURNAL_ID, TRANS_TYPE, and ACCTG_MTH) are required to generate the SQL.</div>
@@ -475,6 +493,8 @@ textarea {
 <button class="btn reset" onclick="resetFields('input8_journal_id','input8_trans_type','input8_acctg_mth','output8')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output8')">💾 Export</button>
 <div class="copy-success" id="output8_success">✅ Copied!</div>
+
+<!-- Scenario 9 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario9')">Scenario 9: Maintenance Application</button><div class="tab-content" id="scenario9">
 <h2>Scenario 9: Maintenance Application</h2>
 <label>PROCESS_ID:</label>
@@ -495,6 +515,8 @@ textarea {
 <button class="btn reset" onclick="resetFields('input9_process_id','input9_impexp_id','input9_ftp_id','input9_ftp_host_id','input9_event_type_cd','input9_metadata_profile','output9')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output9')">💾 Export</button>
 <div class="copy-success" id="output9_success">✅ Copied!</div>
+
+<!-- Scenario 10 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario10')">Scenario 10: Batch Vouchers</button><div class="tab-content" id="scenario10">
 <h2>Scenario 10: Batch Vouchers</h2>
 <label>VOUNUM (If multiple values, please separate with commas.):</label>
@@ -527,6 +549,8 @@ textarea {
       )">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output10')">💾 Export</button>
 <div class="copy-success" id="output10_success">✅ Copied!</div>
+
+<!-- Scenario 11 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario11')">Scenario 11: Deposit Batches(AR308)</button><div class="tab-content" id="scenario11">
 <h2>Scenario 11: Deposit Batches</h2>
 <label>USERKEY (If multiple values, please separate with commas.):</label>
@@ -537,6 +561,8 @@ textarea {
 <button class="btn reset" onclick="resetFields('input11_userkey','output11')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output11')">💾 Export</button>
 <div class="copy-success" id="output11_success">✅ Copied!</div>
+
+<!-- Scenario 12 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario12')">Scenario 12: JIB</button><div class="tab-content" id="scenario12">
 <h2>Scenario 12: JIB</h2>
 <label>START_DT ≥ (YYYY-MM-DD):</label>
@@ -553,131 +579,147 @@ textarea {
 <button class="btn reset" onclick="resetFields('input12_start_dt','input12_proc_queue_id','input12_updt_dt','input12_process_period','output12')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output12')">💾 Export</button>
 <div class="copy-success" id="output12_success">✅ Copied!</div>
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario13')">Scenario 13: General Batch, QCFS Export/Import, Open Item</button><div class="tab-content" id="scenario13">
-<h2>Scenario 13: General Batch, QCFS Export/Import, Open Item</h2>
-<label>USERKEY (If multiple values, please separate with commas.):</label>
-<input id="input13_userkey" placeholder="e.g., BPA00000015, BPA00000017"/>
-<label>IDBEOWNER:</label>
-<input id="input13_idbeowner" placeholder="e.g., 17"/>
-<label>BA_NO:</label>
-<input id="input13_ba_no" placeholder="e.g., 100"/>
-<label>SET_ID:</label>
-<input id="input13_set_id" placeholder="e.g., 53f4aee1-05c5-43e8-bbda-1e9b78b67022"/>
-<label>Customer Open Item ID (If multiple values, please separate with commas.):</label>
-<input id="input13_open_item_id" placeholder="e.g., 21,22"/>
-<label>UPDT_DT &gt; (YYYY-MM-DD):</label>
-<input id="input13_updt_dt" placeholder="e.g., 2025-06-01"/>
-<label>BUS_UNIT_CD:</label>
-<input id="input13_bus_unit_cd" placeholder="e.g., 100"/>
-<label>OWNER_BA_NO:</label>
-<input id="input13_owner_ba_no" placeholder="e.g., 10"/>
-<label>OPENITEM_PROP_NO:</label>
-<input id="input13_prop_no" placeholder="e.g., 10300"/>
-<!-- NEW: PROP_NO (distinct from OPENITEM_PROP_NO) -->
-<label>PROP_NO:</label>
-<input id="input13_prop_no2" placeholder="e.g., 10300"/>
-<label>ORIG_BUS_UNIT_CD:</label>
-<input id="input13_orig_bus_unit_cd" placeholder="e.g., 100"/>
-<label>ACCTG_MTH (YYYY-MM-DD):</label>
-<input id="input13_acctg_mth" placeholder="e.g., 2025-07-01"/>
-<label>PROCESS_PERIOD (YYYY-MM-DD):</label>
-<input id="input13_process_period" placeholder="e.g., 2025-07-01, 2025-08-01"/>
-<button class="btn generate" onclick="generateSQL13()">⚙️ Generate SQL</button>
-<textarea id="output13" placeholder="SQL will appear here..." readonly=""></textarea>
-<button class="btn copy" onclick="copySQL('output13')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields(
-    'input13_userkey','input13_idbeowner','input13_ba_no','input13_set_id','input13_open_item_id',
+
+
+<!-- Scenario 13 -->
+<!-- Scenario 13 -->
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario13')">Scenario 13: General Batch, QCFS Export/Import, Open Item</button>
+<div class="tab-content" id="scenario13">
+  <h2>Scenario 13: General Batch, QCFS Export/Import, Open Item</h2>
+  <div class="footnote">
+    Note: <strong>USERKEY</strong> input is used to retrieve <em>Payment Application Batches</em>.
+  </div>
+
+  <label>USERKEY (If multiple values, please separate with commas.):</label>
+  <input id="input13_userkey" placeholder="e.g., BPA00000015, BPA00000017"/>
+
+  <label>IDBEOWNER:</label>
+  <input id="input13_idbeowner" placeholder="e.g., 17"/>
+
+  <label>IDCUSTOMER (If multiple values, please separate with commas.):</label>
+  <input id="input13_idcustomer" placeholder="e.g., 101,102"/>
+
+  <label>BA_NO:</label>
+  <input id="input13_ba_no" placeholder="e.g., 100"/>
+
+  <label>SET_ID:</label>
+  <input id="input13_set_id" placeholder="e.g., 53f4aee1-05c5-43e8-bbda-1e9b78b67022"/>
+
+  <label>Customer Open Item ID (If multiple values, please separate with commas.):</label>
+  <input id="input13_open_item_id" placeholder="e.g., 21,22"/>
+
+  <label>UPDT_DT &gt; (YYYY-MM-DD):</label>
+  <input id="input13_updt_dt" placeholder="e.g., 2025-06-01"/>
+
+  <label>BUS_UNIT_CD:</label>
+  <input id="input13_bus_unit_cd" placeholder="e.g., 100"/>
+
+  <label>OWNER_BA_NO:</label>
+  <input id="input13_owner_ba_no" placeholder="e.g., 10"/>
+
+  <label>OPENITEM_PROP_NO:</label>
+  <input id="input13_prop_no" placeholder="e.g., 10300"/>
+
+  <label>PROP_NO:</label>
+  <input id="input13_prop_no2" placeholder="e.g., 10300"/>
+
+  <label>ORIG_BUS_UNIT_CD:</label>
+  <input id="input13_orig_bus_unit_cd" placeholder="e.g., 100"/>
+
+  <label>ACCTG_MTH (YYYY-MM-DD):</label>
+  <input id="input13_acctg_mth" placeholder="e.g., 2025-07-01"/>
+
+  <label>PROCESS_PERIOD (YYYY-MM-DD):</label>
+  <input id="input13_process_period" placeholder="e.g., 2025-07-01, 2025-08-01"/>
+
+  <button class="btn generate" onclick="generateSQL13()">⚙️ Generate SQL</button>
+  <textarea id="output13" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output13')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields(
+    'input13_userkey','input13_idbeowner','input13_idcustomer','input13_ba_no','input13_set_id','input13_open_item_id',
     'input13_updt_dt','input13_bus_unit_cd','input13_owner_ba_no','input13_prop_no','input13_prop_no2',
     'input13_orig_bus_unit_cd','input13_acctg_mth','input13_process_period','output13'
   )">🔄 Reset</button>
-<button class="btn export" onclick="exportSQL('output13')">💾 Export</button>
-<div class="copy-success" id="output13_success">✅ Copied!</div>
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario14')">Scenario 14: Business Associate (BA005 / BA Web)</button><div class="tab-content" id="scenario14">
-<h2>Scenario 14: Business Associate (BA005 / BA Web)</h2>
-<label>BA_NO (If multiple values, please separate with commas.):</label>
-<input id="input14_ba_no" placeholder="e.g., BA123, BA456"/>
-<label>PRIMARY_BP_NO (when checking contacts):</label>
-<input id="input14_primary_bp_no" placeholder="e.g., BP789"/>
-<button class="btn generate" onclick="generateSQL14()">⚙️ Generate SQL</button>
-<textarea id="output14" placeholder="SQL will appear here..." readonly=""></textarea>
-<button class="btn copy" onclick="copySQL('output14')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields('input14_ba_no','input14_primary_bp_no','output14')">🔄 Reset</button>
-<button class="btn export" onclick="exportSQL('output14')">💾 Export</button>
-<div class="copy-success" id="output14_success">✅ Copied!</div>
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario15')">Scenario 15: ADPUPLOAD</button><div class="tab-content" id="scenario15">
-<h2>Scenario 15: ADPUPLOAD</h2>
-<label>Update Start Date (YYYY-MM-DD)Both Start AND End Dates are Required.:</label>
-<input id="input15_start_date" placeholder="e.g., 2025-01-01"/>
-<label>Update End Date (YYYY-MM-DD)Both Start AND End Dates are Required:</label>
-<input id="input15_end_date" placeholder="e.g., 2025-01-31"/>
-<button class="btn generate" onclick="generateSQL15()">⚙️ Generate SQL</button>
-<textarea id="output15" placeholder="SQL will appear here..." readonly=""></textarea>
-<button class="btn copy" onclick="copySQL('output15')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields('input15_start_date','input15_end_date','output15')">🔄 Reset</button>
-<button class="btn export" onclick="exportSQL('output15')">💾 Export</button>
-<div class="copy-success" id="output15_success">✅ Copied!</div>
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario16')">Scenario 16: Account Set Up (GL095) &amp; Chart of Accounts (GL013)</button><div class="tab-content" id="scenario16">
-<h2>Scenario 16: Account Set Up (GL095) &amp; Chart of Accounts (GL013)</h2>
-<label>KEYFULL (format xxxx-xxxx):</label>
-<input id="input16_keyfull" placeholder="e.g., 2840-1759"/>
-<label>IDBEOWNER:</label>
-<input id="input16_idbeowner" placeholder="e.g., 76"/>
-<label>BA_NO:</label>
-<input id="input16_ba_no" placeholder="e.g., 2129"/>
-<button class="btn generate" onclick="generateSQL16()">⚙️ Generate SQL</button>
-<textarea id="output16" placeholder="SQL will appear here..." readonly=""></textarea>
-<button class="btn copy" onclick="copySQL16()">📋 Copy</button>
-<button class="btn reset" onclick="resetSQL16()">🔄 Reset</button>
-<button class="btn export" onclick="exportSQL16()">💾 Export</button>
-<div class="copy-success" id="output16_success">✅ Copied!</div>
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">Scenario 17: Cross Reference (MT100) / Journal Definitions (SM021) / Workflow Definitions (SM093) / Voucher Payment Term Definition (AP047)</button><div class="tab-content" id="scenario17">
-<h2>Scenario 17: Cross Reference MT100 / SM021 / SM093 / AP100 / AP047</h2>
-<h3 style="margin-top:0">MT100 </h3>
-<div class="footnote">Inputs required: <strong>TRANS_TYPE</strong> and <strong>JOURNAL_ID</strong>.</div>
-<label>TRANS_TYPE :</label>
-<input id="input17_trans_type" placeholder="e.g., GL, AP, AR"/>
-<label>JOURNAL_ID:</label>
-<input id="input17_journal_id" placeholder="e.g., JIB, AFE, DDA"/>
-<h3>SM021 / SM093 / AP100 / AP047</h3>
-<div class="footnote">
-    Queries <strong>8–10</strong> require: <strong>IDBEOWNER</strong> + <strong>USERKEY (General)</strong>.<br/>
-    Query <strong>11</strong> (AP047) requires: <strong>IDBEOWNER</strong> + <strong>USERKEY (Payment Terms)</strong>.<br/>
+  <button class="btn export" onclick="exportSQL('output13')">💾 Export</button>
+  <div class="copy-success" id="output13_success">✅ Copied!</div>
 </div>
-<label>IDBEOWNER:</label>
-<input id="input17_idbeowner" placeholder="e.g., 11, 17"/>
-<label>USERKEY (General) – used for SM021/SM093/AP100:</label>
-<input id="input17_userkey_general" placeholder="e.g., JENORMAL, JEJIB"/>
-<label>USERKEY (Payment Terms) – used only for AP047:</label>
-<input id="input17_userkey_pt" placeholder="e.g., NET15, DUEONREC"/>
-<button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
-<textarea id="output17" placeholder="SQL will appear here..." readonly=""></textarea>
-<button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields('input17_trans_type','input17_journal_id','input17_idbeowner','input17_userkey_general','input17_userkey_pt','output17')">🔄 Reset</button>
-<button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
-<div class="copy-success" id="output17_success">✅ Copied!</div>
-</div></div><button class="accordion-btn group-btn" onclick="toggleGroup('group2')">📂 Group 2: QRA, QDO</button><div class="scenario-group" id="group2" style="display: none;"><div style="padding:10px; font-style:italic; color:gray;">🚧 This section is under construction. Scenarios for QRA and QDO will appear here.</div></div>
-<!-- Scenario 1 -->
-<!-- Scenario 2 -->
-<!-- Scenario 3 -->
-<!-- Scenario 4 -->
-<!-- Scenario 5 -->
-<!-- Scenario 6 -->
-<!-- Scenario 7 -->
-<!-- Scenario 8 -->
-<!-- Scenario 9 -->
-<!-- Scenario 10 -->
-<!-- Scenario 11 -->
-<!-- Scenario 12 -->
-<!-- Scenario 13 -->
+
+
 <!-- Scenario 14 -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario14')">Scenario 14: Business Associate</button>
+<div class="tab-content" id="scenario14">
+  <h2>Scenario 14: Business Associate (BA005 / BA Web)</h2>
+  <label>BA_NO:</label>
+  <input id="input14_ba_no" placeholder="e.g., 12345"/>
+  <button class="btn generate" onclick="generateSQL14()">⚙️ Generate SQL</button>
+  <textarea id="output14" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output14')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input14_ba_no','output14')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output14')">💾 Export</button>
+  <div class="copy-success" id="output14_success">✅ Copied!</div>
+</div>
+
 <!-- Scenario 15 -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario15')">Scenario 15: Accounting Periods</button>
+<div class="tab-content" id="scenario15">
+  <h2>Scenario 15: Accounting Periods</h2>
+  <label>ACCTG_MTH (YYYY-MM-DD):</label>
+  <input id="input15_acctg_mth" placeholder="e.g., 2025-07-01"/>
+  <button class="btn generate" onclick="generateSQL15()">⚙️ Generate SQL</button>
+  <textarea id="output15" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output15')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input15_acctg_mth','output15')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output15')">💾 Export</button>
+  <div class="copy-success" id="output15_success">✅ Copied!</div>
+</div>
+
 <!-- Scenario 16 -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario16')">Scenario 16: AR Detail</button>
+<div class="tab-content" id="scenario16">
+  <h2>Scenario 16: AR Detail</h2>
+  <label>IDCUSTOMER:</label>
+  <input id="input16_idcustomer" placeholder="e.g., 101"/>
+  <button class="btn generate" onclick="generateSQL16()">⚙️ Generate SQL</button>
+  <textarea id="output16" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output16')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input16_idcustomer','output16')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output16')">💾 Export</button>
+  <div class="copy-success" id="output16_success">✅ Copied!</div>
+</div>
+
 <!-- Scenario 17 -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">Scenario 17: Journal Entries</button>
+<div class="tab-content" id="scenario17">
+  <h2>Scenario 17: Journal Entries</h2>
+  <label>GL_MTD_NO (If multiple values, separate by commas):</label>
+  <input id="input17_gl_mtd_no" placeholder="e.g., 1001,1002"/>
+  <button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
+  <textarea id="output17" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input17_gl_mtd_no','output17')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
+  <div class="copy-success" id="output17_success">✅ Copied!</div>
+</div>
+
+<!-- ✅ BEGIN Group 2 -->
+</div> 
+<button class="accordion-btn group-btn" onclick="toggleGroup('group2')">📂 Group 2: QRA, QDO</button>
+<div class="scenario-group" id="group2" style="display: none;">
+  <div style="padding:10px; font-style:italic; color:gray;">
+    🚧 This section is under construction. Scenarios for QRA and QDO will appear here.
+  </div>
+</div>
+
+
+
+<!-- Footer -->
 <footer style="text-align:center; margin-top:40px; color:#555; font-size:0.9em;">
   Created by Nikki Masani.<br/>
 <small style="color:#888;">Version 1.2.0 — Last updated: 2025-08-11</small>
 </footer>
 </div>
+
+<!-- Begin JS Blocks for each Scenario -->
 <script>
   function toggleAccordion(button, contentId) {
     const content = document.getElementById(contentId);
@@ -1359,130 +1401,70 @@ WHERE PROCESS_PERIOD = '${processPeriod}';`
 
 // Scenario 13
 function generateSQL13() {
-  // helpers
-  const getList = (id) => document.getElementById(id).value.trim()
-    .split(',').map(s => s.trim()).filter(Boolean);
-  const asIn = (arr) => arr.map(v => `'${v}'`).join(', ');
-  const oneOrIn = (arr, col) => arr.length > 1 ? `${col} IN (${asIn(arr)})` : `${col} = '${arr[0]}'`;
+  const csv = id => document.getElementById(id).value.trim();
+  const list = id => csv(id).split(',').map(v => v.trim()).filter(Boolean);
+  const qlist = arr => arr.map(v => `'${v.replace(/'/g, "''")}'`).join(', ');
+  const oneOrIn = (arr, col) => arr.length > 1 ? `${col} IN (${qlist(arr)})` : `${col} = '${arr[0]}'`;
 
-  // inputs
-  const USERKEYS = getList('input13_userkey');
-  const IDBEOWNER = getList('input13_idbeowner');
-  const BA_NO = getList('input13_ba_no');
-  const SET_ID = getList('input13_set_id');
-  const OPEN_ITEM_IDS = getList('input13_open_item_id');
-  const UPDT_DT = getList('input13_updt_dt'); // first date is threshold
-  const BUS_UNIT_CD = getList('input13_bus_unit_cd');
-  const OWNER_BA_NO = getList('input13_owner_ba_no');       // shared OWNER_BA_NO
-  const OPENITEM_PROP_NO = getList('input13_prop_no');       // for Query 6 and optional in Query 4
-  const PROP_NO = getList('input13_prop_no2');               // NEW: for Queries 7 & 8
-  const ORIG_BUS_UNIT_CD = getList('input13_orig_bus_unit_cd');
-  const ACCTG_MTH = getList('input13_acctg_mth');
-  const PROCESS_PERIOD = getList('input13_process_period');
+  const USERKEYS = list('input13_userkey');
+  const IDBEOWNER = list('input13_idbeowner');
+  const IDCUSTOMER = list('input13_idcustomer');
+  const BA_NO = list('input13_ba_no');
+  const SET_ID = list('input13_set_id');
+  const OPEN_ITEM_IDS = list('input13_open_item_id');
+  const UPDT_DT = list('input13_updt_dt');
+  const BUS_UNIT_CD = list('input13_bus_unit_cd');
+  const OWNER_BA_NO = list('input13_owner_ba_no');
+  const OPENITEM_PROP_NO = list('input13_prop_no');
+  const PROP_NO = list('input13_prop_no2');
+  const ORIG_BUS_UNIT_CD = list('input13_orig_bus_unit_cd');
+  const ACCTG_MTH = list('input13_acctg_mth');
+  const PROCESS_PERIOD = list('input13_process_period');
 
-  let sql = '';
+  let sql = [];
 
-  // Query 1
   if (USERKEYS.length) {
-    sql += `--Query to retreive details for any Invoice Adjustments: \n`;
-    sql += `SELECT E.USERKEY, A.USERKEY, A.STATUSWORKFLOW,  *\n`;
-    sql += `FROM BATCHPAYMENTAPPLICATIONMASTER A\n`;
-    sql += `join BATCHPAYMENTAPPLICATIONCUSTOMER  B\n`;
-    sql += `on A.ID = B.IDBATAPPLMASTER\n`;
-    sql += `join BATCHPAYMENTAPPLICATIONOPENITEM C\n`;
-    sql += `on B.ID = C.IDBATAPPLCUSTOMER\n`;
-    sql += `join BUSINESSENTITY E\n`;
-    sql += `on A.IDBEOWNER = E.ID\n`;
-    sql += `where ${oneOrIn(USERKEYS, 'A.USERKEY')}\n\n`;
+    sql.push(`--Query to retrieve details for any Invoice Adjustments:\nSELECT E.USERKEY, A.USERKEY, A.STATUSWORKFLOW,  *\nFROM BATCHPAYMENTAPPLICATIONMASTER A\nJOIN BATCHPAYMENTAPPLICATIONCUSTOMER B ON A.ID = B.IDBATAPPLMASTER\nJOIN BATCHPAYMENTAPPLICATIONOPENITEM C ON B.ID = C.IDBATAPPLCUSTOMER\nJOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE ${oneOrIn(USERKEYS, 'A.USERKEY')};`);
   }
 
-  // Query 2
   if (IDBEOWNER.length) {
-    sql += `--Query Details for Customer Open Items(AR173): \n`;
-    sql += `select * from CUSTOMEROPENITEM\n`;
-    sql += `--WHERE  LOCKEDTOBATCH IN ('','')\n`;
-    sql += `AND ${oneOrIn(IDBEOWNER, 'IDBEOWNER')}\n\n`;
+    sql.push(`--Query Details for Customer Open Items(AR173):\nSELECT * FROM CUSTOMEROPENITEM\n--WHERE  LOCKEDTOBATCH IN ('','')\nAND ${oneOrIn(IDBEOWNER, 'IDBEOWNER')};`);
   }
 
-  // Query 3
   if (BA_NO.length) {
-    sql += `--Query the STRAN table to confirm that Open Item data has been exported to other modules: \n`;
-    sql += `SELECT * FROM STRAN_CORE_INTFC\n`;
-    sql += `WHERE TRANS_TYPE = 'OI' AND JOURNAL_ID = 'QCFS' AND ${oneOrIn(BA_NO, 'OWNER_BA_NO')}\n`;
-    sql += `ORDER BY UPDT_DT DESC\n\n`;
+    sql.push(`--Query the STRAN table to confirm that Open Item data has been exported to other modules:\nSELECT * FROM STRAN_CORE_INTFC\nWHERE TRANS_TYPE = 'OI' AND JOURNAL_ID = 'QCFS' AND ${oneOrIn(BA_NO, 'OWNER_BA_NO')}\nORDER BY UPDT_DT DESC;`);
   }
 
-  // Query 4 (SET_ID required; OWNER_BA_NO and OPENITEM_PROP_NO optional with comment behavior)
   if (SET_ID.length) {
-    sql += `--TRN_GL_MTD ->User runs QCFSEXPORT -> JTRN_GL_MTD_SUM -> SSTAG_CORE_INTFC -> STRAN_CORE_INTFC -> User runs QCFSIMPCYC -> Open items gets unlocked in AR173 (CUSTOMEROPENITEM table)\n`;
-    sql += `Query the SSTAG table to confirm the transaction amount that was exported from QRA: \n`;
-    sql += `select SET_ID, OPENITEM_PROP_NO, TRANS_AMT, *\n`;
-    sql += `from SSTAG_CORE_INTFC\n`;
-    sql += `where ${oneOrIn(SET_ID, 'SET_ID')}\n`;
-    if (OWNER_BA_NO.length) {
-      sql += `and ${oneOrIn(OWNER_BA_NO, 'OWNER_BA_NO')}\n`;
-    } else {
-      sql += `-- and OWNER_BA_NO = ''\n`;
-    }
-    if (OPENITEM_PROP_NO.length) {
-      sql += `and ${oneOrIn(OPENITEM_PROP_NO, 'OPENITEM_PROP_NO')}\n\n`;
-    } else {
-      sql += `--and OPENITEM_PROP_NO = ''\n\n`;
-    }
+    let q = `--Query the SSTAG table to confirm the transaction amount that was exported from QRA:\nSELECT SET_ID, OPENITEM_PROP_NO, TRANS_AMT, *\nFROM SSTAG_CORE_INTFC\nWHERE ${oneOrIn(SET_ID, 'SET_ID')}\n`;
+    q += OWNER_BA_NO.length ? `AND ${oneOrIn(OWNER_BA_NO, 'OWNER_BA_NO')}\n` : `--AND OWNER_BA_NO = ''\n`;
+    q += OPENITEM_PROP_NO.length ? `AND ${oneOrIn(OPENITEM_PROP_NO, 'OPENITEM_PROP_NO')};` : `--AND OPENITEM_PROP_NO = '';`;
+    sql.push(q);
   }
 
-  // Query 5 (Customer Open Item ID required)
   if (OPEN_ITEM_IDS.length) {
-    sql += `--"TRN_GL_MTD ->User runs QCFSEXPORT -> JTRN_GL_MTD_SUM -> SSTAG_CORE_INTFC -> STRAN_CORE_INTFC -> User runs QCFSIMPCYC -> Open items gets unlocked in AR173 (CUSTOMEROPENITEM table)\n`;
-    sql += `Query the Customer Open Item table to check the CURAMT that exists in AR173. Transaction Amount from QRA Export should match the CURAMT: \n`;
-    sql += ` SELECT ID, LASTUPDATE, DELETED, ORIGAMT, CURAMT,*\n`;
-    sql += ` from CUSTOMEROPENITEM\n`;
-    sql += ` where ID in (${asIn(OPEN_ITEM_IDS)})\n\n`;
+    sql.push(`--Check CURAMT in CUSTOMEROPENITEM vs export:\nSELECT ID, LASTUPDATE, DELETED, ORIGAMT, CURAMT, *\nFROM CUSTOMEROPENITEM\nWHERE ID IN (${qlist(OPEN_ITEM_IDS)});`);
   }
 
-  // Query 6 (All required: UPDT_DT, BUS_UNIT_CD, OWNER_BA_NO, OPENITEM_PROP_NO)
   if (UPDT_DT.length && BUS_UNIT_CD.length && OWNER_BA_NO.length && OPENITEM_PROP_NO.length) {
-    const updt = UPDT_DT[0];
-    sql += `TRN_GL_MTD ->User runs QCFSEXPORT -> JTRN_GL_MTD_SUM -> SSTAG_CORE_INTFC -> STRAN_CORE_INTFC -> User runs QCFSIMPCYC -> Open items gets unlocked in AR173 (CUSTOMEROPENITEM table)\n`;
-    sql += `--Query to check if there are any duplicated lines during QCFSEXPORT: \n`;
-    sql += `SELECT *\n`;
-    sql += `FROM STRAN_CORE_INTFC\n`;
-    sql += `WHERE TRANS_TYPE = 'OI'\n`;
-    sql += `AND JOURNAL_ID = 'QCFS'\n`;
-    sql += `and UPDT_DT > '${updt}'\n`;
-    sql += `AND ${oneOrIn(BUS_UNIT_CD, 'BUS_UNIT_CD')}\n`;
-    sql += `and ${oneOrIn(OWNER_BA_NO, 'OWNER_BA_NO')}\n`;
-    sql += `and ${oneOrIn(OPENITEM_PROP_NO, 'OPENITEM_PROP_NO')}\n`;
-    sql += `ORDER BY UPDT_DT DESC\n\n`;
+    sql.push(`--Check for duplicated lines during QCFSEXPORT:\nSELECT * FROM STRAN_CORE_INTFC\nWHERE TRANS_TYPE = 'OI'\nAND JOURNAL_ID = 'QCFS'\nAND UPDT_DT > '${UPDT_DT[0]}'\nAND ${oneOrIn(BUS_UNIT_CD, 'BUS_UNIT_CD')}\nAND ${oneOrIn(OWNER_BA_NO, 'OWNER_BA_NO')}\nAND ${oneOrIn(OPENITEM_PROP_NO, 'OPENITEM_PROP_NO')}\nORDER BY UPDT_DT DESC;`);
   }
 
-  // Query 7 (All required: ORIG_BUS_UNIT_CD, OWNER_BA_NO, PROP_NO, ACCTG_MTH)
   if (ORIG_BUS_UNIT_CD.length && OWNER_BA_NO.length && PROP_NO.length && ACCTG_MTH.length) {
-    sql += `-- "JTRN_GL_MTD ->User runs QCFSEXPORT -> JTRN_GL_MTD_SUM -> SSTAG_CORE_INTFC -> STRAN_CORE_INTFC -> User runs QCFSIMPCYC -> Open items gets unlocked in AR173 (CUSTOMEROPENITEM table) : \n\n`;
-    sql += `SELECT * FROM JTRN_GL_MTD\n`;
-    sql += ` --TRANS_AMT = \n`;
-    sql += `WHERE ${oneOrIn(ORIG_BUS_UNIT_CD, 'ORIG_BUS_UNIT_CD')}  \n`;
-    // Spec typo retained exactly: OWNR_BA_NO
-    sql += `AND ${oneOrIn(OWNER_BA_NO, 'OWNR_BA_NO')}\n`;
-    sql += `AND ${oneOrIn(PROP_NO, 'PROP_NO')}\n`;
-    sql += `--AND GL_MTD_NO in ('','')\n`;
-    sql += `AND ${oneOrIn(ACCTG_MTH, 'ACCTG_MTH')}\n\n`;
+    sql.push(`--Trace export path via JTRN_GL_MTD:\nSELECT * FROM JTRN_GL_MTD\n--TRANS_AMT = \nWHERE ${oneOrIn(ORIG_BUS_UNIT_CD, 'ORIG_BUS_UNIT_CD')}\nAND ${oneOrIn(OWNER_BA_NO, 'OWNR_BA_NO')}\nAND ${oneOrIn(PROP_NO, 'PROP_NO')}\n--AND GL_MTD_NO IN ('','')\nAND ${oneOrIn(ACCTG_MTH, 'ACCTG_MTH')};`);
   }
 
-  // Query 8 (Inputs: PROCESS_PERIOD, BA_NO, PROP_NO)
   if (PROCESS_PERIOD.length && BA_NO.length && PROP_NO.length) {
-    sql += `--Query the JBTRN_OWNER_ALLOC table to retrieve OI details:\n`;
-    sql += `SELECT ORIG_OA_ID,\nOA_ID,\nPROCESS_PERIOD,\nAFE_NO,\nBILLING_OWNER_AMOUNT,\nIS_REVERSAL,\nSVC_DT,\nBILLING_PERIOD,\nORIG_BILLING_DECK,\nUPDT_DT\n`;
-    sql += `FROM JBTRN_OWNER_ALLOC\n`;
-    sql += `WHERE ${oneOrIn(PROP_NO, 'PROP_NO')}\n`;
-    sql += `AND PROCESS_PERIOD IN (${asIn(PROCESS_PERIOD)})\n`;
-    sql += `AND ${oneOrIn(BA_NO, 'BA_NO')}\n`;
-    sql += `--AND DESCR = ''\n`;
-    sql += `--AND BILLING_DECK = ''\n\n`;
+    sql.push(`--Retrieve OI details from JBTRN_OWNER_ALLOC:\nSELECT ORIG_OA_ID, OA_ID, PROCESS_PERIOD, AFE_NO, BILLING_OWNER_AMOUNT, IS_REVERSAL, SVC_DT, BILLING_PERIOD, ORIG_BILLING_DECK, UPDT_DT\nFROM JBTRN_OWNER_ALLOC\nWHERE ${oneOrIn(PROP_NO, 'PROP_NO')}\nAND PROCESS_PERIOD IN (${qlist(PROCESS_PERIOD)})\nAND ${oneOrIn(BA_NO, 'BA_NO')}\n--AND DESCR = ''\n--AND BILLING_DECK = '';`);
   }
 
-  document.getElementById('output13').value = sql || '-- Provide required inputs for each query to generate SQL here.';
+  if (IDBEOWNER.length && IDCUSTOMER.length) {
+    sql.push(`--View current Open Items for specific customer:\nSELECT ID, LASTUPDATE, DELETED, ORIGAMT, CURAMT, *\nFROM CUSTOMEROPENITEM\nWHERE ${oneOrIn(IDBEOWNER, 'IDBEOWNER')}\nAND IDCUSTOMER IN (${qlist(IDCUSTOMER)});`);
+  }
+
+  document.getElementById('output13').value = sql.length ? sql.join('\n\n') : '-- No inputs provided. Fill in at least one field.';
 }
+
 
 // —— Scenario 14: Business Associate (BA005 / BA Web)
 function generateSQL14() {
