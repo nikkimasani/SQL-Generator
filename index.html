@@ -850,6 +850,13 @@ function exportSQL(id) {
   link.click();
   document.body.removeChild(link);
 }
+
+
+function toggleTheme() {
+  document.body.classList.toggle('dark-mode');
+}
+
+
 //JS Functions behind each scenario button.
 // Scenario 1
 function generateSQL1() {
@@ -2014,16 +2021,6 @@ function clearSearch() {
 
 </script>
 <script>
-// Toggle between light and dark mode
-
-/* Removed duplicate toggleTheme (older definition) */
-
-
-// Reset all inputs and SQL outputs in all scenarios
-
-
-/* Removed duplicate resetAllInputs (older definition) */
-
 
   // Collapse all scenarios
   collapseAll();
@@ -2032,27 +2029,9 @@ function clearSearch() {
 
 
 </script>
+
 <script>
 
-/* Removed duplicate toggleTheme (older definition) */
-
-
-
-/* Removed duplicate resetAllInputs (older definition) */
-
-
-
-
-</script>
-<script>
-
-
-</script>
-<script>
-
-
-/* Removed old generateSQL10 implementation using legacy IDs */
-');
 
 `;
     sql += "--Voucher details:
