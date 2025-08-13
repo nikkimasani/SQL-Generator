@@ -581,17 +581,18 @@ textarea {
 <div class="copy-success" id="output12_success">✅ Copied!</div>
 
 
-<!-- Scenario 13 -->
+
 <!-- Scenario 13 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario13')">Scenario 13: General Batch, QCFS Export/Import, Open Item</button>
 <div class="tab-content" id="scenario13">
   <h2>Scenario 13: General Batch, QCFS Export/Import, Open Item</h2>
-  <div class="footnote">
-    Note: <strong>USERKEY</strong> input is used to retrieve <em>Payment Application Batches</em>.
-  </div>
-
+ 
   <label>USERKEY (If multiple values, please separate with commas.):</label>
   <input id="input13_userkey" placeholder="e.g., BPA00000015, BPA00000017"/>
+  <div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
+   The USERKEY input is used to retrieve Payment Application Batches.
+  </div>
+
 
   <label>IDBEOWNER:</label>
   <input id="input13_idbeowner" placeholder="e.g., 17"/>
