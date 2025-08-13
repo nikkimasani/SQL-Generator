@@ -5,17 +5,15 @@
 <meta charset="utf-8"/>
 <title>SQL Generator Tool</title>
 <div class="container">
-  <h1 class="stylish-header">🛠 SQL Generator Tool</h1>
+<h1 class="stylish-header">🛠 SQL Generator Tool</h1>
 <p style="margin-top:10px; font-size: 15px; color: #222; background: #e8f0fe; padding: 12px; border-left: 5px solid #2196F3; border-radius: 6px; max-width: 900px; margin-left: auto; margin-right: auto;">
-  🧠 <strong>Instructions:</strong> Use this page to generate predefined SQL queries across different business scenarios. Start by selecting a scenario group and clicking on a scenario to expand it. Input required values (you may use comma-separated lists), and click <strong>Generate SQL</strong>. You can also <strong>Copy</strong>, <strong>Reset</strong>, or <strong>Export</strong> the SQL output. Use the search bar above to quickly find relevant scenarios by keyword without having to click into the scenario group first.
+  🧠 <strong>Instructions:</strong> Use this page to generate predefined SQL queries across different business scenarios. Start by selecting a scenario group and clicking on a scenario to expand it. Input required values (you may use comma-separated lists), and click <strong>Generate SQL</strong>. You can also <strong>Copy</strong>, <strong>Reset</strong>, or <strong>Export</strong> the SQL output. Use the search bar above to quickly find relevant scenarios by keyword without having to click into the scenario group first.Click <strong>Show All Queries</strong> to autopopulate all available queries without having to provide inputs first.
 </p>
-
-  <div class="nav-bar">
-    <a class="nav-btn" href="custom.html">✨ Custom Scenario Builder</a>
-    <a class="nav-btn" href="client-lookup.html">🔍 Client Lookup Tool</a>
-  </div>
-  <!-- rest of your content -->
-
+<div class="nav-bar">
+<a class="nav-btn" href="custom.html">✨ Custom Scenario Builder</a>
+<a class="nav-btn" href="client-lookup.html">🔍 Client Lookup Tool</a>
+</div>
+<!-- rest of your content -->
 <style>
         body {
       font-family: Arial, sans-serif;
@@ -25,12 +23,10 @@
     }
 
     .container {
+  width: 100%;
   max-width: 1000px;
-  margin: auto;
-  background: #fff;
-  padding: 20px 16px;
-  border-radius: 8px;
-  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 16px;
 }
 
 
@@ -128,7 +124,10 @@ body.dark-mode {
 }
 
 body.dark-mode .container {
-  background: #2c2c2c;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
 body.dark-mode input,
@@ -337,9 +336,32 @@ textarea {
 
 
 
+
+.btn.default {
+  background: linear-gradient(135deg, #607d8b, #455a64);
+  color: white;
+}
+.btn.default:hover {
+  background: linear-gradient(135deg, #546e7a, #37474f);
+}
+
+
+.container-wrapper {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 20px 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
 </style>
-</head>
-<body>
+</div></head>
+<body><div class="container-wrapper">
 <!-- Begin HTML Blocks -->
 <!-- Search Bar -->
 <div class="search-container" style="text-align:center; margin: 20px auto;">
@@ -351,10 +373,8 @@ textarea {
 <button class="btn reset" onclick="collapseAll()">Collapse All</button>
 <button class="btn export" onclick="toggleTheme()">🌓 Toggle Theme</button>
 <button class="btn reset" onclick="resetAllInputs()">🧹 Reset All</button>
-
 <!-- Group 1: ESUITE, QCA, QCFS -->
 </div><button class="accordion-btn group-btn" onclick="toggleGroup('group1')">📂 Group 1: ESuite, QCA, QCFS</button><div class="scenario-group" id="group1" style="display: none;">
-
 <!-- Scenario 1 -->
 <button class="accordion-btn" data-keywords="step process queue message log trace lock" onclick="toggleAccordion(this,'scenario1')">Scenario 1: Triage Failing Process</button><div class="tab-content" id="scenario1">
 <h2>Scenario 1: Triage Failing Process</h2>
@@ -365,12 +385,12 @@ textarea {
 <label>MASTER_PROCESS_QUEUE_ID</label>
 <input id="masterProcessQueueId" placeholder="e.g., 1371680"/>
 <button class="btn generate" onclick="generateSQL1()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries1()">🗃 Show All Queries</button>
 <textarea id="output1" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output1')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('processQueueId','processId','masterProcessQueueId','output1')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output1')">💾 Export</button>
 <div class="copy-success" id="output1_success">✅ Copied!</div>
-
 <!-- Scenario 2 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario2')">Scenario 2: AFE Workflow Triage</button><div class="tab-content" id="scenario2">
 <h2>Scenario 2: AFE Workflow Triage</h2>
@@ -385,24 +405,24 @@ textarea {
 <label>DESK_NM (If multiple values, please separate with commas.)</label>
 <input id="desk2" placeholder="e.g., SR VP DRILLING, IT SECURITY"/>
 <button class="btn generate" onclick="generateSQL2()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries2()">🗃 Show All Queries</button>
 <textarea id="output2" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output2')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('afe2','inbox2','route2','step2','desk2','output2')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output2')">💾 Export</button>
 <div class="copy-success" id="output2_success">✅ Copied!</div>
-
 <!-- Scenario 3 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario3')">Scenario 3: User Management Triage</button><div class="tab-content" id="scenario3">
 <h2>Scenario 3: User Management Triage</h2>
 <label>SEC_USER_ID</label>
 <input id="secuserid3" placeholder="e.g., JIM_BEAN"/>
 <button class="btn generate" onclick="generateSQL3()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries3()">🗃 Show All Queries</button>
 <textarea id="output3" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output3')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('secuserid3','output3')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output3')">💾 Export</button>
 <div class="copy-success" id="output3_success">✅ Copied!</div>
-
 <!-- Scenario 4 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario4')">Scenario 4: GL025 Batch Triage</button><div class="tab-content" id="scenario4">
 <h2>Scenario 4: GL025 Batch Triage</h2>
@@ -419,12 +439,12 @@ textarea {
 <label>DATE Range: To (YYYY-MM-DD)Both "From" AND "To" Dates are required</label>
 <input id="dateTo4" placeholder="e.g., 2025-07-31"/>
 <button class="btn generate" onclick="generateSQL4()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries4()">🗃 Show All Queries</button>
 <textarea id="output4" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output4')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('acctgMth4','userkey4','idbeowner4','batchname4','dateFrom4','dateTo4','output4')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output4')">💾 Export</button>
 <div class="copy-success" id="output4_success">✅ Copied!</div>
-
 <!-- Scenario 5 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario5')">Scenario 5: AP055 Batch Triage</button><div class="tab-content" id="scenario5">
 <h2>Scenario 5: AP055 Batch Triage</h2>
@@ -441,24 +461,24 @@ textarea {
 <label>DATE Range: To (YYYY-MM-DD)Both "From" AND "To" Dates are required</label>
 <input id="dateTo5" placeholder="e.g., 2025-07-31"/>
 <button class="btn generate" onclick="generateSQL5()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries5()">🗃 Show All Queries</button>
 <textarea id="output5" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output5')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('acctgMth5','userkey5','idbeowner5','batchname5','dateFrom5','dateTo5','output5')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output5')">💾 Export</button>
 <div class="copy-success" id="output5_success">✅ Copied!</div>
-
 <!-- Scenario 6 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario6')">Scenario 6: BR005 Bank Reconcilation</button><div class="tab-content" id="scenario6">
 <h2>Scenario 6: BR005 Bank Reconcilation</h2>
 <label>USERKEY (If multiple values, please separate with commas.)</label>
 <input id="userkey6" placeholder="e.g., BR00000006,BR00000007"/>
 <button class="btn generate" onclick="generateSQL6()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries6()">🗃 Show All Queries</button>
 <textarea id="output6" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output6')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('userkey6','output6')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output6')">💾 Export</button>
 <div class="copy-success" id="output6_success">✅ Copied!</div>
-
 <!-- Scenario 7 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario7')">Scenario 7: Check Run (AP061) Batches</button><div class="tab-content" id="scenario7">
 <h2>Scenario 7: Check Run (AP061) Batches</h2>
@@ -471,12 +491,12 @@ textarea {
 <label>PAYAMT (required with IDBATCHECKRUNMASTER):</label>
 <input id="input7_payamt" placeholder="e.g., 500.00"/>
 <button class="btn generate" onclick="generateSQL7()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries7()">🗃 Show All Queries</button>
 <textarea id="output7" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output7')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('input7_userkey','input7_idbatcheckrunmaster','input7_checknum','input7_payamt','output7')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output7')">💾 Export</button>
 <div class="copy-success" id="output7_success">✅ Copied!</div>
-
 <!-- Scenario 8 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario8')">Scenario 8: QCFS Imports</button><div class="tab-content" id="scenario8">
 <h2>Scenario 8: QCFS Imports</h2>
@@ -488,12 +508,12 @@ textarea {
 <label>ACCTG_MTH (YYYY-MM-DD) (If multiple values, please separate with commas.):</label>
 <input id="input8_acctg_mth" placeholder="e.g., 2024-01-01, 2024-02-01"/>
 <button class="btn generate" onclick="generateSQL8()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries8()">🗃 Show All Queries</button>
 <textarea id="output8" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output8')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('input8_journal_id','input8_trans_type','input8_acctg_mth','output8')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output8')">💾 Export</button>
 <div class="copy-success" id="output8_success">✅ Copied!</div>
-
 <!-- Scenario 9 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario9')">Scenario 9: Maintenance Application</button><div class="tab-content" id="scenario9">
 <h2>Scenario 9: Maintenance Application</h2>
@@ -510,12 +530,12 @@ textarea {
 <label>METADATA_PROFILE:</label>
 <input id="input9_metadata_profile" placeholder="e.g., EQC"/>
 <button class="btn generate" onclick="generateSQL9()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries9()">🗃 Show All Queries</button>
 <textarea id="output9" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output9')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('input9_process_id','input9_impexp_id','input9_ftp_id','input9_ftp_host_id','input9_event_type_cd','input9_metadata_profile','output9')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output9')">💾 Export</button>
 <div class="copy-success" id="output9_success">✅ Copied!</div>
-
 <!-- Scenario 10 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario10')">Scenario 10: Batch Vouchers</button><div class="tab-content" id="scenario10">
 <h2>Scenario 10: Batch Vouchers</h2>
@@ -540,6 +560,7 @@ textarea {
 <label>DOC_ID:</label>
 <input id="input10_docid" placeholder="e.g., 0genPdf272704965202508011202340"/>
 <button class="btn generate" onclick="generateSQL10()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries10()">🗃 Show All Queries</button>
 <textarea id="output10" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output10')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields(
@@ -549,19 +570,18 @@ textarea {
       )">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output10')">💾 Export</button>
 <div class="copy-success" id="output10_success">✅ Copied!</div>
-
 <!-- Scenario 11 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario11')">Scenario 11: Deposit Batches(AR308)</button><div class="tab-content" id="scenario11">
 <h2>Scenario 11: Deposit Batches</h2>
 <label>USERKEY (If multiple values, please separate with commas.):</label>
 <input id="input11_userkey" placeholder="e.g., BD00000018, BD00000019"/>
 <button class="btn generate" onclick="generateSQL11()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries11()">🗃 Show All Queries</button>
 <textarea id="output11" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output11')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('input11_userkey','output11')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output11')">💾 Export</button>
 <div class="copy-success" id="output11_success">✅ Copied!</div>
-
 <!-- Scenario 12 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario12')">Scenario 12: JIB</button><div class="tab-content" id="scenario12">
 <h2>Scenario 12: JIB</h2>
@@ -574,172 +594,145 @@ textarea {
 <label>PROCESS_PERIOD (YYYY-MM-DD):</label>
 <input id="input12_process_period" placeholder="e.g., 2025-06-30"/>
 <button class="btn generate" onclick="generateSQL12()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries12()">🗃 Show All Queries</button>
 <textarea id="output12" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn copy" onclick="copySQL('output12')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('input12_start_dt','input12_proc_queue_id','input12_updt_dt','input12_process_period','output12')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output12')">💾 Export</button>
 <div class="copy-success" id="output12_success">✅ Copied!</div>
-
-
-
 <!-- Scenario 13 -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario13')">Scenario 13: General Batch, QCFS Export/Import, Open Item</button>
 <div class="tab-content" id="scenario13">
-  <h2>Scenario 13: General Batch, QCFS Export/Import, Open Item</h2>
- 
-  <label>USERKEY (If multiple values, please separate with commas.):</label>
-  <input id="input13_userkey" placeholder="e.g., BPA00000015, BPA00000017"/>
-  <div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
+<h2>Scenario 13: General Batch, QCFS Export/Import, Open Item</h2>
+<label>USERKEY (If multiple values, please separate with commas.):</label>
+<input id="input13_userkey" placeholder="e.g., BPA00000015, BPA00000017"/>
+<div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
    The USERKEY input is used to retrieve Payment Application Batches.
   </div>
-
-
-  <label>IDBEOWNER:</label>
-  <input id="input13_idbeowner" placeholder="e.g., 17"/>
-
-  <label>IDCUSTOMER (If multiple values, please separate with commas.):</label>
-  <input id="input13_idcustomer" placeholder="e.g., 101,102"/>
-
-  <label>BA_NO:</label>
-  <input id="input13_ba_no" placeholder="e.g., 100"/>
-
-  <label>SET_ID:</label>
-  <input id="input13_set_id" placeholder="e.g., 53f4aee1-05c5-43e8-bbda-1e9b78b67022"/>
-
-  <label>Customer Open Item ID (If multiple values, please separate with commas.):</label>
-  <input id="input13_open_item_id" placeholder="e.g., 21,22"/>
-
-  <label>UPDT_DT &gt; (YYYY-MM-DD):</label>
-  <input id="input13_updt_dt" placeholder="e.g., 2025-06-01"/>
-
-  <label>BUS_UNIT_CD:</label>
-  <input id="input13_bus_unit_cd" placeholder="e.g., 100"/>
-
-  <label>OWNER_BA_NO:</label>
-  <input id="input13_owner_ba_no" placeholder="e.g., 10"/>
-
-  <label>OPENITEM_PROP_NO:</label>
-  <input id="input13_prop_no" placeholder="e.g., 10300"/>
-
-  <label>PROP_NO:</label>
-  <input id="input13_prop_no2" placeholder="e.g., 10300"/>
-
-  <label>ORIG_BUS_UNIT_CD:</label>
-  <input id="input13_orig_bus_unit_cd" placeholder="e.g., 100"/>
-
-  <label>ACCTG_MTH (YYYY-MM-DD):</label>
-  <input id="input13_acctg_mth" placeholder="e.g., 2025-07-01"/>
-
-  <label>PROCESS_PERIOD (YYYY-MM-DD):</label>
-  <input id="input13_process_period" placeholder="e.g., 2025-07-01, 2025-08-01"/>
-
-  <button class="btn generate" onclick="generateSQL13()">⚙️ Generate SQL</button>
-  <textarea id="output13" placeholder="SQL will appear here..." readonly></textarea>
-  <button class="btn copy" onclick="copySQL('output13')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields(
+<label>IDBEOWNER:</label>
+<input id="input13_idbeowner" placeholder="e.g., 17"/>
+<label>IDCUSTOMER (If multiple values, please separate with commas.):</label>
+<input id="input13_idcustomer" placeholder="e.g., 101,102"/>
+<label>BA_NO:</label>
+<input id="input13_ba_no" placeholder="e.g., 100"/>
+<label>SET_ID:</label>
+<input id="input13_set_id" placeholder="e.g., 53f4aee1-05c5-43e8-bbda-1e9b78b67022"/>
+<label>Customer Open Item ID (If multiple values, please separate with commas.):</label>
+<input id="input13_open_item_id" placeholder="e.g., 21,22"/>
+<label>UPDT_DT &gt; (YYYY-MM-DD):</label>
+<input id="input13_updt_dt" placeholder="e.g., 2025-06-01"/>
+<label>BUS_UNIT_CD:</label>
+<input id="input13_bus_unit_cd" placeholder="e.g., 100"/>
+<label>OWNER_BA_NO:</label>
+<input id="input13_owner_ba_no" placeholder="e.g., 10"/>
+<label>OPENITEM_PROP_NO:</label>
+<input id="input13_prop_no" placeholder="e.g., 10300"/>
+<label>PROP_NO:</label>
+<input id="input13_prop_no2" placeholder="e.g., 10300"/>
+<label>ORIG_BUS_UNIT_CD:</label>
+<input id="input13_orig_bus_unit_cd" placeholder="e.g., 100"/>
+<label>ACCTG_MTH (YYYY-MM-DD):</label>
+<input id="input13_acctg_mth" placeholder="e.g., 2025-07-01"/>
+<label>PROCESS_PERIOD (YYYY-MM-DD):</label>
+<input id="input13_process_period" placeholder="e.g., 2025-07-01, 2025-08-01"/>
+<button class="btn generate" onclick="generateSQL13()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries13()">🗃 Show All Queries</button>
+<textarea id="output13" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn copy" onclick="copySQL('output13')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields(
     'input13_userkey','input13_idbeowner','input13_idcustomer','input13_ba_no','input13_set_id','input13_open_item_id',
     'input13_updt_dt','input13_bus_unit_cd','input13_owner_ba_no','input13_prop_no','input13_prop_no2',
     'input13_orig_bus_unit_cd','input13_acctg_mth','input13_process_period','output13'
   )">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output13')">💾 Export</button>
-  <div class="copy-success" id="output13_success">✅ Copied!</div>
+<button class="btn export" onclick="exportSQL('output13')">💾 Export</button>
+<div class="copy-success" id="output13_success">✅ Copied!</div>
 </div>
-
-
 <!-- Scenario 14 -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario14')">Scenario 14: Business Associate</button>
 <div class="tab-content" id="scenario14">
-  <h2>Scenario 14: Business Associate (BA005 / BA Web)</h2>
-  <label>BA_NO:</label>
-  <input id="input14_ba_no" placeholder="e.g., 12345"/>
-  <button class="btn generate" onclick="generateSQL14()">⚙️ Generate SQL</button>
-  <textarea id="output14" placeholder="SQL will appear here..." readonly></textarea>
-  <button class="btn copy" onclick="copySQL('output14')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('input14_ba_no','output14')">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output14')">💾 Export</button>
-  <div class="copy-success" id="output14_success">✅ Copied!</div>
+<h2>Scenario 14: Business Associate (BA005 / BA Web)</h2>
+<label>BA_NO:</label>
+<input id="input14_ba_no" placeholder="e.g., 12345"/>
+<button class="btn generate" onclick="generateSQL14()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries14()">🗃 Show All Queries</button>
+<textarea id="output14" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn copy" onclick="copySQL('output14')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields('input14_ba_no','output14')">🔄 Reset</button>
+<button class="btn export" onclick="exportSQL('output14')">💾 Export</button>
+<div class="copy-success" id="output14_success">✅ Copied!</div>
 </div>
-
 <!-- Scenario 15 -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario15')">Scenario 15: Accounting Periods</button>
 <div class="tab-content" id="scenario15">
-  <h2>Scenario 15: Accounting Periods</h2>
-  <label>ACCTG_MTH (YYYY-MM-DD):</label>
-  <input id="input15_acctg_mth" placeholder="e.g., 2025-07-01"/>
-  <button class="btn generate" onclick="generateSQL15()">⚙️ Generate SQL</button>
-  <textarea id="output15" placeholder="SQL will appear here..." readonly></textarea>
-  <button class="btn copy" onclick="copySQL('output15')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('input15_acctg_mth','output15')">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output15')">💾 Export</button>
-  <div class="copy-success" id="output15_success">✅ Copied!</div>
+<h2>Scenario 15: Accounting Periods</h2>
+<label>ACCTG_MTH (YYYY-MM-DD):</label>
+<input id="input15_acctg_mth" placeholder="e.g., 2025-07-01"/>
+<button class="btn generate" onclick="generateSQL15()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries15()">🗃 Show All Queries</button>
+<textarea id="output15" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn copy" onclick="copySQL('output15')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields('input15_acctg_mth','output15')">🔄 Reset</button>
+<button class="btn export" onclick="exportSQL('output15')">💾 Export</button>
+<div class="copy-success" id="output15_success">✅ Copied!</div>
 </div>
-
 <!-- Scenario 16 -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario16')">Scenario 16: AR Detail</button>
 <div class="tab-content" id="scenario16">
-  <h2>Scenario 16: AR Detail</h2>
-  <label>IDCUSTOMER:</label>
-  <input id="input16_idcustomer" placeholder="e.g., 101"/>
-  <button class="btn generate" onclick="generateSQL16()">⚙️ Generate SQL</button>
-  <textarea id="output16" placeholder="SQL will appear here..." readonly></textarea>
-  <button class="btn copy" onclick="copySQL('output16')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('input16_idcustomer','output16')">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output16')">💾 Export</button>
-  <div class="copy-success" id="output16_success">✅ Copied!</div>
+<h2>Scenario 16: AR Detail</h2>
+<label>IDCUSTOMER:</label>
+<input id="input16_idcustomer" placeholder="e.g., 101"/>
+<button class="btn generate" onclick="generateSQL16()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries16()">🗃 Show All Queries</button>
+<textarea id="output16" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn copy" onclick="copySQL('output16')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields('input16_idcustomer','output16')">🔄 Reset</button>
+<button class="btn export" onclick="exportSQL('output16')">💾 Export</button>
+<div class="copy-success" id="output16_success">✅ Copied!</div>
 </div>
-
 <!-- Scenario 17 -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">Scenario 17: Journal Entries</button>
 <div class="tab-content" id="scenario17">
-  <h2>Scenario 17: Journal Entries</h2>
-  <label>GL_MTD_NO (If multiple values, separate by commas):</label>
-  <input id="input17_gl_mtd_no" placeholder="e.g., 1001,1002"/>
-  <button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
-  <textarea id="output17" placeholder="SQL will appear here..." readonly></textarea>
-  <button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('input17_gl_mtd_no','output17')">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
-  <div class="copy-success" id="output17_success">✅ Copied!</div>
+<h2>Scenario 17: Journal Entries</h2>
+<label>GL_MTD_NO (If multiple values, separate by commas):</label>
+<input id="input17_gl_mtd_no" placeholder="e.g., 1001,1002"/>
+<button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries17()">🗃 Show All Queries</button>
+<textarea id="output17" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields('input17_gl_mtd_no','output17')">🔄 Reset</button>
+<button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
+<div class="copy-success" id="output17_success">✅ Copied!</div>
 </div>
-
 <!-- Scenario 18 -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario18')">Scenario 18: Resolve BU Information</button>
 <div class="tab-content" id="scenario18">
-  <h2>Scenario 18: Resolve BU Information</h2>
-  
-  <label>USERKEY (BU Number):</label>
-  <input id="input18_userkey" placeholder="e.g., 118"/>
-  <div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
+<h2>Scenario 18: Resolve BU Information</h2>
+<label>USERKEY (BU Number):</label>
+<input id="input18_userkey" placeholder="e.g., 118"/>
+<div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
     The USERKEY input represents the BU (Business Unit) number used to retrieve BU-related data.
   </div>
-
-  <button class="btn generate" onclick="generateSQL18()">⚙️ Generate SQL</button>
-  <textarea id="output18" placeholder="SQL will appear here..." readonly></textarea>
-  <button class="btn copy" onclick="copySQL('output18')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('input18_userkey','output18')">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output18')">💾 Export</button>
-  <div class="copy-success" id="output18_success">✅ Copied!</div>
+<button class="btn generate" onclick="generateSQL18()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries18()">🗃 Show All Queries</button>
+<textarea id="output18" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn copy" onclick="copySQL('output18')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields('input18_userkey','output18')">🔄 Reset</button>
+<button class="btn export" onclick="exportSQL('output18')">💾 Export</button>
+<div class="copy-success" id="output18_success">✅ Copied!</div>
 </div>
-
-
 <!-- ✅ BEGIN Group 2 -->
-</div> 
+</div>
 <button class="accordion-btn group-btn" onclick="toggleGroup('group2')">📂 Group 2: QRA, QDO</button>
 <div class="scenario-group" id="group2" style="display: none;">
-  <div style="padding:10px; font-style:italic; color:gray;">
+<div style="padding:10px; font-style:italic; color:gray;">
     🚧 This section is under construction. Scenarios for QRA and QDO will appear here.
   </div>
 </div>
-
-
-
 <!-- Footer -->
 <footer style="text-align:center; margin-top:40px; color:#555; font-size:0.9em;">
   Created by Nikki Masani.<br/>
 <small style="color:#888;">Version 1.2.0 — Last updated: 2025-08-11</small>
 </footer>
-</div>
-
 <!-- Begin JS Blocks for each Scenario -->
 <script>
   function toggleAccordion(button, contentId) {
@@ -770,6 +763,115 @@ function toggleGroup(groupId) {
   const isVisible = group.style.display === 'block';
   group.style.display = isVisible ? 'none' : 'block';
 }
+
+function showAllQueries1() {
+  document.getElementById("output1").value = `-- All Queries for Scenario 1
+-- Replace this with all static queries for Scenario 1
+SELECT * FROM DUMMY_TABLE_1;`;
+}
+
+function showAllQueries2() {
+  document.getElementById("output2").value = `-- All Queries for Scenario 2
+-- Replace this with all static queries for Scenario 2
+SELECT * FROM DUMMY_TABLE_2;`;
+}
+
+function showAllQueries3() {
+  document.getElementById("output3").value = `-- All Queries for Scenario 3
+-- Replace this with all static queries for Scenario 3
+SELECT * FROM DUMMY_TABLE_3;`;
+}
+
+function showAllQueries4() {
+  document.getElementById("output4").value = `-- All Queries for Scenario 4
+-- Replace this with all static queries for Scenario 4
+SELECT * FROM DUMMY_TABLE_4;`;
+}
+
+function showAllQueries5() {
+  document.getElementById("output5").value = `-- All Queries for Scenario 5
+-- Replace this with all static queries for Scenario 5
+SELECT * FROM DUMMY_TABLE_5;`;
+}
+
+function showAllQueries6() {
+  document.getElementById("output6").value = `-- All Queries for Scenario 6
+-- Replace this with all static queries for Scenario 6
+SELECT * FROM DUMMY_TABLE_6;`;
+}
+
+function showAllQueries7() {
+  document.getElementById("output7").value = `-- All Queries for Scenario 7
+-- Replace this with all static queries for Scenario 7
+SELECT * FROM DUMMY_TABLE_7;`;
+}
+
+function showAllQueries8() {
+  document.getElementById("output8").value = `-- All Queries for Scenario 8
+-- Replace this with all static queries for Scenario 8
+SELECT * FROM DUMMY_TABLE_8;`;
+}
+
+function showAllQueries9() {
+  document.getElementById("output9").value = `-- All Queries for Scenario 9
+-- Replace this with all static queries for Scenario 9
+SELECT * FROM DUMMY_TABLE_9;`;
+}
+
+function showAllQueries10() {
+  document.getElementById("output10").value = `-- All Queries for Scenario 10
+-- Replace this with all static queries for Scenario 10
+SELECT * FROM DUMMY_TABLE_10;`;
+}
+
+function showAllQueries11() {
+  document.getElementById("output11").value = `-- All Queries for Scenario 11
+-- Replace this with all static queries for Scenario 11
+SELECT * FROM DUMMY_TABLE_11;`;
+}
+
+function showAllQueries12() {
+  document.getElementById("output12").value = `-- All Queries for Scenario 12
+-- Replace this with all static queries for Scenario 12
+SELECT * FROM DUMMY_TABLE_12;`;
+}
+
+function showAllQueries13() {
+  document.getElementById("output13").value = `-- All Queries for Scenario 13
+-- Replace this with all static queries for Scenario 13
+SELECT * FROM DUMMY_TABLE_13;`;
+}
+
+function showAllQueries14() {
+  document.getElementById("output14").value = `-- All Queries for Scenario 14
+-- Replace this with all static queries for Scenario 14
+SELECT * FROM DUMMY_TABLE_14;`;
+}
+
+function showAllQueries15() {
+  document.getElementById("output15").value = `-- All Queries for Scenario 15
+-- Replace this with all static queries for Scenario 15
+SELECT * FROM DUMMY_TABLE_15;`;
+}
+
+function showAllQueries16() {
+  document.getElementById("output16").value = `-- All Queries for Scenario 16
+-- Replace this with all static queries for Scenario 16
+SELECT * FROM DUMMY_TABLE_16;`;
+}
+
+function showAllQueries17() {
+  document.getElementById("output17").value = `-- All Queries for Scenario 17
+-- Replace this with all static queries for Scenario 17
+SELECT * FROM DUMMY_TABLE_17;`;
+}
+
+function showAllQueries18() {
+  document.getElementById("output18").value = `-- All Queries for Scenario 18
+-- Replace this with all static queries for Scenario 18
+SELECT * FROM DUMMY_TABLE_18;`;
+}
+
 </script>
 <script>
 // Utility Functions
@@ -1942,6 +2044,115 @@ function generateSQL18() {
 }
 
 
+
+function showAllQueries1() {
+  document.getElementById("output1").value = `-- All Queries for Scenario 1
+-- Replace this with all static queries for Scenario 1
+SELECT * FROM DUMMY_TABLE_1;`;
+}
+
+function showAllQueries2() {
+  document.getElementById("output2").value = `-- All Queries for Scenario 2
+-- Replace this with all static queries for Scenario 2
+SELECT * FROM DUMMY_TABLE_2;`;
+}
+
+function showAllQueries3() {
+  document.getElementById("output3").value = `-- All Queries for Scenario 3
+-- Replace this with all static queries for Scenario 3
+SELECT * FROM DUMMY_TABLE_3;`;
+}
+
+function showAllQueries4() {
+  document.getElementById("output4").value = `-- All Queries for Scenario 4
+-- Replace this with all static queries for Scenario 4
+SELECT * FROM DUMMY_TABLE_4;`;
+}
+
+function showAllQueries5() {
+  document.getElementById("output5").value = `-- All Queries for Scenario 5
+-- Replace this with all static queries for Scenario 5
+SELECT * FROM DUMMY_TABLE_5;`;
+}
+
+function showAllQueries6() {
+  document.getElementById("output6").value = `-- All Queries for Scenario 6
+-- Replace this with all static queries for Scenario 6
+SELECT * FROM DUMMY_TABLE_6;`;
+}
+
+function showAllQueries7() {
+  document.getElementById("output7").value = `-- All Queries for Scenario 7
+-- Replace this with all static queries for Scenario 7
+SELECT * FROM DUMMY_TABLE_7;`;
+}
+
+function showAllQueries8() {
+  document.getElementById("output8").value = `-- All Queries for Scenario 8
+-- Replace this with all static queries for Scenario 8
+SELECT * FROM DUMMY_TABLE_8;`;
+}
+
+function showAllQueries9() {
+  document.getElementById("output9").value = `-- All Queries for Scenario 9
+-- Replace this with all static queries for Scenario 9
+SELECT * FROM DUMMY_TABLE_9;`;
+}
+
+function showAllQueries10() {
+  document.getElementById("output10").value = `-- All Queries for Scenario 10
+-- Replace this with all static queries for Scenario 10
+SELECT * FROM DUMMY_TABLE_10;`;
+}
+
+function showAllQueries11() {
+  document.getElementById("output11").value = `-- All Queries for Scenario 11
+-- Replace this with all static queries for Scenario 11
+SELECT * FROM DUMMY_TABLE_11;`;
+}
+
+function showAllQueries12() {
+  document.getElementById("output12").value = `-- All Queries for Scenario 12
+-- Replace this with all static queries for Scenario 12
+SELECT * FROM DUMMY_TABLE_12;`;
+}
+
+function showAllQueries13() {
+  document.getElementById("output13").value = `-- All Queries for Scenario 13
+-- Replace this with all static queries for Scenario 13
+SELECT * FROM DUMMY_TABLE_13;`;
+}
+
+function showAllQueries14() {
+  document.getElementById("output14").value = `-- All Queries for Scenario 14
+-- Replace this with all static queries for Scenario 14
+SELECT * FROM DUMMY_TABLE_14;`;
+}
+
+function showAllQueries15() {
+  document.getElementById("output15").value = `-- All Queries for Scenario 15
+-- Replace this with all static queries for Scenario 15
+SELECT * FROM DUMMY_TABLE_15;`;
+}
+
+function showAllQueries16() {
+  document.getElementById("output16").value = `-- All Queries for Scenario 16
+-- Replace this with all static queries for Scenario 16
+SELECT * FROM DUMMY_TABLE_16;`;
+}
+
+function showAllQueries17() {
+  document.getElementById("output17").value = `-- All Queries for Scenario 17
+-- Replace this with all static queries for Scenario 17
+SELECT * FROM DUMMY_TABLE_17;`;
+}
+
+function showAllQueries18() {
+  document.getElementById("output18").value = `-- All Queries for Scenario 18
+-- Replace this with all static queries for Scenario 18
+SELECT * FROM DUMMY_TABLE_18;`;
+}
+
 </script>
 <script>
 // Add data-keywords attribute to each scenario with visible text and SQL keywords
@@ -1977,6 +2188,115 @@ function clearSearch() {
   document.getElementById("searchInput").value = "";
   collapseAll();
 }
+
+function showAllQueries1() {
+  document.getElementById("output1").value = `-- All Queries for Scenario 1
+-- Replace this with all static queries for Scenario 1
+SELECT * FROM DUMMY_TABLE_1;`;
+}
+
+function showAllQueries2() {
+  document.getElementById("output2").value = `-- All Queries for Scenario 2
+-- Replace this with all static queries for Scenario 2
+SELECT * FROM DUMMY_TABLE_2;`;
+}
+
+function showAllQueries3() {
+  document.getElementById("output3").value = `-- All Queries for Scenario 3
+-- Replace this with all static queries for Scenario 3
+SELECT * FROM DUMMY_TABLE_3;`;
+}
+
+function showAllQueries4() {
+  document.getElementById("output4").value = `-- All Queries for Scenario 4
+-- Replace this with all static queries for Scenario 4
+SELECT * FROM DUMMY_TABLE_4;`;
+}
+
+function showAllQueries5() {
+  document.getElementById("output5").value = `-- All Queries for Scenario 5
+-- Replace this with all static queries for Scenario 5
+SELECT * FROM DUMMY_TABLE_5;`;
+}
+
+function showAllQueries6() {
+  document.getElementById("output6").value = `-- All Queries for Scenario 6
+-- Replace this with all static queries for Scenario 6
+SELECT * FROM DUMMY_TABLE_6;`;
+}
+
+function showAllQueries7() {
+  document.getElementById("output7").value = `-- All Queries for Scenario 7
+-- Replace this with all static queries for Scenario 7
+SELECT * FROM DUMMY_TABLE_7;`;
+}
+
+function showAllQueries8() {
+  document.getElementById("output8").value = `-- All Queries for Scenario 8
+-- Replace this with all static queries for Scenario 8
+SELECT * FROM DUMMY_TABLE_8;`;
+}
+
+function showAllQueries9() {
+  document.getElementById("output9").value = `-- All Queries for Scenario 9
+-- Replace this with all static queries for Scenario 9
+SELECT * FROM DUMMY_TABLE_9;`;
+}
+
+function showAllQueries10() {
+  document.getElementById("output10").value = `-- All Queries for Scenario 10
+-- Replace this with all static queries for Scenario 10
+SELECT * FROM DUMMY_TABLE_10;`;
+}
+
+function showAllQueries11() {
+  document.getElementById("output11").value = `-- All Queries for Scenario 11
+-- Replace this with all static queries for Scenario 11
+SELECT * FROM DUMMY_TABLE_11;`;
+}
+
+function showAllQueries12() {
+  document.getElementById("output12").value = `-- All Queries for Scenario 12
+-- Replace this with all static queries for Scenario 12
+SELECT * FROM DUMMY_TABLE_12;`;
+}
+
+function showAllQueries13() {
+  document.getElementById("output13").value = `-- All Queries for Scenario 13
+-- Replace this with all static queries for Scenario 13
+SELECT * FROM DUMMY_TABLE_13;`;
+}
+
+function showAllQueries14() {
+  document.getElementById("output14").value = `-- All Queries for Scenario 14
+-- Replace this with all static queries for Scenario 14
+SELECT * FROM DUMMY_TABLE_14;`;
+}
+
+function showAllQueries15() {
+  document.getElementById("output15").value = `-- All Queries for Scenario 15
+-- Replace this with all static queries for Scenario 15
+SELECT * FROM DUMMY_TABLE_15;`;
+}
+
+function showAllQueries16() {
+  document.getElementById("output16").value = `-- All Queries for Scenario 16
+-- Replace this with all static queries for Scenario 16
+SELECT * FROM DUMMY_TABLE_16;`;
+}
+
+function showAllQueries17() {
+  document.getElementById("output17").value = `-- All Queries for Scenario 17
+-- Replace this with all static queries for Scenario 17
+SELECT * FROM DUMMY_TABLE_17;`;
+}
+
+function showAllQueries18() {
+  document.getElementById("output18").value = `-- All Queries for Scenario 18
+-- Replace this with all static queries for Scenario 18
+SELECT * FROM DUMMY_TABLE_18;`;
+}
+
 </script>
 <script>
 // Toggle between light and dark mode
@@ -1993,6 +2313,115 @@ function clearSearch() {
   // Collapse all scenarios
   collapseAll();
 }
+
+function showAllQueries1() {
+  document.getElementById("output1").value = `-- All Queries for Scenario 1
+-- Replace this with all static queries for Scenario 1
+SELECT * FROM DUMMY_TABLE_1;`;
+}
+
+function showAllQueries2() {
+  document.getElementById("output2").value = `-- All Queries for Scenario 2
+-- Replace this with all static queries for Scenario 2
+SELECT * FROM DUMMY_TABLE_2;`;
+}
+
+function showAllQueries3() {
+  document.getElementById("output3").value = `-- All Queries for Scenario 3
+-- Replace this with all static queries for Scenario 3
+SELECT * FROM DUMMY_TABLE_3;`;
+}
+
+function showAllQueries4() {
+  document.getElementById("output4").value = `-- All Queries for Scenario 4
+-- Replace this with all static queries for Scenario 4
+SELECT * FROM DUMMY_TABLE_4;`;
+}
+
+function showAllQueries5() {
+  document.getElementById("output5").value = `-- All Queries for Scenario 5
+-- Replace this with all static queries for Scenario 5
+SELECT * FROM DUMMY_TABLE_5;`;
+}
+
+function showAllQueries6() {
+  document.getElementById("output6").value = `-- All Queries for Scenario 6
+-- Replace this with all static queries for Scenario 6
+SELECT * FROM DUMMY_TABLE_6;`;
+}
+
+function showAllQueries7() {
+  document.getElementById("output7").value = `-- All Queries for Scenario 7
+-- Replace this with all static queries for Scenario 7
+SELECT * FROM DUMMY_TABLE_7;`;
+}
+
+function showAllQueries8() {
+  document.getElementById("output8").value = `-- All Queries for Scenario 8
+-- Replace this with all static queries for Scenario 8
+SELECT * FROM DUMMY_TABLE_8;`;
+}
+
+function showAllQueries9() {
+  document.getElementById("output9").value = `-- All Queries for Scenario 9
+-- Replace this with all static queries for Scenario 9
+SELECT * FROM DUMMY_TABLE_9;`;
+}
+
+function showAllQueries10() {
+  document.getElementById("output10").value = `-- All Queries for Scenario 10
+-- Replace this with all static queries for Scenario 10
+SELECT * FROM DUMMY_TABLE_10;`;
+}
+
+function showAllQueries11() {
+  document.getElementById("output11").value = `-- All Queries for Scenario 11
+-- Replace this with all static queries for Scenario 11
+SELECT * FROM DUMMY_TABLE_11;`;
+}
+
+function showAllQueries12() {
+  document.getElementById("output12").value = `-- All Queries for Scenario 12
+-- Replace this with all static queries for Scenario 12
+SELECT * FROM DUMMY_TABLE_12;`;
+}
+
+function showAllQueries13() {
+  document.getElementById("output13").value = `-- All Queries for Scenario 13
+-- Replace this with all static queries for Scenario 13
+SELECT * FROM DUMMY_TABLE_13;`;
+}
+
+function showAllQueries14() {
+  document.getElementById("output14").value = `-- All Queries for Scenario 14
+-- Replace this with all static queries for Scenario 14
+SELECT * FROM DUMMY_TABLE_14;`;
+}
+
+function showAllQueries15() {
+  document.getElementById("output15").value = `-- All Queries for Scenario 15
+-- Replace this with all static queries for Scenario 15
+SELECT * FROM DUMMY_TABLE_15;`;
+}
+
+function showAllQueries16() {
+  document.getElementById("output16").value = `-- All Queries for Scenario 16
+-- Replace this with all static queries for Scenario 16
+SELECT * FROM DUMMY_TABLE_16;`;
+}
+
+function showAllQueries17() {
+  document.getElementById("output17").value = `-- All Queries for Scenario 17
+-- Replace this with all static queries for Scenario 17
+SELECT * FROM DUMMY_TABLE_17;`;
+}
+
+function showAllQueries18() {
+  document.getElementById("output18").value = `-- All Queries for Scenario 18
+-- Replace this with all static queries for Scenario 18
+SELECT * FROM DUMMY_TABLE_18;`;
+}
+
 </script>
 <script>
 
@@ -2001,6 +2430,115 @@ function clearSearch() {
 
 
 /* Removed duplicate resetAllInputs (older definition) */
+
+
+function showAllQueries1() {
+  document.getElementById("output1").value = `-- All Queries for Scenario 1
+-- Replace this with all static queries for Scenario 1
+SELECT * FROM DUMMY_TABLE_1;`;
+}
+
+function showAllQueries2() {
+  document.getElementById("output2").value = `-- All Queries for Scenario 2
+-- Replace this with all static queries for Scenario 2
+SELECT * FROM DUMMY_TABLE_2;`;
+}
+
+function showAllQueries3() {
+  document.getElementById("output3").value = `-- All Queries for Scenario 3
+-- Replace this with all static queries for Scenario 3
+SELECT * FROM DUMMY_TABLE_3;`;
+}
+
+function showAllQueries4() {
+  document.getElementById("output4").value = `-- All Queries for Scenario 4
+-- Replace this with all static queries for Scenario 4
+SELECT * FROM DUMMY_TABLE_4;`;
+}
+
+function showAllQueries5() {
+  document.getElementById("output5").value = `-- All Queries for Scenario 5
+-- Replace this with all static queries for Scenario 5
+SELECT * FROM DUMMY_TABLE_5;`;
+}
+
+function showAllQueries6() {
+  document.getElementById("output6").value = `-- All Queries for Scenario 6
+-- Replace this with all static queries for Scenario 6
+SELECT * FROM DUMMY_TABLE_6;`;
+}
+
+function showAllQueries7() {
+  document.getElementById("output7").value = `-- All Queries for Scenario 7
+-- Replace this with all static queries for Scenario 7
+SELECT * FROM DUMMY_TABLE_7;`;
+}
+
+function showAllQueries8() {
+  document.getElementById("output8").value = `-- All Queries for Scenario 8
+-- Replace this with all static queries for Scenario 8
+SELECT * FROM DUMMY_TABLE_8;`;
+}
+
+function showAllQueries9() {
+  document.getElementById("output9").value = `-- All Queries for Scenario 9
+-- Replace this with all static queries for Scenario 9
+SELECT * FROM DUMMY_TABLE_9;`;
+}
+
+function showAllQueries10() {
+  document.getElementById("output10").value = `-- All Queries for Scenario 10
+-- Replace this with all static queries for Scenario 10
+SELECT * FROM DUMMY_TABLE_10;`;
+}
+
+function showAllQueries11() {
+  document.getElementById("output11").value = `-- All Queries for Scenario 11
+-- Replace this with all static queries for Scenario 11
+SELECT * FROM DUMMY_TABLE_11;`;
+}
+
+function showAllQueries12() {
+  document.getElementById("output12").value = `-- All Queries for Scenario 12
+-- Replace this with all static queries for Scenario 12
+SELECT * FROM DUMMY_TABLE_12;`;
+}
+
+function showAllQueries13() {
+  document.getElementById("output13").value = `-- All Queries for Scenario 13
+-- Replace this with all static queries for Scenario 13
+SELECT * FROM DUMMY_TABLE_13;`;
+}
+
+function showAllQueries14() {
+  document.getElementById("output14").value = `-- All Queries for Scenario 14
+-- Replace this with all static queries for Scenario 14
+SELECT * FROM DUMMY_TABLE_14;`;
+}
+
+function showAllQueries15() {
+  document.getElementById("output15").value = `-- All Queries for Scenario 15
+-- Replace this with all static queries for Scenario 15
+SELECT * FROM DUMMY_TABLE_15;`;
+}
+
+function showAllQueries16() {
+  document.getElementById("output16").value = `-- All Queries for Scenario 16
+-- Replace this with all static queries for Scenario 16
+SELECT * FROM DUMMY_TABLE_16;`;
+}
+
+function showAllQueries17() {
+  document.getElementById("output17").value = `-- All Queries for Scenario 17
+-- Replace this with all static queries for Scenario 17
+SELECT * FROM DUMMY_TABLE_17;`;
+}
+
+function showAllQueries18() {
+  document.getElementById("output18").value = `-- All Queries for Scenario 18
+-- Replace this with all static queries for Scenario 18
+SELECT * FROM DUMMY_TABLE_18;`;
+}
 
 </script>
 <script>
@@ -2014,6 +2552,115 @@ function resetAllInputs() {
   inputs.forEach(input => {
     input.value = "";
   });
+}
+
+
+function showAllQueries1() {
+  document.getElementById("output1").value = `-- All Queries for Scenario 1
+-- Replace this with all static queries for Scenario 1
+SELECT * FROM DUMMY_TABLE_1;`;
+}
+
+function showAllQueries2() {
+  document.getElementById("output2").value = `-- All Queries for Scenario 2
+-- Replace this with all static queries for Scenario 2
+SELECT * FROM DUMMY_TABLE_2;`;
+}
+
+function showAllQueries3() {
+  document.getElementById("output3").value = `-- All Queries for Scenario 3
+-- Replace this with all static queries for Scenario 3
+SELECT * FROM DUMMY_TABLE_3;`;
+}
+
+function showAllQueries4() {
+  document.getElementById("output4").value = `-- All Queries for Scenario 4
+-- Replace this with all static queries for Scenario 4
+SELECT * FROM DUMMY_TABLE_4;`;
+}
+
+function showAllQueries5() {
+  document.getElementById("output5").value = `-- All Queries for Scenario 5
+-- Replace this with all static queries for Scenario 5
+SELECT * FROM DUMMY_TABLE_5;`;
+}
+
+function showAllQueries6() {
+  document.getElementById("output6").value = `-- All Queries for Scenario 6
+-- Replace this with all static queries for Scenario 6
+SELECT * FROM DUMMY_TABLE_6;`;
+}
+
+function showAllQueries7() {
+  document.getElementById("output7").value = `-- All Queries for Scenario 7
+-- Replace this with all static queries for Scenario 7
+SELECT * FROM DUMMY_TABLE_7;`;
+}
+
+function showAllQueries8() {
+  document.getElementById("output8").value = `-- All Queries for Scenario 8
+-- Replace this with all static queries for Scenario 8
+SELECT * FROM DUMMY_TABLE_8;`;
+}
+
+function showAllQueries9() {
+  document.getElementById("output9").value = `-- All Queries for Scenario 9
+-- Replace this with all static queries for Scenario 9
+SELECT * FROM DUMMY_TABLE_9;`;
+}
+
+function showAllQueries10() {
+  document.getElementById("output10").value = `-- All Queries for Scenario 10
+-- Replace this with all static queries for Scenario 10
+SELECT * FROM DUMMY_TABLE_10;`;
+}
+
+function showAllQueries11() {
+  document.getElementById("output11").value = `-- All Queries for Scenario 11
+-- Replace this with all static queries for Scenario 11
+SELECT * FROM DUMMY_TABLE_11;`;
+}
+
+function showAllQueries12() {
+  document.getElementById("output12").value = `-- All Queries for Scenario 12
+-- Replace this with all static queries for Scenario 12
+SELECT * FROM DUMMY_TABLE_12;`;
+}
+
+function showAllQueries13() {
+  document.getElementById("output13").value = `-- All Queries for Scenario 13
+-- Replace this with all static queries for Scenario 13
+SELECT * FROM DUMMY_TABLE_13;`;
+}
+
+function showAllQueries14() {
+  document.getElementById("output14").value = `-- All Queries for Scenario 14
+-- Replace this with all static queries for Scenario 14
+SELECT * FROM DUMMY_TABLE_14;`;
+}
+
+function showAllQueries15() {
+  document.getElementById("output15").value = `-- All Queries for Scenario 15
+-- Replace this with all static queries for Scenario 15
+SELECT * FROM DUMMY_TABLE_15;`;
+}
+
+function showAllQueries16() {
+  document.getElementById("output16").value = `-- All Queries for Scenario 16
+-- Replace this with all static queries for Scenario 16
+SELECT * FROM DUMMY_TABLE_16;`;
+}
+
+function showAllQueries17() {
+  document.getElementById("output17").value = `-- All Queries for Scenario 17
+-- Replace this with all static queries for Scenario 17
+SELECT * FROM DUMMY_TABLE_17;`;
+}
+
+function showAllQueries18() {
+  document.getElementById("output18").value = `-- All Queries for Scenario 18
+-- Replace this with all static queries for Scenario 18
+SELECT * FROM DUMMY_TABLE_18;`;
 }
 
 </script>
@@ -2193,13 +2840,117 @@ SELECT A.USERKEY, A.NAME, COUNT(*) FROM BATCHVOUCHERMASTER A JOIN BATCHVOUCHERDE
   document.getElementById("output10").value = sql.trim();
 }
 
+
+function showAllQueries1() {
+  document.getElementById("output1").value = `-- All Queries for Scenario 1
+-- Replace this with all static queries for Scenario 1
+SELECT * FROM DUMMY_TABLE_1;`;
+}
+
+function showAllQueries2() {
+  document.getElementById("output2").value = `-- All Queries for Scenario 2
+-- Replace this with all static queries for Scenario 2
+SELECT * FROM DUMMY_TABLE_2;`;
+}
+
+function showAllQueries3() {
+  document.getElementById("output3").value = `-- All Queries for Scenario 3
+-- Replace this with all static queries for Scenario 3
+SELECT * FROM DUMMY_TABLE_3;`;
+}
+
+function showAllQueries4() {
+  document.getElementById("output4").value = `-- All Queries for Scenario 4
+-- Replace this with all static queries for Scenario 4
+SELECT * FROM DUMMY_TABLE_4;`;
+}
+
+function showAllQueries5() {
+  document.getElementById("output5").value = `-- All Queries for Scenario 5
+-- Replace this with all static queries for Scenario 5
+SELECT * FROM DUMMY_TABLE_5;`;
+}
+
+function showAllQueries6() {
+  document.getElementById("output6").value = `-- All Queries for Scenario 6
+-- Replace this with all static queries for Scenario 6
+SELECT * FROM DUMMY_TABLE_6;`;
+}
+
+function showAllQueries7() {
+  document.getElementById("output7").value = `-- All Queries for Scenario 7
+-- Replace this with all static queries for Scenario 7
+SELECT * FROM DUMMY_TABLE_7;`;
+}
+
+function showAllQueries8() {
+  document.getElementById("output8").value = `-- All Queries for Scenario 8
+-- Replace this with all static queries for Scenario 8
+SELECT * FROM DUMMY_TABLE_8;`;
+}
+
+function showAllQueries9() {
+  document.getElementById("output9").value = `-- All Queries for Scenario 9
+-- Replace this with all static queries for Scenario 9
+SELECT * FROM DUMMY_TABLE_9;`;
+}
+
+function showAllQueries10() {
+  document.getElementById("output10").value = `-- All Queries for Scenario 10
+-- Replace this with all static queries for Scenario 10
+SELECT * FROM DUMMY_TABLE_10;`;
+}
+
+function showAllQueries11() {
+  document.getElementById("output11").value = `-- All Queries for Scenario 11
+-- Replace this with all static queries for Scenario 11
+SELECT * FROM DUMMY_TABLE_11;`;
+}
+
+function showAllQueries12() {
+  document.getElementById("output12").value = `-- All Queries for Scenario 12
+-- Replace this with all static queries for Scenario 12
+SELECT * FROM DUMMY_TABLE_12;`;
+}
+
+function showAllQueries13() {
+  document.getElementById("output13").value = `-- All Queries for Scenario 13
+-- Replace this with all static queries for Scenario 13
+SELECT * FROM DUMMY_TABLE_13;`;
+}
+
+function showAllQueries14() {
+  document.getElementById("output14").value = `-- All Queries for Scenario 14
+-- Replace this with all static queries for Scenario 14
+SELECT * FROM DUMMY_TABLE_14;`;
+}
+
+function showAllQueries15() {
+  document.getElementById("output15").value = `-- All Queries for Scenario 15
+-- Replace this with all static queries for Scenario 15
+SELECT * FROM DUMMY_TABLE_15;`;
+}
+
+function showAllQueries16() {
+  document.getElementById("output16").value = `-- All Queries for Scenario 16
+-- Replace this with all static queries for Scenario 16
+SELECT * FROM DUMMY_TABLE_16;`;
+}
+
+function showAllQueries17() {
+  document.getElementById("output17").value = `-- All Queries for Scenario 17
+-- Replace this with all static queries for Scenario 17
+SELECT * FROM DUMMY_TABLE_17;`;
+}
+
+function showAllQueries18() {
+  document.getElementById("output18").value = `-- All Queries for Scenario 18
+-- Replace this with all static queries for Scenario 18
+SELECT * FROM DUMMY_TABLE_18;`;
+}
+
 </script>
-
-
-
-
-<script>
-function filterScenarios() {
+<script>function filterScenarios() {
   const input = document.getElementById("searchInput").value.toLowerCase().trim();
   const groupContainers = document.querySelectorAll(".scenario-group");
   const groupButtons = document.querySelectorAll(".group-btn");
@@ -2243,7 +2994,146 @@ function clearSearch() {
   document.getElementById("searchInput").value = "";
   filterScenarios();
 }
-</script>
 
-</body>
+function showAllQueries1() {
+  document.getElementById("processQueueId").value = "12345";
+  document.getElementById("processId").value = "PROCESS_XYZ";
+  document.getElementById("masterProcessQueueId").value = "67890";
+  generateSQL1();
+}
+
+function showAllQueries2() {
+  document.getElementById("afe2").value = "AFE001";
+  document.getElementById("inbox2").value = "101,102";
+  document.getElementById("route2").value = "AFE_APPROVAL_ROUTE";
+  document.getElementById("step2").value = "111,112";
+  document.getElementById("desk2").value = "SR VP DRILLING";
+  generateSQL2();
+}
+
+function showAllQueries3() {
+  document.getElementById("secuserid3").value = "JDOE";
+  generateSQL3();
+}
+
+function showAllQueries4() {
+  document.getElementById("acctgMth4").value = "2025-07-01";
+  document.getElementById("userkey4").value = "BJE0000001";
+  document.getElementById("idbeowner4").value = "17";
+  document.getElementById("batchname4").value = "GLCONV";
+  document.getElementById("dateFrom4").value = "2025-07-01";
+  document.getElementById("dateTo4").value = "2025-07-31";
+  generateSQL4();
+}
+
+function showAllQueries5() {
+  document.getElementById("acctgMth5").value = "2025-07-01";
+  document.getElementById("userkey5").value = "BI00000089";
+  document.getElementById("idbeowner5").value = "103";
+  document.getElementById("batchname5").value = "ARCONV";
+  document.getElementById("dateFrom5").value = "2025-07-01";
+  document.getElementById("dateTo5").value = "2025-07-31";
+  generateSQL5();
+}
+
+function showAllQueries6() {
+  document.getElementById("userkey6").value = "BR00000006";
+  generateSQL6();
+}
+
+function showAllQueries7() {
+  document.getElementById("input7_userkey").value = "BCK0000001";
+  document.getElementById("input7_idbatcheckrunmaster").value = "106";
+  document.getElementById("input7_checknum").value = "ACH0000001";
+  document.getElementById("input7_payamt").value = "500.00";
+  generateSQL7();
+}
+
+function showAllQueries8() {
+  document.getElementById("input8_journal_id").value = "QCFS";
+  document.getElementById("input8_trans_type").value = "GL";
+  document.getElementById("input8_acctg_mth").value = "2024-01-01";
+  generateSQL8();
+}
+
+function showAllQueries9() {
+  document.getElementById("input9_process_id").value = "ADPUPLOAD";
+  document.getElementById("input9_impexp_id").value = "JIBLINKEXP";
+  document.getElementById("input9_ftp_id").value = "AFEXMLIMP";
+  document.getElementById("input9_ftp_host_id").value = "QCLOUD";
+  document.getElementById("input9_event_type_cd").value = "AFE_ONLEML";
+  document.getElementById("input9_metadata_profile").value = "EQC";
+  generateSQL9();
+}
+
+function showAllQueries10() {
+  document.getElementById("input10_vounum").value = "VM00000030";
+  document.getElementById("input10_userkey").value = "BV00000001";
+  document.getElementById("input10_idbatinv").value = "4567";
+  document.getElementById("input10_assigneduser").value = "EQC_VJENNINGS";
+  document.getElementById("input10_doctype").value = "AP_INV";
+  document.getElementById("input10_docnm").value = "0genPdf.pdf";
+  document.getElementById("input10_wfstatus").value = "Approved";
+  document.getElementById("input10_refnumdoc").value = "CM207039";
+  document.getElementById("input10_docpropval").value = "10936";
+  document.getElementById("input10_docid").value = "0genPdfId";
+  generateSQL10();
+}
+
+function showAllQueries11() {
+  document.getElementById("input11_userkey").value = "BD00000018";
+  generateSQL11();
+}
+
+function showAllQueries12() {
+  document.getElementById("input12_start_dt").value = "2025-06-01";
+  document.getElementById("input12_proc_queue_id").value = "6825175";
+  document.getElementById("input12_updt_dt").value = "2025-06-01";
+  document.getElementById("input12_process_period").value = "2025-06-30";
+  generateSQL12();
+}
+
+function showAllQueries13() {
+  document.getElementById("input13_userkey").value = "BPA00000015";
+  document.getElementById("input13_idbeowner").value = "17";
+  document.getElementById("input13_idcustomer").value = "101";
+  document.getElementById("input13_ba_no").value = "100";
+  document.getElementById("input13_set_id").value = "53f4aee1";
+  document.getElementById("input13_open_item_id").value = "21";
+  document.getElementById("input13_updt_dt").value = "2025-06-01";
+  document.getElementById("input13_bus_unit_cd").value = "100";
+  document.getElementById("input13_owner_ba_no").value = "10";
+  document.getElementById("input13_prop_no").value = "10300";
+  document.getElementById("input13_prop_no2").value = "10300";
+  document.getElementById("input13_orig_bus_unit_cd").value = "100";
+  document.getElementById("input13_acctg_mth").value = "2025-07-01";
+  document.getElementById("input13_process_period").value = "2025-07-01";
+  generateSQL13();
+}
+
+function showAllQueries14() {
+  document.getElementById("input14_ba_no").value = "12345";
+  generateSQL14();
+}
+
+function showAllQueries15() {
+  document.getElementById("input15_acctg_mth").value = "2025-07-01";
+  generateSQL15();
+}
+
+function showAllQueries16() {
+  document.getElementById("input16_idcustomer").value = "101";
+  generateSQL16();
+}
+
+function showAllQueries17() {
+  document.getElementById("input17_gl_mtd_no").value = "1001,1002";
+  generateSQL17();
+}
+
+function showAllQueries18() {
+  document.getElementById("input18_userkey").value = "118";
+  generateSQL18();
+}</script>
+</div></body>
 </html>
