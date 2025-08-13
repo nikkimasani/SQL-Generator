@@ -6,20 +6,20 @@
 <head>
 <meta charset="utf-8"/>
 <title>SQL Generator Tool</title>
-<div class="container">
-<h1 class="stylish-header">🛠 SQL Generator Tool</h1>
 
-<!--Instructions-->
-<p style="margin-top:10px; font-size: 15px; color: #222; background: #e8f0fe; padding: 12px; border-left: 5px solid #2196F3; border-radius: 6px; max-width: 900px; margin-left: auto; margin-right: auto;">
-  🧠 <strong>Instructions:</strong> Use this page to generate predefined SQL queries across different business scenarios. Start by selecting a scenario group and clicking on a scenario to expand it. Input required values (you may use comma-separated lists), and click <strong>Generate SQL</strong>. You can also <strong>Copy</strong>, <strong>Reset</strong>, or <strong>Export</strong> the SQL output. Use the search bar above to quickly find relevant scenarios by keyword without having to click into the scenario group first.Click <strong>Show All Queries</strong> to autopopulate all available queries without having to provide inputs first.
-</p>
-<div class="nav-bar">
-<a class="nav-btn" href="custom.html">✨ Custom Scenario Builder</a>
-<a class="nav-btn" href="client-lookup.html">🔍 Client Lookup Tool</a>
-</div>
 
 <!-- Body (Styling Elements/CSS)-->
 <style>
+textarea[id^="sqlOutput"] {
+  height: 400px;
+  width: 100%;
+  font-family: Consolas, monospace;
+  font-size: 14px;
+  resize: vertical;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
         body {
       font-family: Arial, sans-serif;
       background: #f9f9f9;
@@ -307,26 +307,11 @@ body.dark-mode .nav-btn:hover {
 
 
 /* Expand SQL output textareas */
-textarea[id^="sqlOutput"] {
-  height: 300px;
-  width: 100%;
-  font-family: Consolas, monospace;
-  font-size: 14px;
-  resize: vertical;
-  box-sizing: border-box;
-}
+
 
 
 /* Fully expanded SQL output textareas */
-textarea[id^="sqlOutput"] {
-  height: 400px !important;
-  width: 100% !important;
-  font-family: Consolas, monospace;
-  font-size: 14px;
-  resize: vertical;
-  padding: 10px;
-  box-sizing: border-box;
-}
+
 
 .footnote { font-size: 13px; color: #555; font-style: italic; margin-top: 4px; }
 
@@ -366,7 +351,19 @@ textarea {
 }
 </style>
 </div></head>
-<body><div class="container-wrapper">
+<body>
+  <div class="container">
+<h1 class="stylish-header">🛠 SQL Generator Tool</h1>
+
+<!--Instructions-->
+<p style="margin-top:10px; font-size: 15px; color: #222; background: #e8f0fe; padding: 12px; border-left: 5px solid #2196F3; border-radius: 6px; max-width: 900px; margin-left: auto; margin-right: auto;">
+  🧠 <strong>Instructions:</strong> Use this page to generate predefined SQL queries across different business scenarios. Start by selecting a scenario group and clicking on a scenario to expand it. Input required values (you may use comma-separated lists), and click <strong>Generate SQL</strong>. You can also <strong>Copy</strong>, <strong>Reset</strong>, or <strong>Export</strong> the SQL output. Use the search bar above to quickly find relevant scenarios by keyword without having to click into the scenario group first.Click <strong>Show All Queries</strong> to autopopulate all available queries without having to provide inputs first.
+</p>
+<div class="nav-bar">
+<a class="nav-btn" href="custom.html">✨ Custom Scenario Builder</a>
+<a class="nav-btn" href="client-lookup.html">🔍 Client Lookup Tool</a>
+</div>
+<div class="container-wrapper">
 <!-- Begin HTML Blocks -->
 <!-- Search Bar -->
 <div class="search-container" style="text-align:center; margin: 20px auto;">
@@ -819,114 +816,8 @@ function toggleGroup(groupId) {
   group.style.display = isVisible ? 'none' : 'block';
 }
 
-//Show All Queries Buttton for Each Scenario
-function showAllQueries1() {
-  document.getElementById("output1").value = `-- All Queries for Scenario 1
--- Replace this with all static queries for Scenario 1
-SELECT * FROM DUMMY_TABLE_1;`;
-}
 
-function showAllQueries2() {
-  document.getElementById("output2").value = `-- All Queries for Scenario 2
--- Replace this with all static queries for Scenario 2
-SELECT * FROM DUMMY_TABLE_2;`;
-}
 
-function showAllQueries3() {
-  document.getElementById("output3").value = `-- All Queries for Scenario 3
--- Replace this with all static queries for Scenario 3
-SELECT * FROM DUMMY_TABLE_3;`;
-}
-
-function showAllQueries4() {
-  document.getElementById("output4").value = `-- All Queries for Scenario 4
--- Replace this with all static queries for Scenario 4
-SELECT * FROM DUMMY_TABLE_4;`;
-}
-
-function showAllQueries5() {
-  document.getElementById("output5").value = `-- All Queries for Scenario 5
--- Replace this with all static queries for Scenario 5
-SELECT * FROM DUMMY_TABLE_5;`;
-}
-
-function showAllQueries6() {
-  document.getElementById("output6").value = `-- All Queries for Scenario 6
--- Replace this with all static queries for Scenario 6
-SELECT * FROM DUMMY_TABLE_6;`;
-}
-
-function showAllQueries7() {
-  document.getElementById("output7").value = `-- All Queries for Scenario 7
--- Replace this with all static queries for Scenario 7
-SELECT * FROM DUMMY_TABLE_7;`;
-}
-
-function showAllQueries8() {
-  document.getElementById("output8").value = `-- All Queries for Scenario 8
--- Replace this with all static queries for Scenario 8
-SELECT * FROM DUMMY_TABLE_8;`;
-}
-
-function showAllQueries9() {
-  document.getElementById("output9").value = `-- All Queries for Scenario 9
--- Replace this with all static queries for Scenario 9
-SELECT * FROM DUMMY_TABLE_9;`;
-}
-
-function showAllQueries10() {
-  document.getElementById("output10").value = `-- All Queries for Scenario 10
--- Replace this with all static queries for Scenario 10
-SELECT * FROM DUMMY_TABLE_10;`;
-}
-
-function showAllQueries11() {
-  document.getElementById("output11").value = `-- All Queries for Scenario 11
--- Replace this with all static queries for Scenario 11
-SELECT * FROM DUMMY_TABLE_11;`;
-}
-
-function showAllQueries12() {
-  document.getElementById("output12").value = `-- All Queries for Scenario 12
--- Replace this with all static queries for Scenario 12
-SELECT * FROM DUMMY_TABLE_12;`;
-}
-
-function showAllQueries13() {
-  document.getElementById("output13").value = `-- All Queries for Scenario 13
--- Replace this with all static queries for Scenario 13
-SELECT * FROM DUMMY_TABLE_13;`;
-}
-
-function showAllQueries14() {
-  document.getElementById("output14").value = `-- All Queries for Scenario 14
--- Replace this with all static queries for Scenario 14
-SELECT * FROM DUMMY_TABLE_14;`;
-}
-
-function showAllQueries15() {
-  document.getElementById("output15").value = `-- All Queries for Scenario 15
--- Replace this with all static queries for Scenario 15
-SELECT * FROM DUMMY_TABLE_15;`;
-}
-
-function showAllQueries16() {
-  document.getElementById("output16").value = `-- All Queries for Scenario 16
--- Replace this with all static queries for Scenario 16
-SELECT * FROM DUMMY_TABLE_16;`;
-}
-
-function showAllQueries17() {
-  document.getElementById("output17").value = `-- All Queries for Scenario 17
--- Replace this with all static queries for Scenario 17
-SELECT * FROM DUMMY_TABLE_17;`;
-}
-
-function showAllQueries18() {
-  document.getElementById("output18").value = `-- All Queries for Scenario 18
--- Replace this with all static queries for Scenario 18
-SELECT * FROM DUMMY_TABLE_18;`;
-}
 
 </script>
 <script>
@@ -2080,113 +1971,7 @@ function generateSQL18() {
 
 
 
-function showAllQueries1() {
-  document.getElementById("output1").value = `-- All Queries for Scenario 1
--- Replace this with all static queries for Scenario 1
-SELECT * FROM DUMMY_TABLE_1;`;
-}
 
-function showAllQueries2() {
-  document.getElementById("output2").value = `-- All Queries for Scenario 2
--- Replace this with all static queries for Scenario 2
-SELECT * FROM DUMMY_TABLE_2;`;
-}
-
-function showAllQueries3() {
-  document.getElementById("output3").value = `-- All Queries for Scenario 3
--- Replace this with all static queries for Scenario 3
-SELECT * FROM DUMMY_TABLE_3;`;
-}
-
-function showAllQueries4() {
-  document.getElementById("output4").value = `-- All Queries for Scenario 4
--- Replace this with all static queries for Scenario 4
-SELECT * FROM DUMMY_TABLE_4;`;
-}
-
-function showAllQueries5() {
-  document.getElementById("output5").value = `-- All Queries for Scenario 5
--- Replace this with all static queries for Scenario 5
-SELECT * FROM DUMMY_TABLE_5;`;
-}
-
-function showAllQueries6() {
-  document.getElementById("output6").value = `-- All Queries for Scenario 6
--- Replace this with all static queries for Scenario 6
-SELECT * FROM DUMMY_TABLE_6;`;
-}
-
-function showAllQueries7() {
-  document.getElementById("output7").value = `-- All Queries for Scenario 7
--- Replace this with all static queries for Scenario 7
-SELECT * FROM DUMMY_TABLE_7;`;
-}
-
-function showAllQueries8() {
-  document.getElementById("output8").value = `-- All Queries for Scenario 8
--- Replace this with all static queries for Scenario 8
-SELECT * FROM DUMMY_TABLE_8;`;
-}
-
-function showAllQueries9() {
-  document.getElementById("output9").value = `-- All Queries for Scenario 9
--- Replace this with all static queries for Scenario 9
-SELECT * FROM DUMMY_TABLE_9;`;
-}
-
-function showAllQueries10() {
-  document.getElementById("output10").value = `-- All Queries for Scenario 10
--- Replace this with all static queries for Scenario 10
-SELECT * FROM DUMMY_TABLE_10;`;
-}
-
-function showAllQueries11() {
-  document.getElementById("output11").value = `-- All Queries for Scenario 11
--- Replace this with all static queries for Scenario 11
-SELECT * FROM DUMMY_TABLE_11;`;
-}
-
-function showAllQueries12() {
-  document.getElementById("output12").value = `-- All Queries for Scenario 12
--- Replace this with all static queries for Scenario 12
-SELECT * FROM DUMMY_TABLE_12;`;
-}
-
-function showAllQueries13() {
-  document.getElementById("output13").value = `-- All Queries for Scenario 13
--- Replace this with all static queries for Scenario 13
-SELECT * FROM DUMMY_TABLE_13;`;
-}
-
-function showAllQueries14() {
-  document.getElementById("output14").value = `-- All Queries for Scenario 14
--- Replace this with all static queries for Scenario 14
-SELECT * FROM DUMMY_TABLE_14;`;
-}
-
-function showAllQueries15() {
-  document.getElementById("output15").value = `-- All Queries for Scenario 15
--- Replace this with all static queries for Scenario 15
-SELECT * FROM DUMMY_TABLE_15;`;
-}
-
-function showAllQueries16() {
-  document.getElementById("output16").value = `-- All Queries for Scenario 16
--- Replace this with all static queries for Scenario 16
-SELECT * FROM DUMMY_TABLE_16;`;
-}
-
-function showAllQueries17() {
-  document.getElementById("output17").value = `-- All Queries for Scenario 17
--- Replace this with all static queries for Scenario 17
-SELECT * FROM DUMMY_TABLE_17;`;
-}
-
-function showAllQueries18() {
-  document.getElementById("output18").value = `-- All Queries for Scenario 18
--- Replace this with all static queries for Scenario 18
-SELECT * FROM DUMMY_TABLE_18;`;
-}
 
 </script>
 <script>
@@ -2224,113 +2009,8 @@ function clearSearch() {
   collapseAll();
 }
 
-function showAllQueries1() {
-  document.getElementById("output1").value = `-- All Queries for Scenario 1
--- Replace this with all static queries for Scenario 1
-SELECT * FROM DUMMY_TABLE_1;`;
-}
 
-function showAllQueries2() {
-  document.getElementById("output2").value = `-- All Queries for Scenario 2
--- Replace this with all static queries for Scenario 2
-SELECT * FROM DUMMY_TABLE_2;`;
-}
 
-function showAllQueries3() {
-  document.getElementById("output3").value = `-- All Queries for Scenario 3
--- Replace this with all static queries for Scenario 3
-SELECT * FROM DUMMY_TABLE_3;`;
-}
-
-function showAllQueries4() {
-  document.getElementById("output4").value = `-- All Queries for Scenario 4
--- Replace this with all static queries for Scenario 4
-SELECT * FROM DUMMY_TABLE_4;`;
-}
-
-function showAllQueries5() {
-  document.getElementById("output5").value = `-- All Queries for Scenario 5
--- Replace this with all static queries for Scenario 5
-SELECT * FROM DUMMY_TABLE_5;`;
-}
-
-function showAllQueries6() {
-  document.getElementById("output6").value = `-- All Queries for Scenario 6
--- Replace this with all static queries for Scenario 6
-SELECT * FROM DUMMY_TABLE_6;`;
-}
-
-function showAllQueries7() {
-  document.getElementById("output7").value = `-- All Queries for Scenario 7
--- Replace this with all static queries for Scenario 7
-SELECT * FROM DUMMY_TABLE_7;`;
-}
-
-function showAllQueries8() {
-  document.getElementById("output8").value = `-- All Queries for Scenario 8
--- Replace this with all static queries for Scenario 8
-SELECT * FROM DUMMY_TABLE_8;`;
-}
-
-function showAllQueries9() {
-  document.getElementById("output9").value = `-- All Queries for Scenario 9
--- Replace this with all static queries for Scenario 9
-SELECT * FROM DUMMY_TABLE_9;`;
-}
-
-function showAllQueries10() {
-  document.getElementById("output10").value = `-- All Queries for Scenario 10
--- Replace this with all static queries for Scenario 10
-SELECT * FROM DUMMY_TABLE_10;`;
-}
-
-function showAllQueries11() {
-  document.getElementById("output11").value = `-- All Queries for Scenario 11
--- Replace this with all static queries for Scenario 11
-SELECT * FROM DUMMY_TABLE_11;`;
-}
-
-function showAllQueries12() {
-  document.getElementById("output12").value = `-- All Queries for Scenario 12
--- Replace this with all static queries for Scenario 12
-SELECT * FROM DUMMY_TABLE_12;`;
-}
-
-function showAllQueries13() {
-  document.getElementById("output13").value = `-- All Queries for Scenario 13
--- Replace this with all static queries for Scenario 13
-SELECT * FROM DUMMY_TABLE_13;`;
-}
-
-function showAllQueries14() {
-  document.getElementById("output14").value = `-- All Queries for Scenario 14
--- Replace this with all static queries for Scenario 14
-SELECT * FROM DUMMY_TABLE_14;`;
-}
-
-function showAllQueries15() {
-  document.getElementById("output15").value = `-- All Queries for Scenario 15
--- Replace this with all static queries for Scenario 15
-SELECT * FROM DUMMY_TABLE_15;`;
-}
-
-function showAllQueries16() {
-  document.getElementById("output16").value = `-- All Queries for Scenario 16
--- Replace this with all static queries for Scenario 16
-SELECT * FROM DUMMY_TABLE_16;`;
-}
-
-function showAllQueries17() {
-  document.getElementById("output17").value = `-- All Queries for Scenario 17
--- Replace this with all static queries for Scenario 17
-SELECT * FROM DUMMY_TABLE_17;`;
-}
-
-function showAllQueries18() {
-  document.getElementById("output18").value = `-- All Queries for Scenario 18
--- Replace this with all static queries for Scenario 18
-SELECT * FROM DUMMY_TABLE_18;`;
-}
 
 </script>
 <script>
@@ -2349,113 +2029,7 @@ SELECT * FROM DUMMY_TABLE_18;`;
   collapseAll();
 }
 
-function showAllQueries1() {
-  document.getElementById("output1").value = `-- All Queries for Scenario 1
--- Replace this with all static queries for Scenario 1
-SELECT * FROM DUMMY_TABLE_1;`;
-}
 
-function showAllQueries2() {
-  document.getElementById("output2").value = `-- All Queries for Scenario 2
--- Replace this with all static queries for Scenario 2
-SELECT * FROM DUMMY_TABLE_2;`;
-}
-
-function showAllQueries3() {
-  document.getElementById("output3").value = `-- All Queries for Scenario 3
--- Replace this with all static queries for Scenario 3
-SELECT * FROM DUMMY_TABLE_3;`;
-}
-
-function showAllQueries4() {
-  document.getElementById("output4").value = `-- All Queries for Scenario 4
--- Replace this with all static queries for Scenario 4
-SELECT * FROM DUMMY_TABLE_4;`;
-}
-
-function showAllQueries5() {
-  document.getElementById("output5").value = `-- All Queries for Scenario 5
--- Replace this with all static queries for Scenario 5
-SELECT * FROM DUMMY_TABLE_5;`;
-}
-
-function showAllQueries6() {
-  document.getElementById("output6").value = `-- All Queries for Scenario 6
--- Replace this with all static queries for Scenario 6
-SELECT * FROM DUMMY_TABLE_6;`;
-}
-
-function showAllQueries7() {
-  document.getElementById("output7").value = `-- All Queries for Scenario 7
--- Replace this with all static queries for Scenario 7
-SELECT * FROM DUMMY_TABLE_7;`;
-}
-
-function showAllQueries8() {
-  document.getElementById("output8").value = `-- All Queries for Scenario 8
--- Replace this with all static queries for Scenario 8
-SELECT * FROM DUMMY_TABLE_8;`;
-}
-
-function showAllQueries9() {
-  document.getElementById("output9").value = `-- All Queries for Scenario 9
--- Replace this with all static queries for Scenario 9
-SELECT * FROM DUMMY_TABLE_9;`;
-}
-
-function showAllQueries10() {
-  document.getElementById("output10").value = `-- All Queries for Scenario 10
--- Replace this with all static queries for Scenario 10
-SELECT * FROM DUMMY_TABLE_10;`;
-}
-
-function showAllQueries11() {
-  document.getElementById("output11").value = `-- All Queries for Scenario 11
--- Replace this with all static queries for Scenario 11
-SELECT * FROM DUMMY_TABLE_11;`;
-}
-
-function showAllQueries12() {
-  document.getElementById("output12").value = `-- All Queries for Scenario 12
--- Replace this with all static queries for Scenario 12
-SELECT * FROM DUMMY_TABLE_12;`;
-}
-
-function showAllQueries13() {
-  document.getElementById("output13").value = `-- All Queries for Scenario 13
--- Replace this with all static queries for Scenario 13
-SELECT * FROM DUMMY_TABLE_13;`;
-}
-
-function showAllQueries14() {
-  document.getElementById("output14").value = `-- All Queries for Scenario 14
--- Replace this with all static queries for Scenario 14
-SELECT * FROM DUMMY_TABLE_14;`;
-}
-
-function showAllQueries15() {
-  document.getElementById("output15").value = `-- All Queries for Scenario 15
--- Replace this with all static queries for Scenario 15
-SELECT * FROM DUMMY_TABLE_15;`;
-}
-
-function showAllQueries16() {
-  document.getElementById("output16").value = `-- All Queries for Scenario 16
--- Replace this with all static queries for Scenario 16
-SELECT * FROM DUMMY_TABLE_16;`;
-}
-
-function showAllQueries17() {
-  document.getElementById("output17").value = `-- All Queries for Scenario 17
--- Replace this with all static queries for Scenario 17
-SELECT * FROM DUMMY_TABLE_17;`;
-}
-
-function showAllQueries18() {
-  document.getElementById("output18").value = `-- All Queries for Scenario 18
--- Replace this with all static queries for Scenario 18
-SELECT * FROM DUMMY_TABLE_18;`;
-}
 
 </script>
 <script>
@@ -2467,236 +2041,11 @@ SELECT * FROM DUMMY_TABLE_18;`;
 /* Removed duplicate resetAllInputs (older definition) */
 
 
-function showAllQueries1() {
-  document.getElementById("output1").value = `-- All Queries for Scenario 1
--- Replace this with all static queries for Scenario 1
-SELECT * FROM DUMMY_TABLE_1;`;
-}
 
-function showAllQueries2() {
-  document.getElementById("output2").value = `-- All Queries for Scenario 2
--- Replace this with all static queries for Scenario 2
-SELECT * FROM DUMMY_TABLE_2;`;
-}
-
-function showAllQueries3() {
-  document.getElementById("output3").value = `-- All Queries for Scenario 3
--- Replace this with all static queries for Scenario 3
-SELECT * FROM DUMMY_TABLE_3;`;
-}
-
-function showAllQueries4() {
-  document.getElementById("output4").value = `-- All Queries for Scenario 4
--- Replace this with all static queries for Scenario 4
-SELECT * FROM DUMMY_TABLE_4;`;
-}
-
-function showAllQueries5() {
-  document.getElementById("output5").value = `-- All Queries for Scenario 5
--- Replace this with all static queries for Scenario 5
-SELECT * FROM DUMMY_TABLE_5;`;
-}
-
-function showAllQueries6() {
-  document.getElementById("output6").value = `-- All Queries for Scenario 6
--- Replace this with all static queries for Scenario 6
-SELECT * FROM DUMMY_TABLE_6;`;
-}
-
-function showAllQueries7() {
-  document.getElementById("output7").value = `-- All Queries for Scenario 7
--- Replace this with all static queries for Scenario 7
-SELECT * FROM DUMMY_TABLE_7;`;
-}
-
-function showAllQueries8() {
-  document.getElementById("output8").value = `-- All Queries for Scenario 8
--- Replace this with all static queries for Scenario 8
-SELECT * FROM DUMMY_TABLE_8;`;
-}
-
-function showAllQueries9() {
-  document.getElementById("output9").value = `-- All Queries for Scenario 9
--- Replace this with all static queries for Scenario 9
-SELECT * FROM DUMMY_TABLE_9;`;
-}
-
-function showAllQueries10() {
-  document.getElementById("output10").value = `-- All Queries for Scenario 10
--- Replace this with all static queries for Scenario 10
-SELECT * FROM DUMMY_TABLE_10;`;
-}
-
-function showAllQueries11() {
-  document.getElementById("output11").value = `-- All Queries for Scenario 11
--- Replace this with all static queries for Scenario 11
-SELECT * FROM DUMMY_TABLE_11;`;
-}
-
-function showAllQueries12() {
-  document.getElementById("output12").value = `-- All Queries for Scenario 12
--- Replace this with all static queries for Scenario 12
-SELECT * FROM DUMMY_TABLE_12;`;
-}
-
-function showAllQueries13() {
-  document.getElementById("output13").value = `-- All Queries for Scenario 13
--- Replace this with all static queries for Scenario 13
-SELECT * FROM DUMMY_TABLE_13;`;
-}
-
-function showAllQueries14() {
-  document.getElementById("output14").value = `-- All Queries for Scenario 14
--- Replace this with all static queries for Scenario 14
-SELECT * FROM DUMMY_TABLE_14;`;
-}
-
-function showAllQueries15() {
-  document.getElementById("output15").value = `-- All Queries for Scenario 15
--- Replace this with all static queries for Scenario 15
-SELECT * FROM DUMMY_TABLE_15;`;
-}
-
-function showAllQueries16() {
-  document.getElementById("output16").value = `-- All Queries for Scenario 16
--- Replace this with all static queries for Scenario 16
-SELECT * FROM DUMMY_TABLE_16;`;
-}
-
-function showAllQueries17() {
-  document.getElementById("output17").value = `-- All Queries for Scenario 17
--- Replace this with all static queries for Scenario 17
-SELECT * FROM DUMMY_TABLE_17;`;
-}
-
-function showAllQueries18() {
-  document.getElementById("output18").value = `-- All Queries for Scenario 18
--- Replace this with all static queries for Scenario 18
-SELECT * FROM DUMMY_TABLE_18;`;
-}
 
 </script>
 <script>
 
-function toggleTheme() {
-  document.body.classList.toggle("dark-mode");
-}
-
-function resetAllInputs() {
-  const inputs = document.querySelectorAll("input, textarea");
-  inputs.forEach(input => {
-    input.value = "";
-  });
-}
-
-
-function showAllQueries1() {
-  document.getElementById("output1").value = `-- All Queries for Scenario 1
--- Replace this with all static queries for Scenario 1
-SELECT * FROM DUMMY_TABLE_1;`;
-}
-
-function showAllQueries2() {
-  document.getElementById("output2").value = `-- All Queries for Scenario 2
--- Replace this with all static queries for Scenario 2
-SELECT * FROM DUMMY_TABLE_2;`;
-}
-
-function showAllQueries3() {
-  document.getElementById("output3").value = `-- All Queries for Scenario 3
--- Replace this with all static queries for Scenario 3
-SELECT * FROM DUMMY_TABLE_3;`;
-}
-
-function showAllQueries4() {
-  document.getElementById("output4").value = `-- All Queries for Scenario 4
--- Replace this with all static queries for Scenario 4
-SELECT * FROM DUMMY_TABLE_4;`;
-}
-
-function showAllQueries5() {
-  document.getElementById("output5").value = `-- All Queries for Scenario 5
--- Replace this with all static queries for Scenario 5
-SELECT * FROM DUMMY_TABLE_5;`;
-}
-
-function showAllQueries6() {
-  document.getElementById("output6").value = `-- All Queries for Scenario 6
--- Replace this with all static queries for Scenario 6
-SELECT * FROM DUMMY_TABLE_6;`;
-}
-
-function showAllQueries7() {
-  document.getElementById("output7").value = `-- All Queries for Scenario 7
--- Replace this with all static queries for Scenario 7
-SELECT * FROM DUMMY_TABLE_7;`;
-}
-
-function showAllQueries8() {
-  document.getElementById("output8").value = `-- All Queries for Scenario 8
--- Replace this with all static queries for Scenario 8
-SELECT * FROM DUMMY_TABLE_8;`;
-}
-
-function showAllQueries9() {
-  document.getElementById("output9").value = `-- All Queries for Scenario 9
--- Replace this with all static queries for Scenario 9
-SELECT * FROM DUMMY_TABLE_9;`;
-}
-
-function showAllQueries10() {
-  document.getElementById("output10").value = `-- All Queries for Scenario 10
--- Replace this with all static queries for Scenario 10
-SELECT * FROM DUMMY_TABLE_10;`;
-}
-
-function showAllQueries11() {
-  document.getElementById("output11").value = `-- All Queries for Scenario 11
--- Replace this with all static queries for Scenario 11
-SELECT * FROM DUMMY_TABLE_11;`;
-}
-
-function showAllQueries12() {
-  document.getElementById("output12").value = `-- All Queries for Scenario 12
--- Replace this with all static queries for Scenario 12
-SELECT * FROM DUMMY_TABLE_12;`;
-}
-
-function showAllQueries13() {
-  document.getElementById("output13").value = `-- All Queries for Scenario 13
--- Replace this with all static queries for Scenario 13
-SELECT * FROM DUMMY_TABLE_13;`;
-}
-
-function showAllQueries14() {
-  document.getElementById("output14").value = `-- All Queries for Scenario 14
--- Replace this with all static queries for Scenario 14
-SELECT * FROM DUMMY_TABLE_14;`;
-}
-
-function showAllQueries15() {
-  document.getElementById("output15").value = `-- All Queries for Scenario 15
--- Replace this with all static queries for Scenario 15
-SELECT * FROM DUMMY_TABLE_15;`;
-}
-
-function showAllQueries16() {
-  document.getElementById("output16").value = `-- All Queries for Scenario 16
--- Replace this with all static queries for Scenario 16
-SELECT * FROM DUMMY_TABLE_16;`;
-}
-
-function showAllQueries17() {
-  document.getElementById("output17").value = `-- All Queries for Scenario 17
--- Replace this with all static queries for Scenario 17
-SELECT * FROM DUMMY_TABLE_17;`;
-}
-
-function showAllQueries18() {
-  document.getElementById("output18").value = `-- All Queries for Scenario 18
--- Replace this with all static queries for Scenario 18
-SELECT * FROM DUMMY_TABLE_18;`;
-}
 
 </script>
 <script>
@@ -2876,113 +2225,6 @@ SELECT A.USERKEY, A.NAME, COUNT(*) FROM BATCHVOUCHERMASTER A JOIN BATCHVOUCHERDE
 }
 
 
-function showAllQueries1() {
-  document.getElementById("output1").value = `-- All Queries for Scenario 1
--- Replace this with all static queries for Scenario 1
-SELECT * FROM DUMMY_TABLE_1;`;
-}
-
-function showAllQueries2() {
-  document.getElementById("output2").value = `-- All Queries for Scenario 2
--- Replace this with all static queries for Scenario 2
-SELECT * FROM DUMMY_TABLE_2;`;
-}
-
-function showAllQueries3() {
-  document.getElementById("output3").value = `-- All Queries for Scenario 3
--- Replace this with all static queries for Scenario 3
-SELECT * FROM DUMMY_TABLE_3;`;
-}
-
-function showAllQueries4() {
-  document.getElementById("output4").value = `-- All Queries for Scenario 4
--- Replace this with all static queries for Scenario 4
-SELECT * FROM DUMMY_TABLE_4;`;
-}
-
-function showAllQueries5() {
-  document.getElementById("output5").value = `-- All Queries for Scenario 5
--- Replace this with all static queries for Scenario 5
-SELECT * FROM DUMMY_TABLE_5;`;
-}
-
-function showAllQueries6() {
-  document.getElementById("output6").value = `-- All Queries for Scenario 6
--- Replace this with all static queries for Scenario 6
-SELECT * FROM DUMMY_TABLE_6;`;
-}
-
-function showAllQueries7() {
-  document.getElementById("output7").value = `-- All Queries for Scenario 7
--- Replace this with all static queries for Scenario 7
-SELECT * FROM DUMMY_TABLE_7;`;
-}
-
-function showAllQueries8() {
-  document.getElementById("output8").value = `-- All Queries for Scenario 8
--- Replace this with all static queries for Scenario 8
-SELECT * FROM DUMMY_TABLE_8;`;
-}
-
-function showAllQueries9() {
-  document.getElementById("output9").value = `-- All Queries for Scenario 9
--- Replace this with all static queries for Scenario 9
-SELECT * FROM DUMMY_TABLE_9;`;
-}
-
-function showAllQueries10() {
-  document.getElementById("output10").value = `-- All Queries for Scenario 10
--- Replace this with all static queries for Scenario 10
-SELECT * FROM DUMMY_TABLE_10;`;
-}
-
-function showAllQueries11() {
-  document.getElementById("output11").value = `-- All Queries for Scenario 11
--- Replace this with all static queries for Scenario 11
-SELECT * FROM DUMMY_TABLE_11;`;
-}
-
-function showAllQueries12() {
-  document.getElementById("output12").value = `-- All Queries for Scenario 12
--- Replace this with all static queries for Scenario 12
-SELECT * FROM DUMMY_TABLE_12;`;
-}
-
-function showAllQueries13() {
-  document.getElementById("output13").value = `-- All Queries for Scenario 13
--- Replace this with all static queries for Scenario 13
-SELECT * FROM DUMMY_TABLE_13;`;
-}
-
-function showAllQueries14() {
-  document.getElementById("output14").value = `-- All Queries for Scenario 14
--- Replace this with all static queries for Scenario 14
-SELECT * FROM DUMMY_TABLE_14;`;
-}
-
-function showAllQueries15() {
-  document.getElementById("output15").value = `-- All Queries for Scenario 15
--- Replace this with all static queries for Scenario 15
-SELECT * FROM DUMMY_TABLE_15;`;
-}
-
-function showAllQueries16() {
-  document.getElementById("output16").value = `-- All Queries for Scenario 16
--- Replace this with all static queries for Scenario 16
-SELECT * FROM DUMMY_TABLE_16;`;
-}
-
-function showAllQueries17() {
-  document.getElementById("output17").value = `-- All Queries for Scenario 17
--- Replace this with all static queries for Scenario 17
-SELECT * FROM DUMMY_TABLE_17;`;
-}
-
-function showAllQueries18() {
-  document.getElementById("output18").value = `-- All Queries for Scenario 18
--- Replace this with all static queries for Scenario 18
-SELECT * FROM DUMMY_TABLE_18;`;
-}
 
 </script>
 <script>function filterScenarios() {
@@ -3030,6 +2272,8 @@ function clearSearch() {
   filterScenarios();
 }
 
+<!-- ===== Show All Queries helper functions (autofill inputs then call generate) ===== -->
+//Show All Queries Buttton for Each Scenario
 function showAllQueries1() {
   document.getElementById("processQueueId").value = "12345";
   document.getElementById("processId").value = "PROCESS_XYZ";
