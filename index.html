@@ -362,20 +362,315 @@ textarea {
 }
 
 </style>
+<style>
+body {
+  font-family: "Segoe UI", Roboto, Inter, sans-serif;
+  background-color: #f9fbfd;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+input, textarea {
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  font-size: 14px;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+input:focus, textarea:focus {
+  border-color: #3f8efc;
+  box-shadow: 0 0 4px rgba(63, 142, 252, 0.6);
+  outline: none;
+}
+button.btn {
+  border-radius: 6px;
+  background-color: #3f8efc;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+button.btn:hover {
+  background-color: #3378d5;
+}
+textarea.output {
+  font-family: "Courier New", monospace;
+  background-color: #f5f8fa;
+  padding: 10px;
+  border: 1px solid #ccc;
+  width: 100%;
+  min-height: 120px;
+  margin-top: 5px;
+  border-radius: 6px;
+}
+.accordion-btn {
+  font-size: 15px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+.tab-content {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+}
+h2 {
+  margin-top: 0;
+  font-weight: 500;
+  color: #2b2b2b;
+}
+.sticky-toolbar {
+  background-color: #ffffffdd;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+</style>
+<style>
+/* Accordion open/close animation */
+.tab-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+.accordion-btn.active + .tab-content {
+  max-height: 5000px;
+  padding: 16px;
+}
+
+/* Highlight matches */
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+}
+
+/* Button and input hover/active transitions */
+button.btn, input, textarea {
+  transition: all 0.25s ease-in-out;
+}
+
+/* Sticky Group Header */
+.scenario-group {
+  position: relative;
+}
+.group-btn {
+  position: sticky;
+  top: 50px;
+  background-color: #eaf2ff;
+  z-index: 1;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* Floating scroll-to-top button */
+#scrollTopBtn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #3f8efc;
+  color: white;
+  border: none;
+  padding: 10px 12px;
+  font-size: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 999;
+}
+#scrollTopBtn:hover {
+  background-color: #2c6edb;
+}
+</style>
+<script>
+// Accordion logic
+function toggleAccordion(el, id) {
+  el.classList.toggle("active");
+  const content = document.getElementById(id);
+  content.style.display = content.style.display === "block" ? "none" : "block";
+}
+
+// Smooth scroll-to-top
+window.onscroll = function () {
+  const btn = document.getElementById("scrollTopBtn");
+  btn.style.display = document.documentElement.scrollTop > 200 ? "block" : "none";
+};
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Enhance search with match highlight
+function searchScenarios() {
+  const query = document.getElementById("searchInput").value.toLowerCase();
+  const accordionButtons = document.querySelectorAll(".accordion-btn:not(.group-btn)");
+  const scenarioContents = document.querySelectorAll(".tab-content");
+
+  accordionButtons.forEach((btn, idx) => {
+    const content = scenarioContents[idx];
+    const labels = Array.from(content.querySelectorAll("label"));
+    const textareas = Array.from(content.querySelectorAll("textarea.output"));
+
+    // Remove previous highlights
+    labels.forEach(label => label.innerHTML = label.innerText);
+    textareas.forEach(t => t.innerHTML = t.innerText);
+
+    const labelText = labels.map(l => l.innerText.toLowerCase()).join(" ");
+    const textareaText = textareas.map(t => t.value.toLowerCase()).join(" ");
+    const staticText = content.innerText.toLowerCase();
+    const combinedText = btn.innerText.toLowerCase() + " " + labelText + " " + textareaText + " " + staticText;
+
+    const match = combinedText.includes(query);
+    btn.style.display = match ? "block" : "none";
+    content.style.display = match ? "block" : "none";
+
+    if (match && query !== "") {
+      labels.forEach(label => {
+        const original = label.innerText;
+        label.innerHTML = original.replace(new RegExp(query, "gi"), match => `<span class='highlight'>${match}</span>`);
+      });
+    }
+  });
+
+  document.querySelectorAll(".scenario-group").forEach(group => {
+    const visibleScenarios = group.querySelectorAll(".accordion-btn:not([style*='display: none'])");
+    group.style.display = visibleScenarios.length > 0 ? "block" : "none";
+  });
+}
+</script>
+<button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+<style>
+.instructions-box {
+  background: #e8f0fe;
+  border-left: 5px solid #2196F3;
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin: 20px auto;
+  max-width: 900px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  font-size: 15px;
+  color: #222;
+}
+.instructions-header {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.instructions-body p {
+  margin: 6px 0;
+  line-height: 1.6;
+}
+</style>
+<style>
+.instructions-card {
+  background: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 24px;
+  margin: 25px auto 20px auto;
+  max-width: 750px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+  color: #333;
+}
+.instructions-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: #1a237e;
+  text-align: center;
+}
+.instructions-body p {
+  margin: 10px 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+</style>
+<style>
+.instructions-card {
+  background: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin: 25px auto 20px auto;
+  max-width: 750px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+  color: #333;
+  overflow: hidden;
+}
+
+.instructions-toggle {
+  background: none;
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a237e;
+  width: 100%;
+  text-align: center;
+  padding: 16px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+.instructions-toggle:hover {
+  background-color: #f0f0f0;
+}
+
+.instructions-body {
+  padding: 0 24px 18px 24px;
+  font-size: 15px;
+  display: block;
+  animation: fadeIn 0.6s ease;
+}
+
+.instructions-body p {
+  margin: 12px 0;
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+</style>
+<script>
+function toggleInstructions() {
+  const body = document.getElementById("instructionsContent");
+  const toggle = document.querySelector(".instructions-toggle");
+  if (body.style.display === "none") {
+    body.style.display = "block";
+    toggle.innerHTML = "📘 How to Use This Tool ▾";
+  } else {
+    body.style.display = "none";
+    toggle.innerHTML = "📘 How to Use This Tool ▸";
+  }
+}
+</script>
 </head>
 <body>
+<div class="instructions-card fade-in">
+<button class="instructions-toggle" onclick="toggleInstructions()">📘 How to Use This Tool ▸</button>
+<div class="instructions-body" id="instructionsContent" style="display: none;">
+<p>📝 Use this tool to generate predefined SQL queries across various business scenarios.</p>
+<p>📂 Select a scenario group and click a scenario to expand it. Input required values and click <strong>Generate SQL</strong>.</p>
+<p>📋 You can <strong>Copy</strong>, <strong>Reset</strong>, or <strong>Export</strong> the SQL output after generation.</p>
+<p>🔍 Use the search bar to find scenarios by keywords across titles, inputs, or SQL content.</p>
+<p>📤 Click <strong>Show All Queries</strong> to reveal every SQL query for that scenario, even without inputs.</p>
+</div>
+</div>
 <!-- Sidebar Navigation -->
 <div class="container">
-<h1 class="stylish-header">🛠 SQL Generator Tool</h1>
+<h1 class="stylish-header" style="font-size: 38px; font-weight: 800; margin-bottom: 14px; color: #1a237e; text-align: center;">🛠 SQL Generator Tool</h1>
 <!--Instructions-->
-<p style="margin-top:10px; font-size: 15px; color: #222; background: #e8f0fe; padding: 12px; border-left: 5px solid #2196F3; border-radius: 6px; max-width: 900px; margin-left: auto; margin-right: auto;">
-  🧠 <strong>Instructions:</strong> Use this page to generate predefined SQL queries across different business scenarios. 
-  <br/>Start by selecting a scenario group and clicking on a scenario 
-  to expand it. Input required values and click <strong>Generate SQL</strong>. 
-You can also <strong>Copy</strong>, <strong>Reset</strong>, or <strong>Export</strong> the SQL output. 
-<br/>Use the search bar above to quickly find relevant scenarios by keyword without having to click into the scenario group first.
-<br/>Click <strong>Show All Queries</strong> to populate all available queries without having to enter input values.
-</p>
 <div class="nav-bar">
 <a class="nav-btn" href="custom.html">✨ Custom Scenario Builder</a>
 <a class="nav-btn" href="client-lookup.html">🔍 Client Lookup Tool</a>
@@ -3473,8 +3768,6 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
-
-
 <script>
 function searchScenarios() {
   const query = document.getElementById("searchInput").value.toLowerCase();
@@ -3484,10 +3777,10 @@ function searchScenarios() {
   accordionButtons.forEach((btn, idx) => {
     const content = scenarioContents[idx];
     const labelText = Array.from(content.querySelectorAll("label")).map(l => l.innerText.toLowerCase()).join(" ");
-    const textareaText = Array.from(content.querySelectorAll("textarea")).map(t => t.value.toLowerCase()).join(" ");
-    const staticText = content.innerText.toLowerCase();  // include comments and raw content
+    const liveTextareaText = Array.from(content.querySelectorAll("textarea.output")).map(t => t.value.toLowerCase()).join(" ");
+    const staticText = content.innerText.toLowerCase();
 
-    const combinedText = btn.innerText.toLowerCase() + " " + labelText + " " + textareaText + " " + staticText;
+    const combinedText = btn.innerText.toLowerCase() + " " + labelText + " " + liveTextareaText + " " + staticText;
 
     if (combinedText.includes(query)) {
       btn.style.display = "block";
