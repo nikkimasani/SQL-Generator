@@ -745,32 +745,32 @@ textarea {
 <div class="tab-content" id="scenario17">
   <h2>Scenario 17: MT100 / SM021 / SM093 / AP047 / XREF</h2>
 
-  <label>TRANS_TYPE (comma-separated):</label>
-  <input id="input17_transtype" placeholder="e.g., AP, AR" />
+  <label>TRANS_TYPE</label>
+  <input id="input17_transtype" placeholder="e.g., AP, GL" />
 
-  <label>JOURNAL_ID (comma-separated):</label>
-  <input id="input17_journalid" placeholder="e.g., 1100,2000" />
+  <label>JOURNAL_ID</label>
+  <input id="input17_journalid" placeholder="e.g., AFE,JIB" />
 
-  <label>IDBEOWNER:</label>
-  <input id="input17_idbeowner" placeholder="e.g., 103" />
+  <label>IDBEOWNER</label>
+  <input id="input17_idbeowner" placeholder="e.g., 11" />
 
-  <label>USERKEY:</label>
-  <input id="input17_userkey" placeholder="e.g., GL095" />
+  <label>USERKEY (for SM021, SM093, AP100)</label>
+  <input id="input17_userkey" placeholder="e.g., APVOU, INVOICE, JENORMAL" />
 
-  
-  <label>USERKEY (Payment Term Definition):</label>
-  <input id="input17_userkey_payterm" placeholder="e.g., AP047" />
-  <p class="hint">Note: This USERKEY will be used to pull <strong>Payment Term Definition</strong>.</p>
-  <p class="hint">For the other queries (SM021/SM093/AP100), the USERKEY above will be used to pull <strong>Journal Definitions</strong>, <strong>Workflow Definitions</strong>, and <strong>Voucher Document Type</strong>.</p>
-<button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
+  <label>USERKEY (for AP047 Payment Term Definition)</label>
+  <input id="input17_userkey_payterm" placeholder="e.g., NET15, DUEONREC" />
+  <p class="hint">Note: The first USERKEY is used for Journal, Workflow, and Voucher Document definitions. The second USERKEY is used only for the Voucher Payment Term Definition.</p>
+
+  <button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
   <button class="btn default" onclick="showQueries17()">🗃 Show All Queries</button>
   <textarea id="output17" placeholder="SQL will appear here..." readonly></textarea>
   <button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('input17_transtype','input17_journalid','input17_idbeowner','input17_userkey','output17')">🔄 Reset</button>
+  <button class="btn reset" onclick="resetFields('input17_transtype','input17_journalid','input17_idbeowner','input17_userkey','input17_userkey_payterm','output17')">🔄 Reset</button>
   <button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
   <div class="copy-success" id="output17_success">✅ Copied!</div>
 </div>
 <!-- Scenario 17 Ends -->
+
 
 <!-- Scenario 18 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario18')">Scenario 18: Resolve BU Information</button>
@@ -1926,116 +1926,61 @@ function exportSQL16() {
 
 // Scenario 17
 function generateSQL17() {
-  const trans = document.getElementById("input17_transtype").value.trim();
-  const journal = document.getElementById("input17_journalid").value.trim();
-  const idbeowner = document.getElementById("input17_idbeowner").value.trim();
-  const userkey = document.getElementById("input17_userkey").value.trim();
-  const userkeyPay = document.getElementById("input17_userkey_payterm") ? document.getElementById("input17_userkey_payterm").value.trim() : "";
+  const transTypes = document.getElementById("input17_transtype").value.split(',').map(s => s.trim()).filter(Boolean);
+  const journalIds = document.getElementById("input17_journalid").value.split(',').map(s => s.trim()).filter(Boolean);
+  const owners = document.getElementById("input17_idbeowner").value.split(',').map(s => s.trim()).filter(Boolean);
+  const userkeys = document.getElementById("input17_userkey").value.split(',').map(s => s.trim()).filter(Boolean);
+  const userkeysPayTerm = document.getElementById("input17_userkey_payterm").value.split(',').map(s => s.trim()).filter(Boolean);
 
-  const transList = trans ? trans.split(',').map(v => `'${v.trim()}'`) : [];
-  const journalList = journal ? journal.split(',').map(v => `'${v.trim()}'`) : [];
+  let output = [];
 
-  let sql = "";
+  // Query 1: always included
+  output.push(`--QSTAGXLSIMP - JOURNAL_ID & TRANS_ID will determine what type of file is being uploaded (AR, AP, GL)\n--This query will retrieve the current MT100 Configuration:\nSELECT * FROM JOURNAL_ID_IMPORT;`);
 
-  // Query 1 - Static config info
-  sql += "--QSTAGXLSIMP - JOURNAL_ID & TRANS_ID will determine what type of file is being uploaded (AR, AP, GL)\n";
-  sql += "--This query will retrieve the current MT100 Configuration:\n";
-  sql += "SELECT * FROM JOURNAL_ID_IMPORT;\n\n";
+  // Query 2: always included
+  output.push(`--MT100 > QCFS TAB\nSELECT * FROM SXREF_CORE_INTFC_QCFS_EXT;`);
 
-  // Query 2 - QCFS Tab
-  sql += "--MT100 > QCFS TAB\n";
-  sql += "SELECT * FROM SXREF_CORE_INTFC_QCFS_EXT;\n\n";
-
-  // Queries 3 to 7 - AFE, DDA, JIB, LOS, LOSDD Tabs
-  const importTables = [
-    ["AFE", "QCTRL_CORE_INTEFACE_IMPORT_CONFIG_AFE"],
-    ["DDA", "QCTRL_CORE_INTEFACE_IMPORT_CONFIG_DDA"],
-    ["JIB", "QCTRL_CORE_INTEFACE_IMPORT_CONFIG_JIB"],
-    ["LOS", "QCTRL_CORE_INTEFACE_IMPORT_CONFIG_LOS"],
-    ["LOSDD", "QCTRL_CORE_INTEFACE_IMPORT_CONFIG_LOSDD"]
-  ];
-
-  importTables.forEach(([tab, table]) => {
-    sql += `--MT100 > ${tab} Tab\n`;
-    if (transList.length && journalList.length) {
-      transList.forEach(t => {
-        journalList.forEach(j => {
-          sql += `SELECT * FROM ${table} WHERE TRANS_TYPE = ${t} AND JOURNAL_ID = ${j};\n`;
+  // Query 3–7: MT100 Tabs
+  const tabNames = ["AFE", "DDA", "JIB", "LOS", "LOSDD"];
+  if (transTypes.length && journalIds.length) {
+    tabNames.forEach(tab => {
+      transTypes.forEach(trans => {
+        journalIds.forEach(journal => {
+          output.push(`--MT100 > ${tab} Tab\nSELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_${tab} WHERE TRANS_TYPE = '${trans}' AND JOURNAL_ID = '${journal}';`);
         });
       });
-    } else {
-      sql += `--SELECT * FROM ${table} WHERE TRANS_TYPE = ' ' AND JOURNAL_ID = ' ';\n`;
-    }
-    sql += "\n";
-  });
-
-  // Query 8 - Journal Definitions
-  sql += "--SM021: Journal Definitions Maintenance\n";
-  sql += "SELECT * FROM JOURNALDEFINITION\n";
-  sql += "WHERE IDBEOWNER = ";
-  sql += idbeowner ? `'${idbeowner}'` : "''";
-  sql += " AND USERKEY = ";
-  sql += userkey ? `'${userkey}';\n\n` : "'';\n\n";
-
-  // Query 9 - Workflow Definitions
-  sql += "--SM093: Workflow Definition Maintenance\n";
-  sql += "SELECT * FROM WORKFLOWDEFINITION\n";
-  sql += "WHERE IDBEOWNER = ";
-  sql += idbeowner ? `'${idbeowner}'` : "''";
-  sql += " AND USERKEY = ";
-  sql += userkey ? `'${userkey}';\n\n` : "'';\n\n";
-
-  // Query 10 - Voucher Doc Types
-  sql += "--AP100: Voucher Document Type\n";
-  sql += "SELECT * FROM VOUCHERDOCUMENTTYPE\n";
-  sql += "WHERE IDBEOWNER = ";
-  sql += idbeowner ? `'${idbeowner}'` : "''";
-  sql += " AND USERKEY = ";
-  sql += userkey ? `'${userkey}';\n\n` : "'';\n\n";
-
-  // Query 11 - Vendor Payment Terms
-  sql += "--AP047: Voucher Payment Term Definition Maintenance\n";
-  sql += "SELECT * FROM VENDORPAYMENTTERMSDEFINITION\n";
-  sql += "WHERE IDBEOWNER = ";
-  sql += idbeowner ? `'${idbeowner}'` : "''";
-  sql += " AND USERKEY = ";
-  sql += userkey ? `'${userkey}';\n\n` : "'';\n\n";
-
-  // Final - Imports with config
-  sql += "--Imports that have been stamped with the XREF Config\n";
-  sql += "SELECT * FROM COREINTERFACECONFIGIMPORT;\n";
-
-  
-  if (idbeowner && userkey) {
-  // SM021 — Journal Definitions Maintenance (USERKEY used to pull Journal Definitions)
-  sql += "--SM021: Journal Definitions Maintenance\n";
-  sql += "SELECT * FROM JOURNALDEFINITION\n";
-  sql += "WHERE IDBEOWNER = " + (idbeowner ? `'${idbeowner}'` : "''") + " AND USERKEY = " + (userkey ? `'${userkey}'` : "''") + ";\n\n";
-
+    });
   }
-  if (idbeowner && userkey) {
-  // SM093 — Workflow Definition Maintenance (USERKEY used to pull Workflow Definitions)
-  sql += "--SM093: Workflow Definition Maintenance\n";
-  sql += "SELECT * FROM WORKFLOWDEFINITION\n";
-  sql += "WHERE IDBEOWNER = " + (idbeowner ? `'${idbeowner}'` : "''") + " AND USERKEY = " + (userkey ? `'${userkey}'` : "''") + ";\n\n";
 
+  // Queries 8–10: Journal Definitions, Workflow, Voucher Type
+  if (owners.length && userkeys.length) {
+    const defs = [
+      { comment: "--SM021: Journal Definitions Maintenance", table: "JOURNALDEFINITION" },
+      { comment: "--SM093: Workflow Definition Maintenance", table: "WORKFLOWDEFINITION" },
+      { comment: "--AP100: Voucher Document Type", table: "VOUCHERDOCUMENTTYPE" }
+    ];
+    defs.forEach(def => {
+      owners.forEach(owner => {
+        userkeys.forEach(key => {
+          output.push(`${def.comment}\nSELECT * FROM ${def.table} WHERE IDBEOWNER = '${owner}' AND USERKEY = '${key}';`);
+        });
+      });
+    });
   }
-  if (idbeowner && userkey) {
-  // AP100 — Voucher Document Type (USERKEY used to pull Voucher Document Type)
-  sql += "--AP100: Voucher Document Type\n";
-  sql += "SELECT * FROM VOUCHERDOCUMENTTYPE\n";
-  sql += "WHERE IDBEOWNER = " + (idbeowner ? `'${idbeowner}'` : "''") + " AND USERKEY = " + (userkey ? `'${userkey}'` : "''") + ";\n\n";
 
+  // Query 11: AP047 - Pay Term Definition
+  if (owners.length && userkeysPayTerm.length) {
+    owners.forEach(owner => {
+      userkeysPayTerm.forEach(key => {
+        output.push(`--AP047: Voucher Payment Term Definition Maintenance\nSELECT * FROM VENDORPAYMENTTERMSDEFINITION WHERE IDBEOWNER = '${owner}' AND USERKEY = '${key}';`);
+      });
+    });
   }
-  // Vendor Payment Terms Definition (separate USERKEY input used to pull Payment Term Definition)
-  sql += "--Vendor Payment Terms Definition\n";
-  sql += "SELECT * FROM VENDORPAYMENTTERMSDEFINITION\n";
-  sql += "WHERE IDBEOWNER = " + (idbeowner ? `'${idbeowner}'` : "''") + " AND USERKEY = " + (userkeyPay ? `'${userkeyPay}'` : "''") + ";\n\n";
-document.getElementById("output17").value = sql;
-}
 
-function showQueries17() {
-  generateSQL17();
+  // Final static query
+  output.push(`--Imports that have been stamped with the XREF Config\nSELECT * FROM COREINTERFACECONFIGIMPORT;`);
+
+  document.getElementById("output17").value = output.join("\n\n");
 }
 
 
@@ -2505,10 +2450,48 @@ function showAllQueries16() {
   generateSQL16();
 }
 
-function showAllQueries17() {
-  document.getElementById("input17_gl_mtd_no").value = "1001,1002";
-  generateSQL17();
+function showQueries17() {
+  const allQueries = `
+--QSTAGXLSIMP - JOURNAL_ID & TRANS_ID will determine what type of file is being uploaded (AR, AP, GL)
+--This query will retrieve the current MT100 Configuration:
+SELECT * FROM JOURNAL_ID_IMPORT;
+
+--MT100 > QCFS TAB
+SELECT * FROM SXREF_CORE_INTFC_QCFS_EXT;
+
+--MT100 > AFE Tab
+SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_AFE WHERE TRANS_TYPE = '' AND JOURNAL_ID = '';
+
+--MT100 > DDA Tab
+SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_DDA WHERE TRANS_TYPE = '' AND JOURNAL_ID = '';
+
+--MT100 > JIB Tab
+SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_JIB WHERE TRANS_TYPE = '' AND JOURNAL_ID = '';
+
+--MT100 > LOS Tab
+SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_LOS WHERE TRANS_TYPE = '' AND JOURNAL_ID = '';
+
+--MT100 > LOS DD Tab
+SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_LOSDD WHERE TRANS_TYPE = '' AND JOURNAL_ID = '';
+
+--SM021: Journal Definitions Maintenance
+SELECT * FROM JOURNALDEFINITION WHERE IDBEOWNER = '' AND USERKEY = '';
+
+--SM093: Workflow Definition Maintenance
+SELECT * FROM WORKFLOWDEFINITION WHERE IDBEOWNER = '' AND USERKEY = '';
+
+--AP100: Voucher Document Type
+SELECT * FROM VOUCHERDOCUMENTTYPE WHERE IDBEOWNER = '' AND USERKEY = '';
+
+--AP047: Voucher Payment Term Definition Maintenance
+SELECT * FROM VENDORPAYMENTTERMSDEFINITION WHERE IDBEOWNER = '' AND USERKEY = '';
+
+--Imports that have been stamped with the XREF Config
+SELECT * FROM COREINTERFACECONFIGIMPORT;
+  `;
+  document.getElementById("output17").value = allQueries.trim();
 }
+
 
 function showAllQueries18() {
   document.getElementById("input18_userkey").value = "118";
@@ -2531,7 +2514,6 @@ function showAllQueries19() {
 
 </script>
 </div>
-<!-- Injected by ChatGPT: Reset helpers -->
 <script>
 // --- Reset helpers (robust, id-based) ---
 function resetFields(...fields) {
