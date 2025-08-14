@@ -374,7 +374,7 @@ textarea {
 <button class="btn generate" onclick="expandAll()">Expand All</button>
 <button class="btn reset" onclick="collapseAll()">Collapse All</button>
 <button class="btn export" onclick="toggleTheme()">🌓 Toggle Theme</button>
-<button class="btn reset" onclick="resetAllInputs()">🧹 Reset All</button>
+<button class="btn reset" onclick="resetAllFields()">🧹 Reset All</button>
 
 <!--GUI Buttons-->
 <!-- Group 1: ESUITE, QCA, QCFS -->
@@ -696,53 +696,79 @@ textarea {
 </div>
 <!-- Scenario 14 Ends -->
 
-<!-- Scenario 14 Ends -->
-
 <!-- Scenario 15 Starts -->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario15')">Scenario 15: Accounting Periods</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario15')">Scenario 15: ADPUPLOAD</button>
 <div class="tab-content" id="scenario15">
-<h2>Scenario 15: Accounting Periods</h2>
-<label>ACCTG_MTH (YYYY-MM-DD):</label>
-<input id="input15_acctg_mth" placeholder="e.g., 2025-07-01"/>
-<button class="btn generate" onclick="generateSQL15()">⚙️ Generate SQL</button>
-<button class="btn default" onclick="showAllQueries15()">🗃 Show All Queries</button>
-<textarea id="output15" placeholder="SQL will appear here..." readonly=""></textarea>
-<button class="btn copy" onclick="copySQL('output15')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields('input15_acctg_mth','output15')">🔄 Reset</button>
-<button class="btn export" onclick="exportSQL('output15')">💾 Export</button>
-<div class="copy-success" id="output15_success">✅ Copied!</div>
+  <h2>Scenario 15: ADPUPLOAD</h2>
+  <label>Start UPDT_DT (YYYY-MM-DD):</label>
+  <input id="input15_start" placeholder="e.g., 2025-01-01" />
+  <label>End UPDT_DT (YYYY-MM-DD):</label>
+  <input id="input15_end" placeholder="e.g., 2025-01-31" />
+  <button class="btn generate" onclick="generateSQL15()">⚙️ Generate SQL</button>
+  <button class="btn default" onclick="showQueries15()">🗃 Show All Queries</button>
+  <textarea id="output15" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output15')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input15_start','input15_end','output15')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output15')">💾 Export</button>
+  <div class="copy-success" id="output15_success">✅ Copied!</div>
 </div>
 <!-- Scenario 15 Ends -->
 
-<!-- Scenario 16 Starts-->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario16')">Scenario 16: AR Detail</button>
+
+<!-- Scenario 16 Starts -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario16')">Scenario 16: Account Set Up (GL095) & Chart of Accounts (GL013)</button>
 <div class="tab-content" id="scenario16">
-<h2>Scenario 16: AR Detail</h2>
-<label>IDCUSTOMER:</label>
-<input id="input16_idcustomer" placeholder="e.g., 101"/>
-<button class="btn generate" onclick="generateSQL16()">⚙️ Generate SQL</button>
-<button class="btn default" onclick="showAllQueries16()">🗃 Show All Queries</button>
-<textarea id="output16" placeholder="SQL will appear here..." readonly=""></textarea>
-<button class="btn copy" onclick="copySQL('output16')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields('input16_idcustomer','output16')">🔄 Reset</button>
-<button class="btn export" onclick="exportSQL('output16')">💾 Export</button>
-<div class="copy-success" id="output16_success">✅ Copied!</div>
+  <h2>Scenario 16: Account Set Up (GL095) & Chart of Accounts (GL013)</h2>
+
+  <label>KEYFULL (Format: xxxx-xxxx, comma-separated):</label>
+  <input id="input16_keyfull" placeholder="e.g., 1234-5678,4321-8765" />
+
+  <label>IDBEOWNER (Business Unit ID):</label>
+  <input id="input16_idbeowner" placeholder="e.g., 103" />
+
+  <label>BA_NO (Business Associate Number):</label>
+  <input id="input16_ba_no" placeholder="e.g., 1001" />
+
+  <button class="btn generate" onclick="generateSQL16()">⚙️ Generate SQL</button>
+  <button class="btn default" onclick="showQueries16()">🗃 Show All Queries</button>
+  <textarea id="output16" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output16')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input16_keyfull','input16_idbeowner','input16_ba_no','output16')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output16')">💾 Export</button>
+  <div class="copy-success" id="output16_success">✅ Copied!</div>
 </div>
 <!-- Scenario 16 Ends -->
 
-<!-- Scenario 17 Starts-->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">Scenario 17: Journal Entries</button>
+
+<!-- Scenario 17 Starts -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">Scenario 17: MT100 / SM021 / SM093 / AP047</button>
 <div class="tab-content" id="scenario17">
-<h2>Scenario 17: Journal Entries</h2>
-<label>GL_MTD_NO (If multiple values, separate by commas):</label>
-<input id="input17_gl_mtd_no" placeholder="e.g., 1001,1002"/>
+  <h2>Scenario 17: MT100 / SM021 / SM093 / AP047 / XREF</h2>
+
+  <label>TRANS_TYPE (comma-separated):</label>
+  <input id="input17_transtype" placeholder="e.g., AP, AR" />
+
+  <label>JOURNAL_ID (comma-separated):</label>
+  <input id="input17_journalid" placeholder="e.g., 1100,2000" />
+
+  <label>IDBEOWNER:</label>
+  <input id="input17_idbeowner" placeholder="e.g., 103" />
+
+  <label>USERKEY:</label>
+  <input id="input17_userkey" placeholder="e.g., GL095" />
+
+  
+  <label>USERKEY (Payment Term Definition):</label>
+  <input id="input17_userkey_payterm" placeholder="e.g., AP047" />
+  <p class="hint">Note: This USERKEY will be used to pull <strong>Payment Term Definition</strong>.</p>
+  <p class="hint">For the other queries (SM021/SM093/AP100), the USERKEY above will be used to pull <strong>Journal Definitions</strong>, <strong>Workflow Definitions</strong>, and <strong>Voucher Document Type</strong>.</p>
 <button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
-<button class="btn default" onclick="showAllQueries17()">🗃 Show All Queries</button>
-<textarea id="output17" placeholder="SQL will appear here..." readonly=""></textarea>
-<button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields('input17_gl_mtd_no','output17')">🔄 Reset</button>
-<button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
-<div class="copy-success" id="output17_success">✅ Copied!</div>
+  <button class="btn default" onclick="showQueries17()">🗃 Show All Queries</button>
+  <textarea id="output17" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input17_transtype','input17_journalid','input17_idbeowner','input17_userkey','output17')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
+  <div class="copy-success" id="output17_success">✅ Copied!</div>
 </div>
 <!-- Scenario 17 Ends -->
 
@@ -875,12 +901,17 @@ function copySQL(id) {
     setTimeout(() => success.style.display = 'none', 1500);
   }
 }
-function resetFields(...fields) {
-  fields.forEach(fid => {
-    const el = document.getElementById(fid);
-    if (el) el.value = '';
-  });
+function resetAllFields() {
+  const inputs = Array.from(document.querySelectorAll("input")).map(el => el.id);
+  const textareas = Array.from(document.querySelectorAll("textarea")).map(el => el.id);
+  resetFields(...inputs, ...textareas);
+
+  const successMessages = document.querySelectorAll(".copy-success");
+  successMessages.forEach(msg => msg.style.display = 'none');
 }
+
+
+
 function exportSQL(id) {
   const content = document.getElementById(id).value;
   if (!content) return;
@@ -1659,6 +1690,25 @@ LEFT JOIN BUSINESSENTITY F ON A.IDBEOWNER = F.ID`
   document.getElementById("output14").value = sql.trim();
 }
 
+//Scenario 15
+function generateSQL15() {
+  const start = document.getElementById("input15_start").value.trim();
+  const end = document.getElementById("input15_end").value.trim();
+  let sql = "--Query details for ADP Import using an update date:\n";
+  sql += "SELECT * FROM QARCH_TRAN_IMPEXP_STATUS\n";
+  sql += "WHERE IMPEXP_ID = 'ADPQSTAGCOREIMP'";
+  if (start && end) {
+    sql += ` AND UPDT_DT BETWEEN '${start}' AND '${end}'`;
+  } else {
+    sql += " AND UPDT_DT BETWEEN '' AND ''";
+  }
+  sql += ";";
+  document.getElementById("output15").value = sql;
+}
+
+function showQueries15() {
+  generateSQL15();
+}
 
 
 // Scenario 16
@@ -1667,64 +1717,54 @@ function generateSQL16() {
   const idbeowner = document.getElementById("input16_idbeowner").value.trim();
   const ba_no = document.getElementById("input16_ba_no").value.trim();
 
-  const keyList = keyfull ? keyfull.split(',').map(x => `'${x.trim()}'`).join(', ') : null;
-  const output = [];
+  const keyfullList = keyfull ? keyfull.split(',').map(v => `'${v.trim()}'`).join(', ') : null;
+
+  let sql = "";
 
   // Query 1
-  if (keyfull) {
-    output.push(`--Query existing account details on GL095: 
-SELECT TOP 100 * 
-FROM   GENERALJOURNAL GJ 
-       JOIN BUSINESSENTITY BE
-         ON GJ.IDBEOWNER = BE.ID
-       JOIN GENERALJOURNALLINE GJL
-         ON GJ.ID = GJL.IDGENERALJOURNAL
-       JOIN ACCOUNT ACC
-         ON ACC.ID = GJL.IDACCOUNT
-WHERE
-	GJ.IDBEOWNER IN ('103')
-	and ACC.KEYFULL IN (${keyList});\n`);
-  }
+  sql += "--Query existing account details on GL095:\n";
+  sql += `SELECT TOP 100 * 
+FROM GENERALJOURNAL GJ 
+JOIN BUSINESSENTITY BE ON GJ.IDBEOWNER = BE.ID
+JOIN GENERALJOURNALLINE GJL ON GJ.ID = GJL.IDGENERALJOURNAL
+JOIN ACCOUNT ACC ON ACC.ID = GJL.IDACCOUNT
+WHERE GJ.IDBEOWNER IN ('103') AND ACC.KEYFULL `;
+  sql += keyfullList ? `IN (${keyfullList});\n\n` : "= '';\n\n";
 
   // Query 2
-  if (keyfull) {
-    output.push(`--Query additional account details from Account table: 
-SELECT B.* FROM ACCOUNT A
-JOIN UPS_ACCOUNT B
-ON A.ID = B.ID
-WHERE KEYFULL IN (${keyList});\n`);
-  }
+  sql += "--Query additional account details from Account table:\n";
+  sql += `SELECT B.* FROM ACCOUNT A
+JOIN UPS_ACCOUNT B ON A.ID = B.ID
+WHERE KEYFULL `;
+  sql += keyfullList ? `IN (${keyfullList});\n\n` : "= '';\n\n";
 
   // Query 3
-  if (idbeowner) {
-    output.push(`--Query Chart of Accounts by Business Unit: 
-select A.* from ACCOUNT A (NOLOCK) JOIN UPS_ACCOUNT UA ON UA.IDACCOUNT = A.ID 
-WHERE A.IDBEOWNER = '${idbeowner}';\n`);
-  }
+  sql += "--Query Chart of Accounts by Business Unit:\n";
+  sql += `SELECT A.* FROM ACCOUNT A (NOLOCK)
+JOIN UPS_ACCOUNT UA ON UA.IDACCOUNT = A.ID
+WHERE A.IDBEOWNER `;
+  sql += idbeowner ? `= '${idbeowner}';\n\n` : "= '';\n\n";
 
   // Query 4
-  if (ba_no) {
-    output.push(`--Query changes to a Business Unit(BA_NO): 
-SELECT * from SHIST_BA_ENTITY WHERE BA_NO = '${ba_no}';\n`);
-  }
+  sql += "--Query changes to a Business Unit (BA_NO):\n";
+  sql += `SELECT * FROM SHIST_BA_ENTITY WHERE BA_NO = `;
+  sql += ba_no ? `'${ba_no}';\n\n` : "' ';\n\n";
 
   // Query 5
-  if (keyfull) {
-    output.push(`--Query changes to an Account setup: 
-SELECT * FROM ACCOUNTHISTORY WHERE KEYFULL IN (${keyList});\n`);
-  }
+  sql += "--Query changes to an Account setup:\n";
+  sql += `SELECT * FROM ACCOUNTHISTORY WHERE KEYFULL `;
+  sql += keyfullList ? `IN (${keyfullList});\n\n` : "= '';\n\n";
 
-  // Query 6
-  if (keyfull) {
-    output.push(`--Query Details on GL095 by Account Number: 
-SELECT  GJ.ID,
+  // Query 6 (Full multi-join GL095 detail query)
+  sql += "--Query Details on GL095 by Account Number:\n";
+  sql += `SELECT  GJ.ID,
         GJ.IDSRCBEOWNER,
         GJ.IDBEOWNER,
-        BE.NAME                                                           AS  'BU_NAME',
-        BE.USERKEY                                                        AS  'BU_USERKEY',
+        BE.NAME AS 'BU_NAME',
+        BE.USERKEY AS 'BU_USERKEY',
         GJ.IDJOURNALDEFINITION,
         GJ.REFNUM,
-        GJ.[DESCRIPTION]                                                  AS  'DESCRIPTION',
+        GJ.[DESCRIPTION] AS 'DESCRIPTION',
         GJ.DATEACCT,
         GJ.NOTES,
         GJL.IDACCOUNT,
@@ -1733,9 +1773,9 @@ SELECT  GJ.ID,
         GJL.AMOUNT,
         GJL.FXAMOUNT,
         GJL.IDCURRENCY,
-        GJL.NOTES                                                         AS  'GENERALJOURNALLINE__NOTES',
+        GJL.NOTES AS 'GENERALJOURNALLINE__NOTES',
         ATL.BATCHUSERKEY,
-        COALESCE( J.NAME,  V.NAME,  I.NAME,  R.NAME,  D.NAME,  P.NAME,  C.NAME)  AS  'BATCH_NAME',
+        COALESCE(J.NAME, V.NAME, I.NAME, R.NAME, D.NAME, P.NAME, C.NAME) AS 'BATCH_NAME',
         ATL.IDAT_INSTANCE,
         ACC.KEYFULL,
         ACC.KEY1,
@@ -1745,15 +1785,15 @@ SELECT  GJ.ID,
         ACC.KEY5,
         ACC.[NAME],
         ACC.INTEGRITYDT,
-        ATI.ID                                                            AS  'INSTANCE_ID',
-        ATI.USERKEY                                                       AS  ATI_USERKEY,
-        JECCB.COSTCENTERCD,																				
+        ATI.ID AS 'INSTANCE_ID',
+        ATI.USERKEY AS ATI_USERKEY,
+        JECCB.COSTCENTERCD,
         JECCB.AFE_NO,
         JECCB.PROP_NO,
         JECCB.ASSET_ID,
         JECCB.INVEN_ID,
         JECCB.SER_NO,
-        JECCB.QUANTITY                                                    'JECUSTOMCODEBLOCK__QUANTITY',
+        JECCB.QUANTITY AS 'JECUSTOMCODEBLOCK__QUANTITY',
         JECCB.UOM_CD,
         JECCB.MAJ_PROD_CD,
         JECCB.LOC_CD,
@@ -1773,118 +1813,93 @@ SELECT  GJ.ID,
         JECCB.JIB_SUPPRESS,
         JECCB.MATERIAL_TRANSFER_NO,
         JECCB.COSTCENTERTYPECD,
-        JECCB.NOTES                                                       AS  'JECUSTOMCODEBLOCK__NOTES',
-        COALESCE( VEN.IDBUSINESSUNIT,  CUST.IDBUSINESSUNIT)                 AS  'BA',
-        COALESCE( COI.USERKEY,  VOI.USERKEY)                                AS  'OPEN_ITEM_USERKEY',
+        JECCB.NOTES AS 'JECUSTOMCODEBLOCK__NOTES',
+        COALESCE(VEN.IDBUSINESSUNIT, CUST.IDBUSINESSUNIT) AS 'BA',
+        COALESCE(COI.USERKEY, VOI.USERKEY) AS 'OPEN_ITEM_USERKEY',
         GLT.IDCUSTOMEROPENITEM,
         GLT.IDVENDOROPENITEM,
         GLT.IDCUSTOMEROPENITEMDIST,
         GLT.IDVENDOROPENITEMDIST,
-        COALESCE( COID.USERKEY,  VOID.USERKEY)                              AS  'OPEN_ITEM_DIST_USERKEY',
+        COALESCE(COID.USERKEY, VOID.USERKEY) AS 'OPEN_ITEM_DIST_USERKEY',
         GLT.IDINVOICE,
         IJ.INVOICENUM,
-        IT.USERKEY                                                        AS  'INV_USERKEY',
+        IT.USERKEY AS 'INV_USERKEY',
         GLT.IDRECEIPT,
         RJ.RECEIPTNUM,
         RJ.CUSTCHECKNUM,
-        CUST.IDBUSINESSUNIT                                               AS  'CUST_NO',
+        CUST.IDBUSINESSUNIT AS 'CUST_NO',
         RJ.DATEPAYMENT,
-        RT.USERKEY                                                        AS  'DEP_USERKEY',
+        RT.USERKEY AS 'DEP_USERKEY',
         GLT.IDVOUCHER,
         VJ.REFNUMDOC,
         BE.BUS_UNIT_CD,
         VEN.IDBUSINESSUNIT,
         VOID.DATEDOC,
         VOID.RECEIPT_DT,
-        JD.USERKEY                                                        AS  'JOURNALDEF',
+        JD.USERKEY AS 'JOURNALDEF',
         GJL.POST_JIB_IMAGE_ID,
-        CTF.VOUCHER_ID							 AS  SRC_VOUNUM,
-        CTF.INVOICE_ID                                                    AS  SRC_INVOICE_NO,
-        CTF.ACCTG_DT                                                      AS  SRC_DATEACCT,
-        CTF.SRC_REMIT_DESC                                                AS  SRC_REMIT_DESCR,
-        CTF.VENDOR_BA_NO                                                  AS  SRC_VENDOR_NO,
-        BA.BA_NM1                                                         AS  SRC_VENDOR_NM,
+        CTF.VOUCHER_ID AS SRC_VOUNUM,
+        CTF.INVOICE_ID AS SRC_INVOICE_NO,
+        CTF.ACCTG_DT AS SRC_DATEACCT,
+        CTF.SRC_REMIT_DESC AS SRC_REMIT_DESCR,
+        CTF.VENDOR_BA_NO AS SRC_VENDOR_NO,
+        BA.BA_NM1 AS SRC_VENDOR_NM,
         JECCB.VENDOR_CTR_NO,
         JECCB.SALES_TAX_DUE,
         JECCB.VENDOR_NO,
         JECCB.VENDOR_SUF,
-        CTF.SRC_OWNER_NO                                                  AS  SRC_OWNER_NO,
-        CTF.SRC_OWNER_SUB                                                 AS  SRC_OWNER_SUB,
-        CTF.SRC_CODE_BLOCK_COMMENTS                                       AS  SRC_CODE_BLOCK_COMMENTS,
-        CTF.AFE_SUB_CODE							 AS  SRC_ASSET_ID,
-        VEN.USERKEY							 AS  VENDOR_BA_NO,			
-        COALESCE( VJ.BA_SUF, CRJ.BA_SUF)					 AS  VENDOR_BA_SUF,			
-        VJ.BA_SUF,                                                                                                
-        BAEV.BA_NM1                                                       AS  VENDOR_BA_NM,
-	    GP.PROP_NM														 AS  PROP_NM
-FROM GENERALJOURNAL  GJ 
-JOIN  BUSINESSENTITY  BE  ON  GJ.IDBEOWNER  =  BE.ID
-JOIN  GENERALJOURNALLINE  GJL  ON  GJ.ID  =  GJL.IDGENERALJOURNAL
-JOIN  GENERALLEDGERTRANSACTION  GLT  ON  GLT.IDGENERALJOURNALLINE  =  GJL.ID
-JOIN  AUDITTRANSACTIONLOG  ATL  ON  ATL.ID  =  GJ.IDTRANSLOG
-LEFT  JOIN  AT_INSTANCE  ATI  ON  ATL.IDAT_INSTANCE  =  ATI.ID
-JOIN  ACCOUNT  ACC  ON  ACC.ID  =  GJL.IDACCOUNT
-LEFT  JOIN  JECUSTOMCODEBLOCKUPSTREAM  JECCB  ON  JECCB.IDGENERALJOURNALLINE  =  GJL.ID
-LEFT  JOIN  BATCHJOURNALENTRYMASTER  J  ON  J.USERKEY  =  ATL.BATCHUSERKEY
-                  AND  ATL.IDBEOWNER  =  J.IDBEOWNER
-LEFT  JOIN  BATCHVOUCHERMASTER  V  ON  V.USERKEY  =  ATL.BATCHUSERKEY
-                  AND  ATL.IDBEOWNER  =  V.IDBEOWNER
-LEFT  JOIN  BATCHINVOICEMASTER  I  ON  I.USERKEY  =  ATL.BATCHUSERKEY
-                  AND  ATL.IDBEOWNER  =  I.IDBEOWNER
-LEFT  JOIN  BATCHBANKRECONCILIATIONMASTER  R  ON  R.USERKEY  =  ATL.BATCHUSERKEY
-                  AND  ATL.IDBEOWNER  =  R.IDBEOWNER
-LEFT  JOIN  BATCHDEPOSITWITHMATCHMASTER  D  ON  D.USERKEY  =  ATL.BATCHUSERKEY
-                  AND  ATL.IDBEOWNER  =  D.IDBEOWNER
-LEFT  JOIN  BATCHPAYMENTAPPLICATIONMASTER  P  ON  P.USERKEY  =  ATL.BATCHUSERKEY
-                  AND  ATL.IDBEOWNER  =  P.IDBEOWNER
-LEFT  JOIN  BATCHCHECKRUNMASTER  C  ON  C.USERKEY  =  ATL.BATCHUSERKEY
-                  AND  ATL.IDBEOWNER  =  C.IDBEOWNER
-LEFT  JOIN  VENDOR  VEN  ON  GLT.IDVENDOR  =  VEN.ID
-LEFT  JOIN  CUSTOMER  CUST  ON  GLT.IDCUSTOMER  =  CUST.ID
-LEFT  JOIN  CUSTOMEROPENITEM  COI  ON  GLT.IDCUSTOMEROPENITEM  =  COI.ID
-LEFT  JOIN  VENDOROPENITEM  VOI  ON  GLT.IDVENDOROPENITEM  =  VOI.ID
-LEFT  JOIN  CUSTOMEROPENITEM  COID  ON  GLT.IDCUSTOMEROPENITEMDIST  =  COID.ID
-LEFT  JOIN  VENDOROPENITEM  VOID  ON  GLT.IDVENDOROPENITEMDIST  =  VOID.ID
-LEFT  JOIN  INVOICEJOURNAL  IJ  ON  IJ.ID  =  GLT.IDINVOICE
-LEFT  JOIN  INVOICETYPE  IT
-       ON  IJ.IDINVOICETYPE  =  IT.ID
-LEFT  JOIN  RECEIPTSJOURNAL  RJ  ON  RJ.ID  =  GLT.IDRECEIPT
-LEFT  JOIN  RECEIPTTYPE  RT  ON  RT.ID  =  RJ.IDRECEIPTTYPE
-LEFT  JOIN  VOUCHERJOURNAL  VJ  ON  VJ.ID  =  GLT.IDVOUCHER
-LEFT  JOIN  CHECKRUNJOURNAL  CRJ  ON  GLT.IDCHECKRUN  =  CRJ.ID
-LEFT  JOIN  JOURNALDEFINITION  JD
-       ON  JD.ID  =  GJ.IDJOURNALDEFINITION
-LEFT  JOIN  BATCHJOURNALENTRYLINE  BJL
-       ON  BJL.ID  =  GLT.IDBATCHJOURNALENTRYLINE
-          AND  BJL.IDBEOWNER  =  GJ.IDBEOWNER
-LEFT  JOIN  BATCHINVOICELINEITEM  BIL
-       ON  BIL.ID  =  GLT.IDBATCHINVOICELINEITEM
-          AND  BIL.IDBEOWNER  =  GJ.IDBEOWNER
-LEFT  JOIN  BATCHVOUCHERGLDISTRIBUTION  BVL
-       ON  BVL.ID  =  GLT.IDBATCHVOUCHERGLDISTRIBUTION
-	   AND  BVL.IDBEOWNER  =  GJ.IDBEOWNER
-LEFT  JOIN  JBTRN_CTF  CTF
-   ON  COALESCE(  COALESCE( BVL.SOURCE_CTF_ID,  BIL.SOURCE_CTF_ID),  BJL.SOURCE_CTF_ID)  =  CTF.CTF_LINE_ID       
-LEFT  JOIN  SCTRL_BA_ENTITY  BA
-       ON  BA.BA_NO  =  CTF.VENDOR_BA_NO
-LEFT  OUTER  JOIN  SCTRL_BA_ENTITY  BAEV
-             ON  BAEV.BA_NO  =  VEN.USERKEY
-LEFT  JOIN  GONL_PROP  GP
-	 ON  JECCB.PROP_NO  =  GP.PROP_NO
-WHERE KEYFULL IN (${keyList});\n`);
-  }
-
-  document.getElementById("output16").value = output.join("\n") || "-- No inputs provided. Nothing to generate.";
+        CTF.SRC_OWNER_NO AS SRC_OWNER_NO,
+        CTF.SRC_OWNER_SUB AS SRC_OWNER_SUB,
+        CTF.SRC_CODE_BLOCK_COMMENTS AS SRC_CODE_BLOCK_COMMENTS,
+        CTF.AFE_SUB_CODE AS SRC_ASSET_ID,
+        VEN.USERKEY AS VENDOR_BA_NO,
+        COALESCE(VJ.BA_SUF, CRJ.BA_SUF) AS VENDOR_BA_SUF,
+        VJ.BA_SUF,
+        BAEV.BA_NM1 AS VENDOR_BA_NM,
+        GP.PROP_NM
+FROM GENERALJOURNAL GJ
+JOIN BUSINESSENTITY BE ON GJ.IDBEOWNER = BE.ID
+JOIN GENERALJOURNALLINE GJL ON GJ.ID = GJL.IDGENERALJOURNAL
+JOIN GENERALLEDGERTRANSACTION GLT ON GLT.IDGENERALJOURNALLINE = GJL.ID
+JOIN AUDITTRANSACTIONLOG ATL ON ATL.ID = GJ.IDTRANSLOG
+LEFT JOIN AT_INSTANCE ATI ON ATL.IDAT_INSTANCE = ATI.ID
+JOIN ACCOUNT ACC ON ACC.ID = GJL.IDACCOUNT
+LEFT JOIN JECUSTOMCODEBLOCKUPSTREAM JECCB ON JECCB.IDGENERALJOURNALLINE = GJL.ID
+LEFT JOIN BATCHJOURNALENTRYMASTER J ON J.USERKEY = ATL.BATCHUSERKEY AND ATL.IDBEOWNER = J.IDBEOWNER
+LEFT JOIN BATCHVOUCHERMASTER V ON V.USERKEY = ATL.BATCHUSERKEY AND ATL.IDBEOWNER = V.IDBEOWNER
+LEFT JOIN BATCHINVOICEMASTER I ON I.USERKEY = ATL.BATCHUSERKEY AND ATL.IDBEOWNER = I.IDBEOWNER
+LEFT JOIN BATCHBANKRECONCILIATIONMASTER R ON R.USERKEY = ATL.BATCHUSERKEY AND ATL.IDBEOWNER = R.IDBEOWNER
+LEFT JOIN BATCHDEPOSITWITHMATCHMASTER D ON D.USERKEY = ATL.BATCHUSERKEY AND ATL.IDBEOWNER = D.IDBEOWNER
+LEFT JOIN BATCHPAYMENTAPPLICATIONMASTER P ON P.USERKEY = ATL.BATCHUSERKEY AND ATL.IDBEOWNER = P.IDBEOWNER
+LEFT JOIN BATCHCHECKRUNMASTER C ON C.USERKEY = ATL.BATCHUSERKEY AND ATL.IDBEOWNER = C.IDBEOWNER
+LEFT JOIN VENDOR VEN ON GLT.IDVENDOR = VEN.ID
+LEFT JOIN CUSTOMER CUST ON GLT.IDCUSTOMER = CUST.ID
+LEFT JOIN CUSTOMEROPENITEM COI ON GLT.IDCUSTOMEROPENITEM = COI.ID
+LEFT JOIN VENDOROPENITEM VOI ON GLT.IDVENDOROPENITEM = VOI.ID
+LEFT JOIN CUSTOMEROPENITEM COID ON GLT.IDCUSTOMEROPENITEMDIST = COID.ID
+LEFT JOIN VENDOROPENITEM VOID ON GLT.IDVENDOROPENITEMDIST = VOID.ID
+LEFT JOIN INVOICEJOURNAL IJ ON IJ.ID = GLT.IDINVOICE
+LEFT JOIN INVOICETYPE IT ON IJ.IDINVOICETYPE = IT.ID
+LEFT JOIN RECEIPTSJOURNAL RJ ON RJ.ID = GLT.IDRECEIPT
+LEFT JOIN RECEIPTTYPE RT ON RT.ID = RJ.IDRECEIPTTYPE
+LEFT JOIN VOUCHERJOURNAL VJ ON VJ.ID = GLT.IDVOUCHER
+LEFT JOIN CHECKRUNJOURNAL CRJ ON GLT.IDCHECKRUN = CRJ.ID
+LEFT JOIN JOURNALDEFINITION JD ON JD.ID = GJ.IDJOURNALDEFINITION
+LEFT JOIN BATCHJOURNALENTRYLINE BJL ON BJL.ID = GLT.IDBATCHJOURNALENTRYLINE AND BJL.IDBEOWNER = GJ.IDBEOWNER
+LEFT JOIN BATCHINVOICELINEITEM BIL ON BIL.ID = GLT.IDBATCHINVOICELINEITEM AND BIL.IDBEOWNER = GJ.IDBEOWNER
+LEFT JOIN BATCHVOUCHERGLDISTRIBUTION BVL ON BVL.ID = GLT.IDBATCHVOUCHERGLDISTRIBUTION AND BVL.IDBEOWNER = GJ.IDBEOWNER
+LEFT JOIN JBTRN_CTF CTF ON COALESCE(COALESCE(BVL.SOURCE_CTF_ID, BIL.SOURCE_CTF_ID), BJL.SOURCE_CTF_ID) = CTF.CTF_LINE_ID
+LEFT JOIN SCTRL_BA_ENTITY BA ON BA.BA_NO = CTF.VENDOR_BA_NO
+LEFT OUTER JOIN SCTRL_BA_ENTITY BAEV ON BAEV.BA_NO = VEN.USERKEY
+LEFT JOIN GONL_PROP GP ON JECCB.PROP_NO = GP.PROP_NO
+WHERE KEYFULL `;
+  sql += keyfullList ? `IN (${keyfullList});` : "= '';";
+  
+  document.getElementById("output16").value = sql;
 }
-function copySQL16() {
-  const textarea = document.getElementById("output16");
-  textarea.select();
-  document.execCommand("copy");
-  const success = document.getElementById("output16_success");
-  if (success) {
-    success.style.display = "inline";
-    setTimeout(() => success.style.display = "none", 1500);
-  }
+
+function showQueries16() {
+  generateSQL16();
 }
 
 function resetSQL16() {
@@ -1911,174 +1926,116 @@ function exportSQL16() {
 
 // Scenario 17
 function generateSQL17() {
-  const splitCSV = (v) => (v || '')
-    .trim()
-    .split(',')
-    .map(s => s.trim())
-    .filter(Boolean);
+  const trans = document.getElementById("input17_transtype").value.trim();
+  const journal = document.getElementById("input17_journalid").value.trim();
+  const idbeowner = document.getElementById("input17_idbeowner").value.trim();
+  const userkey = document.getElementById("input17_userkey").value.trim();
+  const userkeyPay = document.getElementById("input17_userkey_payterm") ? document.getElementById("input17_userkey_payterm").value.trim() : "";
 
-  const transTypes   = splitCSV(document.getElementById('input17_trans_type').value);
-  const journalIds   = splitCSV(document.getElementById('input17_journal_id').value);
-  const idbeowners   = splitCSV(document.getElementById('input17_idbeowner').value);
-  const userkeysGen  = splitCSV(document.getElementById('input17_userkey_general').value); // for Queries 8–10
-  const userkeysPT   = splitCSV(document.getElementById('input17_userkey_pt').value);      // for Query 11 only
+  const transList = trans ? trans.split(',').map(v => `'${v.trim()}'`) : [];
+  const journalList = journal ? journal.split(',').map(v => `'${v.trim()}'`) : [];
 
-  let sql = '';
+  let sql = "";
 
-  // Query 1 (no inputs; always populate)
-  sql += `--QSTAGXLSIMP - JOURNAL_ID & TRANS_ID will determine what type of file is being uploaded (AR, AP, GL)\n`;
-  sql += `--This query will retrieve the current MT100 Configuration:\n`;
-  sql += `SELECT * FROM JOURNAL_ID_IMPORT;\n\n`;
+  // Query 1 - Static config info
+  sql += "--QSTAGXLSIMP - JOURNAL_ID & TRANS_ID will determine what type of file is being uploaded (AR, AP, GL)\n";
+  sql += "--This query will retrieve the current MT100 Configuration:\n";
+  sql += "SELECT * FROM JOURNAL_ID_IMPORT;\n\n";
 
-  // Queries 2–7 (require TRANS_TYPE & JOURNAL_ID). Emit per combination.
-  if (transTypes.length && journalIds.length) {
-    transTypes.forEach(tt => {
-      journalIds.forEach(jid => {
-        // Query 2
-        sql += `--MT100 > QCFS TAB\n`;
-        sql += `SELECT * FROM SXREF_CORE_INTFC_QCFS_EXT;\n\n`;
+  // Query 2 - QCFS Tab
+  sql += "--MT100 > QCFS TAB\n";
+  sql += "SELECT * FROM SXREF_CORE_INTFC_QCFS_EXT;\n\n";
 
-        // Query 3
-        sql += `--MT100 > AFE Tab\n`;
-        sql += `SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_AFE WHERE TRANS_TYPE = '${tt}' AND JOURNAL_ID = '${jid}';\n\n`;
+  // Queries 3 to 7 - AFE, DDA, JIB, LOS, LOSDD Tabs
+  const importTables = [
+    ["AFE", "QCTRL_CORE_INTEFACE_IMPORT_CONFIG_AFE"],
+    ["DDA", "QCTRL_CORE_INTEFACE_IMPORT_CONFIG_DDA"],
+    ["JIB", "QCTRL_CORE_INTEFACE_IMPORT_CONFIG_JIB"],
+    ["LOS", "QCTRL_CORE_INTEFACE_IMPORT_CONFIG_LOS"],
+    ["LOSDD", "QCTRL_CORE_INTEFACE_IMPORT_CONFIG_LOSDD"]
+  ];
 
-        // Query 4
-        sql += `--MT100 > DDA Tab\n`;
-        sql += `SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_DDA WHERE TRANS_TYPE = '${tt}' AND JOURNAL_ID = '${jid}';\n\n`;
-
-        // Query 5
-        sql += `--MT100 > JIB Tab\n`;
-        sql += `SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_JIB WHERE TRANS_TYPE = '${tt}' AND JOURNAL_ID = '${jid}';\n\n`;
-
-        // Query 6
-        sql += `--MT100 > LOS Tab\n`;
-        sql += `SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_LOS WHERE TRANS_TYPE = '${tt}' AND JOURNAL_ID = '${jid}';\n\n`;
-
-        // Query 7
-        sql += `--MT100 > LOS DD Tab\n`;
-        sql += `SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_LOSDD WHERE TRANS_TYPE = '${tt}' AND JOURNAL_ID = '${jid}';\n\n`;
+  importTables.forEach(([tab, table]) => {
+    sql += `--MT100 > ${tab} Tab\n`;
+    if (transList.length && journalList.length) {
+      transList.forEach(t => {
+        journalList.forEach(j => {
+          sql += `SELECT * FROM ${table} WHERE TRANS_TYPE = ${t} AND JOURNAL_ID = ${j};\n`;
+        });
       });
-    });
+    } else {
+      sql += `--SELECT * FROM ${table} WHERE TRANS_TYPE = ' ' AND JOURNAL_ID = ' ';\n`;
+    }
+    sql += "\n";
+  });
+
+  // Query 8 - Journal Definitions
+  sql += "--SM021: Journal Definitions Maintenance\n";
+  sql += "SELECT * FROM JOURNALDEFINITION\n";
+  sql += "WHERE IDBEOWNER = ";
+  sql += idbeowner ? `'${idbeowner}'` : "''";
+  sql += " AND USERKEY = ";
+  sql += userkey ? `'${userkey}';\n\n` : "'';\n\n";
+
+  // Query 9 - Workflow Definitions
+  sql += "--SM093: Workflow Definition Maintenance\n";
+  sql += "SELECT * FROM WORKFLOWDEFINITION\n";
+  sql += "WHERE IDBEOWNER = ";
+  sql += idbeowner ? `'${idbeowner}'` : "''";
+  sql += " AND USERKEY = ";
+  sql += userkey ? `'${userkey}';\n\n` : "'';\n\n";
+
+  // Query 10 - Voucher Doc Types
+  sql += "--AP100: Voucher Document Type\n";
+  sql += "SELECT * FROM VOUCHERDOCUMENTTYPE\n";
+  sql += "WHERE IDBEOWNER = ";
+  sql += idbeowner ? `'${idbeowner}'` : "''";
+  sql += " AND USERKEY = ";
+  sql += userkey ? `'${userkey}';\n\n` : "'';\n\n";
+
+  // Query 11 - Vendor Payment Terms
+  sql += "--AP047: Voucher Payment Term Definition Maintenance\n";
+  sql += "SELECT * FROM VENDORPAYMENTTERMSDEFINITION\n";
+  sql += "WHERE IDBEOWNER = ";
+  sql += idbeowner ? `'${idbeowner}'` : "''";
+  sql += " AND USERKEY = ";
+  sql += userkey ? `'${userkey}';\n\n` : "'';\n\n";
+
+  // Final - Imports with config
+  sql += "--Imports that have been stamped with the XREF Config\n";
+  sql += "SELECT * FROM COREINTERFACECONFIGIMPORT;\n";
+
+  
+  if (idbeowner && userkey) {
+  // SM021 — Journal Definitions Maintenance (USERKEY used to pull Journal Definitions)
+  sql += "--SM021: Journal Definitions Maintenance\n";
+  sql += "SELECT * FROM JOURNALDEFINITION\n";
+  sql += "WHERE IDBEOWNER = " + (idbeowner ? `'${idbeowner}'` : "''") + " AND USERKEY = " + (userkey ? `'${userkey}'` : "''") + ";\n\n";
+
   }
+  if (idbeowner && userkey) {
+  // SM093 — Workflow Definition Maintenance (USERKEY used to pull Workflow Definitions)
+  sql += "--SM093: Workflow Definition Maintenance\n";
+  sql += "SELECT * FROM WORKFLOWDEFINITION\n";
+  sql += "WHERE IDBEOWNER = " + (idbeowner ? `'${idbeowner}'` : "''") + " AND USERKEY = " + (userkey ? `'${userkey}'` : "''") + ";\n\n";
 
-  // Queries 8–10 (require IDBEOWNER + USERKEY (General)). Emit per combination.
-  if (idbeowners.length && userkeysGen.length) {
-    idbeowners.forEach(idbe => {
-      userkeysGen.forEach(uk => {
-        // Query 8
-        sql += `--SM021: Journal Definitions Maintenance\n`;
-        sql += `SELECT * FROM JOURNALDEFINITION\nWHERE IDBEOWNER = ${idbe}\nAND USERKEY = '${uk}';\n\n`;
-
-        // Query 9
-        sql += `--SM093: Workflow Definition Maintenance\n`;
-        sql += `SELECT * FROM WORKFLOWDEFINITION\nWHERE IDBEOWNER = ${idbe}\nAND USERKEY = '${uk}';\n\n`;
-
-        // Query 10
-        sql += `--AP100: Voucher Document Type\n`;
-        sql += `SELECT * FROM VOUCHERDOCUMENTTYPE\nWHERE IDBEOWNER = ${idbe}\nAND USERKEY = '${uk}';\n\n`;
-      });
-    });
   }
+  if (idbeowner && userkey) {
+  // AP100 — Voucher Document Type (USERKEY used to pull Voucher Document Type)
+  sql += "--AP100: Voucher Document Type\n";
+  sql += "SELECT * FROM VOUCHERDOCUMENTTYPE\n";
+  sql += "WHERE IDBEOWNER = " + (idbeowner ? `'${idbeowner}'` : "''") + " AND USERKEY = " + (userkey ? `'${userkey}'` : "''") + ";\n\n";
 
-  // Query 11 (AP047) — requires IDBEOWNER + USERKEY (Payment Terms) ONLY
-  if (idbeowners.length && userkeysPT.length) {
-    idbeowners.forEach(idbe => {
-      userkeysPT.forEach(ukPT => {
-        sql += `--AP047: Voucher Payment Term Definition Maintenance\n`;
-        sql += `SELECT * FROM VENDORPAYMENTTERMSDEFINITION\nWHERE IDBEOWNER = ${idbe}\nAND USERKEY = '${ukPT}';\n\n`;
-      });
-    });
   }
-
-  // Always include - autopopulated (no inputs)
-  sql += `--Imports that have been stamped with the XREF Config\n`;
-  sql += `SELECT * FROM COREINTERFACECONFIGIMPORT;\n`;
-
-  document.getElementById('output17').value = sql;
+  // Vendor Payment Terms Definition (separate USERKEY input used to pull Payment Term Definition)
+  sql += "--Vendor Payment Terms Definition\n";
+  sql += "SELECT * FROM VENDORPAYMENTTERMSDEFINITION\n";
+  sql += "WHERE IDBEOWNER = " + (idbeowner ? `'${idbeowner}'` : "''") + " AND USERKEY = " + (userkeyPay ? `'${userkeyPay}'` : "''") + ";\n\n";
+document.getElementById("output17").value = sql;
 }
 
-//Scenario 18
-function generateSQL18() {
-  const userkey = document.getElementById('input18_userkey').value.trim();
-
-  let sql = `--Match the BU to the Userkey in the DB\n`;
-  sql += `SELECT \n`;
-  sql += `    BE.USERKEY,\n`;
-  sql += `    BE.NAME,\n`;
-  sql += `    C.IDBEOWNER,\n`;
-  sql += `    C.ID,\n`;
-  sql += `    C.*\n`;
-  sql += `FROM BUSINESSENTITY BE\n`;
-  sql += `JOIN CUSTOMER C\n`;
-  sql += `    ON BE.ID = C.ID\n`;
-  if (userkey) {
-    sql += `WHERE BE.USERKEY = '${userkey}';\n`;
-  } else {
-    sql += `--WHERE BE.USERKEY = ' ' -- Please enter USERKEY above\n`;
-  }
-
-  document.getElementById('output18').value = sql;
-}
-
-//Scenario 19
-function generateScenario19() {
-  const createdStart = document.getElementById("input19_createdStart").value.trim();
-  const createdEnd = document.getElementById("input19_createdEnd").value.trim();
-  const jeUserKey = document.getElementById("input19_jeUserKey").value.trim();
-  const apUserKey = document.getElementById("input19_apUserKey").value.trim();
-  const datetoPost = document.getElementById("input19_datetoPost").value.trim();
-  const processQueueId = document.getElementById("input19_processQueueId").value.trim();
-  const updateStart = document.getElementById("input19_updateStart").value.trim();
-  const updateEnd = document.getElementById("input19_updateEnd").value.trim();
-
-  let output = "";
-
-  if (createdStart && createdEnd) {
-    output += `--Audit of batches posted during a POSTWKFLOW Run\n`;
-    output += `SELECT * FROM AUDITWORKFLOWLOG A\nWHERE A.CREATED BETWEEN '${createdStart}' AND '${createdEnd}' AND ORIGWORKFLOWSTATUS = 90\nORDER BY A.CREATED;\n\n`;
-  }
-
-  if (jeUserKey) {
-    output += `--To investigate JE batch\nSELECT * FROM BATCHJOURNALENTRYMASTER A\nJOIN BATCHJOURNALENTRYDETAIL B ON A.ID = B.IDBATJE\nJOIN BATCHJOURNALENTRYLINE C ON B.ID = C.IDBATJEDETAIL\nWHERE A.USERKEY = '${jeUserKey}'\nORDER BY A.LASTUPDATE DESC;\n\n`;
-  }
-
-  if (apUserKey) {
-    output += `--To investigate AP batch\nSELECT * FROM BATCHVOUCHERMASTER BM\nJOIN BATCHVOUCHERDETAIL BD ON BM.ID = BD.IDBATVOUMASTER\nJOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL\nWHERE BM.USERKEY = '${apUserKey}'\nORDER BY BM.LASTUPDATE DESC;\n\n`;
-  }
-
-  output += `--Total Number of Batches in Post Pending Status\nSELECT * FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90;\n\n`;
-
-  output += `--Total Lines in each JE Batch in Post Pending\nSELECT A.USERKEY, A.NAME, COUNT(*) AS Total_Lines_In_Batch\nFROM BATCHJOURNALENTRYMASTER A\nJOIN BATCHJOURNALENTRYDETAIL B ON A.ID = B.IDBATJE\nJOIN BATCHJOURNALENTRYLINE C ON B.ID = C.IDBATJEDETAIL\nJOIN BATCHJECUSTOMCODEBLOCKUPSTREAM D ON C.ID = D.IDBATJELINE\nJOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE A.USERKEY IN (SELECT USERKEY FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90)\nGROUP BY A.USERKEY, A.NAME;\n\n`;
-
-  output += `--Total Lines in each Invoice Batch in Post Pending\nSELECT A.USERKEY, A.NAME, COUNT(*) AS Total_Lines_In_Batch\nFROM BATCHINVOICEMASTER A\nJOIN BATCHINVOICEDETAIL B ON A.ID = B.IDBATINVMASTER\nJOIN BATCHINVOICELINEITEM C ON B.ID = C.IDBATINVDETAIL\nJOIN BATCHINVOICECUSTOMCODEBLOCKUPSTREAM D ON C.ID = D.IDBATINVLINEITEM\nJOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE A.USERKEY IN (SELECT USERKEY FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90)\nGROUP BY A.USERKEY, A.NAME;\n\n`;
-
-  if (datetoPost) {
-    output += `--Batches with DATETOPOST <= '${datetoPost}'\nSELECT IBX.IDBATCHMASTER, IBX.ID, IBX.BATCHTYPE, IBX.CODEBLOCKGROUP\nFROM UVW_WORKFLOWINBOX IBX\nWHERE IBX.DATETOPOST <= '${datetoPost}' AND IBX.STATUSWORKFLOW IN (90);\n\n`;
-  }
-
-  output += `--POSTWKFL Vouchers in Post Pending\nSELECT * FROM BATCHVOUCHERMASTER WHERE STATUSWORKFLOW = '90' ORDER BY LASTUPDATE DESC;\n\n`;
-  output += `--POSTWKFL JEs in Post Pending\nSELECT * FROM BATCHJOURNALENTRYMASTER WHERE STATUSWORKFLOW = '90' ORDER BY LASTUPDATE DESC;\n\n`;
-
-  output += `--Last Posted JEs\nSELECT USERKEY, NAME, * FROM BATCHJOURNALENTRYMASTER WHERE STATUSWORKFLOW = '100' ORDER BY LASTUPDATE DESC;\n\n`;
-  output += `--Last Posted Vouchers\nSELECT USERKEY, NAME, * FROM BATCHVOUCHERMASTER WHERE STATUSWORKFLOW = '100' ORDER BY LASTUPDATE DESC;\n\n`;
-
-  if (processQueueId) {
-    output += `--POSTWKFL Process Investigation\nSELECT START_DT,PROCESS_QUEUE_ID,PROCESS_ID,STATUS_CD,USER_ID, PARENT_PROCESS_QUEUE_ID, MASTER_PROCESS_QUEUE_ID,* FROM QARCH_QUEU_PROCESS WHERE PROCESS_QUEUE_ID IN ('${processQueueId}') AND PROCESS_ID = 'POSTWKFL' ORDER BY QUEUE_DT DESC;\n\n`;
-
-    output += `--POSTWKFL Message Log\nSELECT LOG_MSG, LOG_DATE, PROCESS_QUEUE_ID, PROCESS_STEP_QUEUE_ID, LOG_MSG_TYPE_CD, * FROM QARCH_PROCESS_MSG_LOG WHERE PROCESS_QUEUE_ID IN ('${processQueueId}');\n\n`;
-  }
-
-  if (updateStart && updateEnd) {
-    output += `--WF History Queries (QARCH_HIST_WF_ROUTE_BASE)\nSELECT * FROM QARCH_HIST_WF_ROUTE_BASE WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
-
-    output += `--WF History Queries (QARCH_HIST_WF_ROUTE_SMPL)\nSELECT * FROM QARCH_HIST_WF_ROUTE_SMPL WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
-
-    output += `--WF History Queries (QARCH_HIST_WF_ROUTE_SMPL_STEP)\nSELECT * FROM QARCH_HIST_WF_ROUTE_SMPL_STEP WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
-
-    output += `--WF History Queries (QARCH_HIST_WF_USER_LIMIT_AMT)\nSELECT * FROM QARCH_HIST_WF_USER_LIMIT_AMT WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
-  }
-
-  document.getElementById("output19").value = output || "-- Please provide at least one input to generate SQL.";
+function showQueries17() {
+  generateSQL17();
 }
 
 
@@ -2573,5 +2530,46 @@ function showAllQueries19() {
 
 
 </script>
-</div></body>
+</div>
+<!-- Injected by ChatGPT: Reset helpers -->
+<script>
+// --- Reset helpers (robust, id-based) ---
+function resetFields(...fields) {
+  fields.forEach(fid => {
+    const el = document.getElementById(fid);
+    if (!el) return;
+    const tag = (el.tagName || '').toUpperCase();
+
+    if (tag === 'INPUT' || tag === 'TEXTAREA') {
+      if (el.type === 'checkbox' || el.type === 'radio') {
+        el.checked = false;
+      } else {
+        el.value = '';
+      }
+    } else {
+      if ('value' in el && typeof el.value === 'string') el.value = '';
+      if (typeof el.textContent === 'string') el.textContent = '';
+      if (el.classList && el.classList.contains('output')) {
+        el.textContent = '';
+      }
+    }
+  });
+
+  document.querySelectorAll('.copy-success, .copy-toast, .copied-badge').forEach(msg => {
+    if (msg && msg.style) msg.style.display = 'none';
+  });
+}
+
+function resetAllFields() {
+  const ids = [];
+  document.querySelectorAll('input, textarea, .output, pre[id^="output"], textarea[id^="output"], textarea[id^="sqlOutput"]').forEach(el => {
+    if (el.id) ids.push(el.id);
+  });
+
+  // Use spread so scenario reset patterns continue to work
+  resetFields(...ids);
+}
+</script>
+
+</body>
 </html>
