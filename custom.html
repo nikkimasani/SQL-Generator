@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>SQL Generator — Custom Scenarios</title>
 <style>
   :root{--bg:#fff;--fg:#111;--muted:#6b7280;--primary:#0b5cff;--br:12px;--bd:1px solid rgba(0,0,0,.12)}
@@ -111,78 +112,126 @@ h1{color:var(--header)}
 }
 
 </style>
+
+<style>
+:root {
+  --primary: #1976d2;
+  --light-bg: #f1f8ff;
+  --card: #e8f0fe;
+  --fg: #222;
+  --radius: 8px;
+}
+
+/* Buttons */
+button, .btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+button:hover, .btn:hover {
+  background: #1565c0;
+}
+
+/* Output textarea */
+#runnerOutput {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 12px;
+  border-radius: var(--radius);
+  width: 100%;
+  margin-top: 10px;
+  resize: vertical;
+  color: var(--fg);
+}
+
+/* Instructions card */
+.card {
+  background: var(--card);
+  border-left: 5px solid var(--primary);
+  padding: 16px;
+  border-radius: var(--radius);
+  margin: 20px auto;
+  max-width: 960px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+  animation: fadeInUp 0.4s ease-in-out;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="topbar"><h1>✨ SQL Generator — Custom Scenarios</h1><div class="right"><a href="index.html" class="btn small">↩️ Back to main</a><button id="themeToggle" class="btn small">🌗 Toggle</button></div></div>
-    <p class="muted">This page is standalone and uses your browser storage. Build scenarios with inputs and SQL templates, then generate filled queries. Use Export/Import to share with your team.</p>
+<div class="container">
+<div class="topbar"><h1>✨ SQL Generator — Custom Scenarios</h1><div class="right"><a class="btn small" href="index.html">↩️ Back to main</a><button class="btn small" id="themeToggle">🌗 Toggle</button></div></div>
+<p class="muted">This page is standalone and uses your browser storage. Build scenarios with inputs and SQL templates, then generate filled queries. Use Export/Import to share with your team.</p>
 <p style="margin-top: 10px; font-size: 15px; color: var(--fg); background: var(--card); padding: 12px; border-left: 5px solid var(--primary); border-radius: 6px;">
   🧠 <strong>Instructions:</strong> Use this tool to create and manage your own custom SQL scenarios. Click <strong>＋ New</strong> to build a new scenario with your desired inputs and SQL templates. Or select a saved scenario from the left panel to populate the form. You can then generate queries, <strong>copy</strong>, or <strong>export</strong> them. For any queries that REQUIRE an input variable, write the query out and use template variables encapsulated in curly braces like <code>{{INPUT}</code> or <code>{{INPUT_csv}}</code> for multiple inputs that need to be seperate by a comma. Formatting it this way this will dynamically inject values from inputs. Ensure you are selecting the correct data type for the required inputs.
 </p>
-
-
-    <div class="grid">
-      <!-- Sidebar -->
-      <div class="card">
-        <div style="display:flex;gap:.5rem;margin-bottom:.5rem">
-          <button id="btnNewScenario" class="btn small">＋ New</button>
-          <button id="btnExportScenarios" class="btn small">⬇️ Export</button>
-          <label class="btn small" for="importFile" style="cursor:pointer">⬆️ Import</label>
-          <input id="importFile" type="file" accept="application/json" style="display:none">
-        </div>
-        <input id="customSearch" class="input" placeholder="Search scenarios…" style="margin-bottom:.5rem">
-        <ul id="customList" class="list"></ul>
-      </div>
-
-      <!-- Editor + Runner -->
-      <div class="card">
-        <form id="editorForm" onsubmit="event.preventDefault(); saveEditor();">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
-            <div><label class="label">Title</label><input id="e_title" class="input" required placeholder="My Scenario"></div>
-            <div><label class="label">Tags (comma-separated)</label><input id="e_tags" class="input" placeholder="AP, GL, AR"></div>
-          </div>
-          <div style="margin-top:.5rem">
-            <label class="label">Description</label>
-            <textarea id="e_description" class="textarea" rows="2" placeholder="What this scenario does"></textarea>
-          </div>
-
-          <details style="margin-top:.75rem" open>
-            <summary>Inputs</summary>
-            <div id="inputsWrap" style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem"></div>
-            <button type="button" class="btn small" onclick="addInputRow()">＋ Add input</button>
-          </details>
-
-          <details style="margin-top:.75rem" open>
-            <summary>Queries</summary>
-            <div id="queriesWrap" style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem"></div>
-            <button type="button" class="btn small" onclick="addQueryRow()">＋ Add query</button>
-          </details>
-
-          <div style="display:flex;gap:.5rem;margin-top:1rem">
-            <button class="btn primary" type="submit">💾 Save</button>
-            <button class="btn" type="button" onclick="duplicateCurrent()">🧬 Duplicate</button>
-            <button class="btn danger" type="button" onclick="deleteCurrent()">🗑 Delete</button>
-          </div>
-        </form>
-
-        <hr style="margin:1rem 0">
-        <div id="runner">
-          <h3>Run Scenario</h3>
-          <div id="runnerInputs" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:.5rem"></div>
-          <button class="btn primary" type="button" onclick="runCustomScenario()">⚙️ Generate SQL</button>
-          <div style="margin-top:.75rem">
-            <label class="label">Output</label>
-            <textarea id="runnerOutput" class="textarea" rows="12"></textarea>
-            <div style="display:flex;gap:.5rem;margin-top:.5rem">
-              <button class="btn" type="button" onclick="copyFrom('runnerOutput')">📋 Copy</button>
-              <button class="btn" type="button" onclick="exportText('runnerOutput','custom_scenario.sql')">💾 Export .sql</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+<div class="grid">
+<!-- Sidebar -->
+<div class="card">
+<div style="display:flex;gap:.5rem;margin-bottom:.5rem">
+<button class="btn small" id="btnNewScenario">＋ New</button>
+<button class="btn small" id="btnExportScenarios">⬇️ Export</button>
+<label class="btn small" for="importFile" style="cursor:pointer">⬆️ Import</label>
+<input accept="application/json" id="importFile" style="display:none" type="file"/>
+</div>
+<input class="input" id="customSearch" placeholder="Search scenarios…" style="margin-bottom:.5rem"/>
+<ul class="list" id="customList"></ul>
+</div>
+<!-- Editor + Runner -->
+<div class="card">
+<form id="editorForm" onsubmit="event.preventDefault(); saveEditor();">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+<div><label class="label">Title</label><input class="input" id="e_title" placeholder="My Scenario" required=""/></div>
+<div><label class="label">Tags (comma-separated)</label><input class="input" id="e_tags" placeholder="AP, GL, AR"/></div>
+</div>
+<div style="margin-top:.5rem">
+<label class="label">Description</label>
+<textarea class="textarea" id="e_description" placeholder="What this scenario does" rows="2"></textarea>
+</div>
+<details open="" style="margin-top:.75rem">
+<summary>Inputs</summary>
+<div id="inputsWrap" style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem"></div>
+<button class="btn small" onclick="addInputRow()" type="button">＋ Add input</button>
+</details>
+<details open="" style="margin-top:.75rem">
+<summary>Queries</summary>
+<div id="queriesWrap" style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem"></div>
+<button class="btn small" onclick="addQueryRow()" type="button">＋ Add query</button>
+</details>
+<div style="display:flex;gap:.5rem;margin-top:1rem">
+<button class="btn primary" type="submit">💾 Save</button>
+<button class="btn" onclick="duplicateCurrent()" type="button">🧬 Duplicate</button>
+<button class="btn danger" onclick="deleteCurrent()" type="button">🗑 Delete</button>
+</div>
+</form>
+<hr style="margin:1rem 0"/>
+<div id="runner">
+<h3>Run Scenario</h3>
+<div id="runnerInputs" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:.5rem"></div>
+<button class="btn primary" onclick="runCustomScenario()" type="button">⚙️ Generate SQL</button>
+<div style="margin-top:.75rem">
+<label class="label">Output</label>
+<textarea class="textarea" id="runnerOutput" rows="12"></textarea>
+<div style="display:flex;gap:.5rem;margin-top:.5rem">
+<button class="btn" onclick="copyFrom('runnerOutput')" type="button">📋 Copy</button>
+<button class="btn" onclick="exportText('runnerOutput','custom_scenario.sql')" type="button">💾 Export .sql</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <script>
 // ===== Storage & State =====
 const LS_KEY = 'customScenarios_v1';
@@ -467,7 +516,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderList(); loadEditor(customState.items[0]); renderRunner(customState.items[0]);
 });
 </script>
-
 <script>
 // === Theme bootstrap ===
 (function(){
@@ -487,7 +535,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })();
 </script>
-
 <script>
 function deleteCustomScenario(id){
   if(!confirm("Delete this scenario?")) return;
@@ -501,8 +548,6 @@ function deleteCustomScenario(id){
   }
 }
 </script>
-
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const genBtn = document.querySelector('#runner button.btn.primary');
@@ -511,6 +556,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-
 </body>
 </html>
