@@ -1983,7 +1983,144 @@ function generateSQL17() {
   document.getElementById("output17").value = output.join("\n\n");
 }
 
+//Scenario 18
+function generateSQL18() {
+  const userkey = document.getElementById("input18_userkey").value.trim();
+  let sql = "";
 
+  if (userkey) {
+    sql += `--Match the BU to the Userkey in the DB (USERKEY = BU Number)\n`;
+    sql += `SELECT \n  BE.USERKEY,\n  BE.NAME,\n  C.IDBEOWNER,\n  C.ID,\n  C.*\n`;
+    sql += `FROM BUSINESSENTITY BE\nJOIN CUSTOMER C ON BE.ID = C.ID\n`;
+    sql += `WHERE BE.USERKEY = '${userkey}';\n`;
+  } else {
+    sql = `-- Please enter a valid USERKEY (BU number) to generate the query.`;
+  }
+
+  document.getElementById("output18").value = sql;
+}
+
+
+function showAllQueries18() {
+  document.getElementById("input18_userkey").value = "118";
+  generateSQL18();
+}
+
+
+//Scenario 19
+function generateScenario19() {
+  const createdStart = document.getElementById("input19_createdStart").value.trim();
+  const createdEnd = document.getElementById("input19_createdEnd").value.trim();
+  const jeUserKey = document.getElementById("input19_jeUserKey").value.trim();
+  const apUserKey = document.getElementById("input19_apUserKey").value.trim();
+  const datetoPost = document.getElementById("input19_datetoPost").value.trim();
+  const processQueueId = document.getElementById("input19_processQueueId").value.trim();
+  const updateStart = document.getElementById("input19_updateStart").value.trim();
+  const updateEnd = document.getElementById("input19_updateEnd").value.trim();
+
+  let sql = "";
+
+  // Query 1
+  if (createdStart && createdEnd) {
+    sql += `--Audit of batches posted during a POSTWKFLOW Run\n`;
+    sql += `SELECT * FROM AUDITWORKFLOWLOG A\nWHERE A.CREATED BETWEEN '${createdStart}' AND '${createdEnd}' AND ORIGWORKFLOWSTATUS = 90\nORDER BY A.CREATED;\n\n`;
+  }
+
+  // Query 2
+  if (jeUserKey) {
+    sql += `--Investigate JE batch by USERKEY\n`;
+    sql += `SELECT * FROM BATCHJOURNALENTRYMASTER A\nJOIN BATCHJOURNALENTRYDETAIL B ON A.ID = B.IDBATJE\n`;
+    sql += `JOIN BATCHJOURNALENTRYLINE C ON B.ID = C.IDBATJEDETAIL\nWHERE A.USERKEY = '${jeUserKey}'\nORDER BY A.LASTUPDATE DESC;\n\n`;
+  }
+
+  // Query 3
+  if (apUserKey) {
+    sql += `--Investigate AP batch by USERKEY\n`;
+    sql += `SELECT * FROM BATCHVOUCHERMASTER BM\nJOIN BATCHVOUCHERDETAIL BD ON BM.ID = BD.IDBATVOUMASTER\n`;
+    sql += `JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL\nWHERE BM.USERKEY = '${apUserKey}'\nORDER BY BM.LASTUPDATE DESC;\n\n`;
+  }
+
+  // Query 4
+  sql += `--Total Number of Batches in Post Pending Status\n`;
+  sql += `SELECT * FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90;\n\n`;
+
+  // Query 5
+  sql += `--Lines in each JE Batch Waiting to Post\n`;
+  sql += `SELECT A.USERKEY, A.NAME, COUNT(*) AS Total_Lines_In_Batch\nFROM BATCHJOURNALENTRYMASTER A\nJOIN BATCHJOURNALENTRYDETAIL B ON A.ID = B.IDBATJE\n`;
+  sql += `JOIN BATCHJOURNALENTRYLINE C ON B.ID = C.IDBATJEDETAIL\nJOIN BATCHJECUSTOMCODEBLOCKUPSTREAM D ON C.ID = D.IDBATJELINE\n`;
+  sql += `JOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE A.USERKEY IN (SELECT USERKEY FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90)\nGROUP BY A.USERKEY, A.NAME;\n\n`;
+
+  // Query 6
+  sql += `--Lines in each Invoice Batch Waiting to Post\n`;
+  sql += `SELECT A.USERKEY, A.NAME, COUNT(*) AS Total_Lines_In_Batch\nFROM BATCHINVOICEMASTER A\nJOIN BATCHINVOICEDETAIL B ON A.ID = B.IDBATINVMASTER\n`;
+  sql += `JOIN BATCHINVOICELINEITEM C ON B.ID = C.IDBATINVDETAIL\nJOIN BATCHINVOICECUSTOMCODEBLOCKUPSTREAM D ON C.ID = D.IDBATINVLINEITEM\n`;
+  sql += `JOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE A.USERKEY IN (SELECT USERKEY FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90)\nGROUP BY A.USERKEY, A.NAME;\n\n`;
+
+  // Query 7
+  if (datetoPost) {
+    sql += `--Batches in Post Pending Status with Post Date <= DATETOPOST\n`;
+    sql += `SELECT IBX.IDBATCHMASTER, IBX.ID, IBX.BATCHTYPE, IBX.CODEBLOCKGROUP\nFROM UVW_WORKFLOWINBOX IBX\nWHERE IBX.DATETOPOST <= '${datetoPost}' AND IBX.STATUSWORKFLOW IN (90);\n\n`;
+  }
+
+  // Query 8
+  sql += `--POSTWFL Vouchers currently in Post Pending Status\n`;
+  sql += `SELECT * FROM BATCHVOUCHERMASTER WHERE STATUSWORKFLOW = '90' ORDER BY LASTUPDATE DESC;\n\n`;
+
+  // Query 9
+  sql += `--POSTWFL JEs currently in Post Pending Status\n`;
+  sql += `SELECT * FROM BATCHJOURNALENTRYMASTER WHERE STATUSWORKFLOW = '90' ORDER BY LASTUPDATE DESC;\n\n`;
+
+  // Query 10
+  sql += `--Last JEs in POSTED Status\n`;
+  sql += `SELECT USERKEY, NAME, * FROM BATCHJOURNALENTRYMASTER WHERE STATUSWORKFLOW = '100' ORDER BY LASTUPDATE DESC;\n\n`;
+
+  // Query 11
+  sql += `--Last AP Vouchers in POSTED Status\n`;
+  sql += `SELECT USERKEY, NAME, * FROM BATCHVOUCHERMASTER WHERE STATUSWORKFLOW = '100' ORDER BY LASTUPDATE DESC;\n\n`;
+
+  // Query 12
+  if (processQueueId) {
+    sql += `--POSTWKFL - Investigation\n`;
+    sql += `SELECT START_DT, PROCESS_QUEUE_ID, PROCESS_ID, STATUS_CD, USER_ID, PARENT_PROCESS_QUEUE_ID, MASTER_PROCESS_QUEUE_ID, *\n`;
+    sql += `FROM QARCH_QUEU_PROCESS WHERE PROCESS_QUEUE_ID IN ('${processQueueId}') AND PROCESS_ID = 'POSTWKFL'\nORDER BY QUEUE_DT DESC;\n\n`;
+
+    sql += `--POSTWKFL - Message Log\n`;
+    sql += `SELECT LOG_MSG, LOG_DATE, PROCESS_QUEUE_ID, PROCESS_STEP_QUEUE_ID, LOG_MSG_TYPE_CD, *\n`;
+    sql += `FROM QARCH_PROCESS_MSG_LOG WHERE PROCESS_QUEUE_ID IN ('${processQueueId}');\n\n`;
+  }
+
+  // Query 14
+  if (createdStart && createdEnd) {
+    sql += `--POSTWKFL - Audit Workflow Log\n`;
+    sql += `SELECT * FROM AUDITWORKFLOWLOG A WHERE A.CREATED BETWEEN '${createdStart}' AND '${createdEnd}' AND ORIGWORKFLOWSTATUS = 90\nORDER BY A.CREATED;\n\n`;
+  }
+
+  // Query 15–17
+  if (updateStart && updateEnd) {
+    sql += `--WF History - BASE\n`;
+    sql += `SELECT * FROM QARCH_HIST_WF_ROUTE_BASE WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
+
+    sql += `--WF History - SMPL\n`;
+    sql += `SELECT * FROM QARCH_HIST_WF_ROUTE_SMPL WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
+
+    sql += `--WF History - SMPL STEP\n`;
+    sql += `SELECT * FROM QARCH_HIST_WF_ROUTE_SMPL_STEP WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
+  }
+
+  document.getElementById("output19").value = sql.trim();
+}
+
+function showAllQueries19() {
+  document.getElementById("input19_createdStart").value = "2025-08-01";
+  document.getElementById("input19_createdEnd").value = "2025-08-13";
+  document.getElementById("input19_jeUserKey").value = "BJE0000123";
+  document.getElementById("input19_apUserKey").value = "BV00000456";
+  document.getElementById("input19_datetoPost").value = "2025-08-13";
+  document.getElementById("input19_processQueueId").value = "8675309";
+  document.getElementById("input19_updateStart").value = "2025-08-01";
+  document.getElementById("input19_updateEnd").value = "2025-08-13";
+  generateScenario19();
+}
 
 
 
@@ -2260,6 +2397,8 @@ function clearSearch() {
 
 <!-- ===== Show All Queries helper functions (autofill inputs then call generate) ===== -->
 //Show All Queries Buttton for Each Scenario
+
+//Scenario 1
 function showAllQueries1() {
   document.getElementById("processQueueId").value = "12345";
   document.getElementById("processId").value = "PROCESS_XYZ";
@@ -2267,6 +2406,8 @@ function showAllQueries1() {
   generateSQL1();
 }
 
+
+//Scenario 2
 function showAllQueries2() {
   document.getElementById("afe2").value = "AFE001";
   document.getElementById("inbox2").value = "101,102";
@@ -2276,11 +2417,15 @@ function showAllQueries2() {
   generateSQL2();
 }
 
+
+//Scenario 3
 function showAllQueries3() {
   document.getElementById("secuserid3").value = "JDOE";
   generateSQL3();
 }
 
+
+//Scenario 4
 function showAllQueries4() {
   document.getElementById("acctgMth4").value = "2025-07-01";
   document.getElementById("userkey4").value = "BJE0000001";
@@ -2291,6 +2436,8 @@ function showAllQueries4() {
   generateSQL4();
 }
 
+
+//Scenario 5
 function showAllQueries5() {
   document.getElementById("acctgMth5").value = "2025-07-01";
   document.getElementById("userkey5").value = "BI00000089";
@@ -2301,11 +2448,15 @@ function showAllQueries5() {
   generateSQL5();
 }
 
+
+//Scenario 6
 function showAllQueries6() {
   document.getElementById("userkey6").value = "BR00000006";
   generateSQL6();
 }
 
+
+//Scenario 7
 function showAllQueries7() {
   document.getElementById("input7_userkey").value = "BCK0000001";
   document.getElementById("input7_idbatcheckrunmaster").value = "106";
@@ -2314,6 +2465,8 @@ function showAllQueries7() {
   generateSQL7();
 }
 
+
+//Scenario 8
 function showAllQueries8() {
   document.getElementById("input8_journal_id").value = "QCFS";
   document.getElementById("input8_trans_type").value = "GL";
@@ -2321,6 +2474,8 @@ function showAllQueries8() {
   generateSQL8();
 }
 
+
+//Scenario 9
 function showAllQueries9() {
   document.getElementById("input9_process_id").value = "ADPUPLOAD";
   document.getElementById("input9_impexp_id").value = "JIBLINKEXP";
@@ -2331,6 +2486,8 @@ function showAllQueries9() {
   generateSQL9();
 }
 
+
+//Scenario 10
 function showAllQueries10() {
   document.getElementById("input10_vounum").value = "VM00000030";
   document.getElementById("input10_userkey").value = "BV00000001";
@@ -2345,11 +2502,15 @@ function showAllQueries10() {
   generateSQL10();
 }
 
+
+//Scenario 11
 function showAllQueries11() {
   document.getElementById("input11_userkey").value = "BD00000018";
   generateSQL11();
 }
 
+
+//Scenario 12
 function showAllQueries12() {
   document.getElementById("input12_start_dt").value = "2025-06-01";
   document.getElementById("input12_proc_queue_id").value = "6825175";
@@ -2358,6 +2519,8 @@ function showAllQueries12() {
   generateSQL12();
 }
 
+
+//Scenario 13
 function showAllQueries13() {
   document.getElementById("input13_userkey").value = "BPA00000015";
   document.getElementById("input13_idbeowner").value = "17";
@@ -2376,6 +2539,8 @@ function showAllQueries13() {
   generateSQL13();
 }
 
+
+//Scenario 14
 function showAllQueries14() {
   const queries = [
     "--Review Business Entities in BA005/BA Web:",
@@ -2440,16 +2605,21 @@ LEFT JOIN BUSINESSENTITY F ON A.IDBEOWNER = F.ID;`
 }
 
 
+//Scenario 15
 function showAllQueries15() {
   document.getElementById("input15_acctg_mth").value = "2025-07-01";
   generateSQL15();
 }
 
+
+//Scenario 16
 function showAllQueries16() {
   document.getElementById("input16_idcustomer").value = "101";
   generateSQL16();
 }
 
+
+//Scenario 17
 function showQueries17() {
   const allQueries = `
 --QSTAGXLSIMP - JOURNAL_ID & TRANS_ID will determine what type of file is being uploaded (AR, AP, GL)
@@ -2493,11 +2663,14 @@ SELECT * FROM COREINTERFACECONFIGIMPORT;
 }
 
 
+//Scenario 18
 function showAllQueries18() {
   document.getElementById("input18_userkey").value = "118";
   generateSQL18();
 }
 
+
+//Scenario 19
 function showAllQueries19() {
   document.getElementById("input19_createdStart").value = "2025-08-01";
   document.getElementById("input19_createdEnd").value = "2025-08-13";
