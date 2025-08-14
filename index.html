@@ -357,7 +357,7 @@ textarea {
 
 <!--Instructions-->
 <p style="margin-top:10px; font-size: 15px; color: #222; background: #e8f0fe; padding: 12px; border-left: 5px solid #2196F3; border-radius: 6px; max-width: 900px; margin-left: auto; margin-right: auto;">
-  🧠 <strong>Instructions:</strong> Use this page to generate predefined SQL queries across different business scenarios. Start by selecting a scenario group and clicking on a scenario to expand it. Input required values (you may use comma-separated lists), and click <strong>Generate SQL</strong>. You can also <strong>Copy</strong>, <strong>Reset</strong>, or <strong>Export</strong> the SQL output. Use the search bar above to quickly find relevant scenarios by keyword without having to click into the scenario group first.Click <strong>Show All Queries</strong> to autopopulate all available queries without having to provide inputs first.
+  🧠 <strong>Instructions:</strong> Use this page to generate predefined SQL queries across different business scenarios. Start by selecting a scenario group and clicking on a scenario to expand it. Input required values (you may use comma-separated lists), and click <strong>Generate SQL</strong>. You can also <strong>Copy</strong>, <strong>Reset</strong>, or <strong>Export</strong> the SQL output. Use the search bar above to quickly find relevant scenarios by keyword without having to click into the scenario group first.Click <strong>Show All Queries</strong> to autopopulate all available queries with dummy values without having to provide inputs first.
 </p>
 <div class="nav-bar">
 <a class="nav-btn" href="custom.html">✨ Custom Scenario Builder</a>
@@ -764,6 +764,49 @@ textarea {
 <div class="copy-success" id="output18_success">✅ Copied!</div>
 </div>
 <!-- Scenario 18 Ends -->
+
+<!-- Scenario 19 Starts -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario19')">Scenario 19: POSTWKFL</button>
+<div class="tab-content" id="scenario19">
+  <h2>Scenario 19: POSTWKFL</h2>
+
+  <label>Created Start Date (YYYY-MM-DD)Both "From" AND "To" Dates are required</label>
+  <input id="input19_createdStart" placeholder="e.g., 2025-08-01"/>
+
+  <label>Created End Date (YYYY-MM-DD)Both "From" AND "To" Dates are required</label>
+  <input id="input19_createdEnd" placeholder="e.g., 2025-08-13"/>
+
+  <label>JE USERKEY:</label>
+  <input id="input19_jeUserKey" placeholder="e.g., JE00000123"/>
+
+  <label>AP USERKEY:</label>
+  <input id="input19_apUserKey" placeholder="e.g., AP00000456"/>
+
+  <label>DATETOPOST (YYYY-MM-DD):</label>
+  <input id="input19_datetoPost" placeholder="e.g., 2025-08-13"/>
+
+  <label>PROCESS_QUEUE_ID (POSTWKFL only):</label>
+  <input id="input19_processQueueId" placeholder="e.g., 8675309"/>
+
+  <label>Update Start Date (YYYY-MM-DD)Both "From" AND "To" Dates are required</label>
+  <input id="input19_updateStart" placeholder="e.g., 2025-08-01"/>
+
+  <label>Update End Date (YYYY-MM-DD)Both "From" AND "To" Dates are required</label>
+  <input id="input19_updateEnd" placeholder="e.g., 2025-08-13"/>
+
+  <button class="btn generate" onclick="generateScenario19()">⚙️ Generate SQL</button>
+  <button class="btn default" onclick="showAllQueries19()">🗃 Show All Queries</button>
+  <textarea id="output19" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output19')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields(
+    'input19_createdStart','input19_createdEnd','input19_jeUserKey','input19_apUserKey',
+    'input19_datetoPost','input19_processQueueId','input19_updateStart','input19_updateEnd','output19')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output19')">💾 Export</button>
+  <div class="copy-success" id="output19_success">✅ Copied!</div>
+</div>
+<!-- Scenario 19 Ends -->
+
+
 
 <!-- ✅ BEGIN Group 2 -->
 </div>
@@ -1954,6 +1997,7 @@ function generateSQL17() {
   document.getElementById('output17').value = sql;
 }
 
+//Scenario 18
 function generateSQL18() {
   const userkey = document.getElementById('input18_userkey').value.trim();
 
@@ -1974,6 +2018,67 @@ function generateSQL18() {
   }
 
   document.getElementById('output18').value = sql;
+}
+
+//Scenario 19
+function generateScenario19() {
+  const createdStart = document.getElementById("input19_createdStart").value.trim();
+  const createdEnd = document.getElementById("input19_createdEnd").value.trim();
+  const jeUserKey = document.getElementById("input19_jeUserKey").value.trim();
+  const apUserKey = document.getElementById("input19_apUserKey").value.trim();
+  const datetoPost = document.getElementById("input19_datetoPost").value.trim();
+  const processQueueId = document.getElementById("input19_processQueueId").value.trim();
+  const updateStart = document.getElementById("input19_updateStart").value.trim();
+  const updateEnd = document.getElementById("input19_updateEnd").value.trim();
+
+  let output = "";
+
+  if (createdStart && createdEnd) {
+    output += `--Audit of batches posted during a POSTWKFLOW Run\n`;
+    output += `SELECT * FROM AUDITWORKFLOWLOG A\nWHERE A.CREATED BETWEEN '${createdStart}' AND '${createdEnd}' AND ORIGWORKFLOWSTATUS = 90\nORDER BY A.CREATED;\n\n`;
+  }
+
+  if (jeUserKey) {
+    output += `--To investigate JE batch\nSELECT * FROM BATCHJOURNALENTRYMASTER A\nJOIN BATCHJOURNALENTRYDETAIL B ON A.ID = B.IDBATJE\nJOIN BATCHJOURNALENTRYLINE C ON B.ID = C.IDBATJEDETAIL\nWHERE A.USERKEY = '${jeUserKey}'\nORDER BY A.LASTUPDATE DESC;\n\n`;
+  }
+
+  if (apUserKey) {
+    output += `--To investigate AP batch\nSELECT * FROM BATCHVOUCHERMASTER BM\nJOIN BATCHVOUCHERDETAIL BD ON BM.ID = BD.IDBATVOUMASTER\nJOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL\nWHERE BM.USERKEY = '${apUserKey}'\nORDER BY BM.LASTUPDATE DESC;\n\n`;
+  }
+
+  output += `--Total Number of Batches in Post Pending Status\nSELECT * FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90;\n\n`;
+
+  output += `--Total Lines in each JE Batch in Post Pending\nSELECT A.USERKEY, A.NAME, COUNT(*) AS Total_Lines_In_Batch\nFROM BATCHJOURNALENTRYMASTER A\nJOIN BATCHJOURNALENTRYDETAIL B ON A.ID = B.IDBATJE\nJOIN BATCHJOURNALENTRYLINE C ON B.ID = C.IDBATJEDETAIL\nJOIN BATCHJECUSTOMCODEBLOCKUPSTREAM D ON C.ID = D.IDBATJELINE\nJOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE A.USERKEY IN (SELECT USERKEY FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90)\nGROUP BY A.USERKEY, A.NAME;\n\n`;
+
+  output += `--Total Lines in each Invoice Batch in Post Pending\nSELECT A.USERKEY, A.NAME, COUNT(*) AS Total_Lines_In_Batch\nFROM BATCHINVOICEMASTER A\nJOIN BATCHINVOICEDETAIL B ON A.ID = B.IDBATINVMASTER\nJOIN BATCHINVOICELINEITEM C ON B.ID = C.IDBATINVDETAIL\nJOIN BATCHINVOICECUSTOMCODEBLOCKUPSTREAM D ON C.ID = D.IDBATINVLINEITEM\nJOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE A.USERKEY IN (SELECT USERKEY FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90)\nGROUP BY A.USERKEY, A.NAME;\n\n`;
+
+  if (datetoPost) {
+    output += `--Batches with DATETOPOST <= '${datetoPost}'\nSELECT IBX.IDBATCHMASTER, IBX.ID, IBX.BATCHTYPE, IBX.CODEBLOCKGROUP\nFROM UVW_WORKFLOWINBOX IBX\nWHERE IBX.DATETOPOST <= '${datetoPost}' AND IBX.STATUSWORKFLOW IN (90);\n\n`;
+  }
+
+  output += `--POSTWKFL Vouchers in Post Pending\nSELECT * FROM BATCHVOUCHERMASTER WHERE STATUSWORKFLOW = '90' ORDER BY LASTUPDATE DESC;\n\n`;
+  output += `--POSTWKFL JEs in Post Pending\nSELECT * FROM BATCHJOURNALENTRYMASTER WHERE STATUSWORKFLOW = '90' ORDER BY LASTUPDATE DESC;\n\n`;
+
+  output += `--Last Posted JEs\nSELECT USERKEY, NAME, * FROM BATCHJOURNALENTRYMASTER WHERE STATUSWORKFLOW = '100' ORDER BY LASTUPDATE DESC;\n\n`;
+  output += `--Last Posted Vouchers\nSELECT USERKEY, NAME, * FROM BATCHVOUCHERMASTER WHERE STATUSWORKFLOW = '100' ORDER BY LASTUPDATE DESC;\n\n`;
+
+  if (processQueueId) {
+    output += `--POSTWKFL Process Investigation\nSELECT START_DT,PROCESS_QUEUE_ID,PROCESS_ID,STATUS_CD,USER_ID, PARENT_PROCESS_QUEUE_ID, MASTER_PROCESS_QUEUE_ID,* FROM QARCH_QUEU_PROCESS WHERE PROCESS_QUEUE_ID IN ('${processQueueId}') AND PROCESS_ID = 'POSTWKFL' ORDER BY QUEUE_DT DESC;\n\n`;
+
+    output += `--POSTWKFL Message Log\nSELECT LOG_MSG, LOG_DATE, PROCESS_QUEUE_ID, PROCESS_STEP_QUEUE_ID, LOG_MSG_TYPE_CD, * FROM QARCH_PROCESS_MSG_LOG WHERE PROCESS_QUEUE_ID IN ('${processQueueId}');\n\n`;
+  }
+
+  if (updateStart && updateEnd) {
+    output += `--WF History Queries (QARCH_HIST_WF_ROUTE_BASE)\nSELECT * FROM QARCH_HIST_WF_ROUTE_BASE WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
+
+    output += `--WF History Queries (QARCH_HIST_WF_ROUTE_SMPL)\nSELECT * FROM QARCH_HIST_WF_ROUTE_SMPL WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
+
+    output += `--WF History Queries (QARCH_HIST_WF_ROUTE_SMPL_STEP)\nSELECT * FROM QARCH_HIST_WF_ROUTE_SMPL_STEP WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
+
+    output += `--WF History Queries (QARCH_HIST_WF_USER_LIMIT_AMT)\nSELECT * FROM QARCH_HIST_WF_USER_LIMIT_AMT WHERE UPDT_DT BETWEEN '${updateStart}' AND '${updateEnd}' ORDER BY UPDT_DT DESC;\n\n`;
+  }
+
+  document.getElementById("output19").value = output || "-- Please provide at least one input to generate SQL.";
 }
 
 
@@ -2451,6 +2556,22 @@ function showAllQueries17() {
 function showAllQueries18() {
   document.getElementById("input18_userkey").value = "118";
   generateSQL18();
-}</script>
+}
+
+function showAllQueries19() {
+  document.getElementById("input19_createdStart").value = "2025-08-01";
+  document.getElementById("input19_createdEnd").value = "2025-08-13";
+  document.getElementById("input19_jeUserKey").value = "JE00000123";
+  document.getElementById("input19_apUserKey").value = "AP00000456";
+  document.getElementById("input19_datetoPost").value = "2025-08-13";
+  document.getElementById("input19_processQueueId").value = "8675309";
+  document.getElementById("input19_updateStart").value = "2025-08-01";
+  document.getElementById("input19_updateEnd").value = "2025-08-13";
+  generateScenario19();
+}
+
+
+
+</script>
 </div></body>
 </html>
