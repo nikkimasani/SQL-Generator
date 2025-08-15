@@ -749,11 +749,13 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <input id="processId" placeholder="e.g., POSTWKFL,ADPUPLOAD"/>
 <label>MASTER_PROCESS_QUEUE_ID</label>
 <input id="masterProcessQueueId" placeholder="e.g., 1371680"/>
+<label>REGISTERED_SQL_NAME</label>
+<input id="registeredSqlName" placeholder="e.g. UPDBATCH_CALLINTERFACE"/>
 <button class="btn generate" onclick="generateSQL1()">⚙️ Generate SQL</button>
 <button class="btn default" onclick="showAllQueries1()">🗃 Show All Queries</button>
 <textarea id="output1" placeholder="SQL will appear here..." readonly=""></textarea><button class="btn" onclick="toggleEditable('output1')" title="Edit Output" type="button">✏️</button>
 <button class="btn copy" onclick="copySQL('output1')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields('processQueueId','processId','masterProcessQueueId','output1')">🔄 Reset</button>
+<button class="btn reset" onclick="resetFields('processQueueId','processId','masterProcessQueueId','registeredSqlName','output1')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output1')">💾 Export</button>
 <!-- Scenario 1 Ends -->
 <!-- Scenario 2 Starts-->
@@ -1264,7 +1266,8 @@ function generateSQL1() {
   const pqid = document.getElementById("processQueueId").value.trim();
   const pid = document.getElementById("processId").value.trim();
   const mpqid = document.getElementById("masterProcessQueueId").value.trim();
-  let sql = "";
+  
+  const registeredSqlName = document.getElementById("registeredSqlName") ? document.getElementById("registeredSqlName").value.trim() : "";let sql = "";
   sql += `---Query the Process Queue table to view the status and other relevant details about the process:\n`;
   if (pqid && pid) {
     sql += `SELECT START_DT,PROCESS_QUEUE_ID,PROCESS_ID,STATUS_CD,USER_ID, PARENT_PROCESS_QUEUE_ID, MASTER_PROCESS_QUEUE_ID,\n`;
@@ -1300,6 +1303,27 @@ function generateSQL1() {
     sql += `GROUP BY PROCESS_QUEUE_ID, PROCESS_ID, STATUS_CD, START_DT, END_DT\n`;
     sql += `ORDER BY STATUS_CD;\n\n`;
   }
+  
+  // New: Process Step Avg Time (REGISTERED_SQL_NAME + MASTER_PROCESS_QUEUE_ID required)
+// New: Process Step Avg Time (REGISTERED_SQL_NAME + MASTER_PROCESS_QUEUE_ID required)
+if (registeredSqlName && !mpqid) {
+  alert("Both REGISTERED_SQL_NAME and MASTER_PROCESS_QUEUE_ID are required to view the Process Step Average time.");
+  sql += `-- Both REGISTERED_SQL_NAME and MASTER_PROCESS_QUEUE_ID are required to view the Process Step Average time.\n\n`;
+} else if (registeredSqlName && mpqid) {
+  sql += `--Query the SQL Trace Table to view the Process Step Avg Time:\n`;
+  sql += `SELECT SUM(DURATION_MSEC)/1000/COUNT(*) AS AVG_DURATION_SEC,\n`;
+  sql += `       COUNT(*) AS EXE_COUNT\n`;
+  sql += `FROM QARCH_QFCBATCH_SQL_TRACE\n`;
+  sql += `WHERE REGISTERED_SQL_NAME = '${registeredSqlName}'\n`;
+  sql += `  AND PROCESS_QUEUE_ID IN (\n`;
+  sql += `    SELECT PROCESS_QUEUE_ID\n`;
+  sql += `    FROM QARCH_QUEU_PROCESS\n`;
+  sql += `    WHERE MASTER_PROCESS_QUEUE_ID = '${mpqid}'\n`;
+  sql += `  );\n\n`;
+}
+
+
+
   document.getElementById("output1").value = sql;
 }
 
@@ -2739,8 +2763,20 @@ ORDER BY STATUS_CD;
 SELECT * 
 FROM QARCH_LOCK 
 WHERE PROCESS_QUEUE_ID = ' ' 
-ORDER BY UPDT_DT DESC;`
+ORDER BY UPDT_DT DESC;`,
+
+`----Query the SQL Trace Table to view the Process Step Avg Time:
+SELECT SUM(DURATION_MSEC)/1000/COUNT(*) AS AVG_DURATION_SEC,
+       COUNT(*) AS EXE_COUNT
+FROM QARCH_QFCBATCH_SQL_TRACE
+WHERE REGISTERED_SQL_NAME = ''
+  AND PROCESS_QUEUE_ID IN (
+    SELECT PROCESS_QUEUE_ID
+    FROM QARCH_QUEU_PROCESS
+    WHERE MASTER_PROCESS_QUEUE_ID = ''
+  );`
   ];
+
   document.getElementById("output1").value = queries.join("\n\n");
 }
 
