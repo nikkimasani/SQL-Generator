@@ -1062,29 +1062,39 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <button class="btn export" onclick="exportSQL('output16')">💾 Export</button>
 </div>
 <!-- Scenario 16 Ends -->
-<!-- Scenario 17 Starts -->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">➕ Scenario 17: MT100 / SM021 / SM093 / AP047</button>
+
+<!-- Scenario 17 Starts-->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">➕ Scenario 17: MT100 / SM021 / SM093 / AP047 / XREF</button>
 <div class="tab-content" id="scenario17">
-<h2>Scenario 17: MT100 / SM021 / SM093 / AP047 / XREF</h2>
-<label>TRANS_TYPE</label>
-<input id="input17_transtype" placeholder="e.g., AP, GL"/>
-<label>JOURNAL_ID</label>
-<input id="input17_journalid" placeholder="e.g., AFE,JIB"/>
-<label>IDBEOWNER</label>
-<input id="input17_idbeowner" placeholder="e.g., 11"/>
-<label>USERKEY (for SM021, SM093, AP100)</label>
-<input id="input17_userkey" placeholder="e.g., APVOU, INVOICE, JENORMAL"/>
-<label>USERKEY (for AP047 Payment Term Definition)</label>
-<input id="input17_userkey_payterm" placeholder="e.g., NET15, DUEONREC"/>
-<p class="hint">Note: The first USERKEY is used for Journal, Workflow, and Voucher Document definitions. The second USERKEY is used only for the Voucher Payment Term Definition.</p>
-<button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
-<button class="btn default" onclick="showAllQueries17()">🗃 Show All Queries</button>
-<textarea id="output17" placeholder="SQL will appear here..." readonly=""></textarea><button class="btn" onclick="toggleEditable('output17')" title="Edit Output" type="button">✏️</button>
-<button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields('input17_transtype','input17_journalid','input17_idbeowner','input17_userkey','input17_userkey_payterm','output17')">🔄 Reset</button>
-<button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
+  <h2>Scenario 17:  MT100 / SM021 / SM093 / AP047 / XREF</h2>
+
+  <label>TransType:</label>
+  <input id="input17_transtype" placeholder="e.g., AP, GL" />
+
+  <label>JournalID:</label>
+  <input id="input17_journalid" placeholder="e.g., AFE, JIB" />
+
+  <label>IDBEOWNER:</label>
+  <input id="input17_idbeowner" placeholder="e.g., 11" />
+
+  <label>USERKEY (for SM021, SM093, AP100):</label>
+  <input id="input17_userkey1" placeholder="e.g., APVOU, INVOICE, JENORMAL" />
+
+  <label>USERKEY (for AP047 Payment Term Definition):</label>
+  <input id="input17_userkey2" placeholder="e.g., NET15, DUEONREC" />
+
+  <button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
+  <button class="btn default" onclick="showAllQueries17()">🗃 Show All Queries</button>
+  <textarea id="output17" placeholder="SQL will appear here..." readonly></textarea>
+
+  <button class="btn" onclick="toggleEditable('output17')" title="Edit Output" type="button">✏️</button>
+  <button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input17_transtype','input17_journalid','input17_idbeowner','input17_userkey1','input17_userkey2','output17')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
 </div>
 <!-- Scenario 17 Ends -->
+
+
 <!-- Scenario 18 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario18')">➕ Scenario 18: Resolve BU Information</button>
 <div class="tab-content" id="scenario18">
@@ -2243,61 +2253,35 @@ function exportSQL16() {
 
 // Scenario 17
 function generateSQL17() {
-  const transTypes = document.getElementById("input17_transtype").value.split(',').map(s => s.trim()).filter(Boolean);
-  const journalIds = document.getElementById("input17_journalid").value.split(',').map(s => s.trim()).filter(Boolean);
-  const owners = document.getElementById("input17_idbeowner").value.split(',').map(s => s.trim()).filter(Boolean);
-  const userkeys = document.getElementById("input17_userkey").value.split(',').map(s => s.trim()).filter(Boolean);
-  const userkeysPayTerm = document.getElementById("input17_userkey_payterm").value.split(',').map(s => s.trim()).filter(Boolean);
+  const transType = document.getElementById("input17_transtype").value.trim();
+  const journalId = document.getElementById("input17_journalid").value.trim();
+  const idbeowner = document.getElementById("input17_idbeowner").value.trim();
+  const userkey1 = document.getElementById("input17_userkey1").value.trim();
+  const userkey2 = document.getElementById("input17_userkey2").value.trim();
 
-  let output = [];
+  let sql = "";
 
-  // Query 1: always included
-  output.push(`--QSTAGXLSIMP - JOURNAL_ID & TRANS_ID will determine what type of file is being uploaded (AR, AP, GL)\n--This query will retrieve the current MT100 Configuration:\nSELECT * FROM JOURNAL_ID_IMPORT;`);
+  sql += "--QSTAGXLSIMP - JOURNAL_ID & TRANS_ID will determine what type of file is being uploaded (AR, AP, GL)\n";
+  sql += "--This query will retrieve the current MT100 Configuration:\n";
+  sql += "SELECT * FROM JOURNAL_ID_IMPORT;\n\n";
+  
+  sql += "--MT100 > QCFS TAB\n";
+  sql += "SELECT * FROM SXREF_CORE_INTF_QCFS_EXT;\n\n";
+  
+  sql += "--Imports that have been stamped with the XREF Config\n";
+  sql += "SELECT * FROM COREINTERFACECONFIGIMPORT;\n\n";
 
-  // Query 2: always included
-  output.push(`--MT100 > QCFS TAB\nSELECT * FROM SXREF_CORE_INTFC_QCFS_EXT;`);
-
-  // Query 3–7: MT100 Tabs
-  const tabNames = ["AFE", "DDA", "JIB", "LOS", "LOSDD"];
-  if (transTypes.length && journalIds.length) {
-    tabNames.forEach(tab => {
-      transTypes.forEach(trans => {
-        journalIds.forEach(journal => {
-          output.push(`--MT100 > ${tab} Tab\nSELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_${tab} WHERE TRANS_TYPE = '${trans}' AND JOURNAL_ID = '${journal}';`);
-        });
-      });
-    });
+  if (userkey1) {
+    sql += `--Dynamic lookup based on USERKEY (for SM021, SM093, AP100)\n`;
+    sql += `SELECT * FROM BUSINESSENTITY WHERE USERKEY = '${userkey1}';\n\n`;
   }
 
-  // Queries 8–10: Journal Definitions, Workflow, Voucher Type
-  if (owners.length && userkeys.length) {
-    const defs = [
-      { comment: "--SM021: Journal Definitions Maintenance", table: "JOURNALDEFINITION" },
-      { comment: "--SM093: Workflow Definition Maintenance", table: "WORKFLOWDEFINITION" },
-      { comment: "--AP100: Voucher Document Type", table: "VOUCHERDOCUMENTTYPE" }
-    ];
-    defs.forEach(def => {
-      owners.forEach(owner => {
-        userkeys.forEach(key => {
-          output.push(`${def.comment}\nSELECT * FROM ${def.table} WHERE IDBEOWNER = '${owner}' AND USERKEY = '${key}';`);
-        });
-      });
-    });
+  if (userkey2) {
+    sql += `--Dynamic lookup based on USERKEY (for AP047 Payment Term Definition)\n`;
+    sql += `SELECT * FROM PAYMENTTERMCONFIG WHERE USERKEY = '${userkey2}';\n\n`;
   }
 
-  // Query 11: AP047 - Pay Term Definition
-  if (owners.length && userkeysPayTerm.length) {
-    owners.forEach(owner => {
-      userkeysPayTerm.forEach(key => {
-        output.push(`--AP047: Voucher Payment Term Definition Maintenance\nSELECT * FROM VENDORPAYMENTTERMSDEFINITION WHERE IDBEOWNER = '${owner}' AND USERKEY = '${key}';`);
-      });
-    });
-  }
-
-  // Final static query
-  output.push(`--Imports that have been stamped with the XREF Config\nSELECT * FROM COREINTERFACECONFIGIMPORT;`);
-
-  document.getElementById("output17").value = output.join("\n\n");
+  document.getElementById("output17").value = sql;
 }
 
 //Scenario 18
@@ -3511,50 +3495,16 @@ function showAllQueries17() {
 SELECT * FROM JOURNAL_ID_IMPORT;
 
 --MT100 > QCFS TAB
-SELECT * FROM SXREF_CORE_INTFC_QCFS_EXT;
-
---MT100 > AFE Tab
-SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_AFE 
-WHERE TRANS_TYPE = ' ' AND JOURNAL_ID = ' ';
-
---MT100 > DDA Tab
-SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_DDA 
-WHERE TRANS_TYPE = ' ' AND JOURNAL_ID = ' ';
-
---MT100 > JIB Tab
-SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_JIB 
-WHERE TRANS_TYPE = ' ' AND JOURNAL_ID = ' ';
-
---MT100 > LOS Tab
-SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_LOS 
-WHERE TRANS_TYPE = ' ' AND JOURNAL_ID = ' ';
-
---MT100 > LOS DD Tab
-SELECT * FROM QCTRL_CORE_INTEFACE_IMPORT_CONFIG_LOSDD 
-WHERE TRANS_TYPE = ' ' AND JOURNAL_ID = ' ';
-
---SM021: Journal Definitions Maintenance
-SELECT * FROM JOURNALDEFINITION
-WHERE IDBEOWNER = 
-AND USERKEY = '';
-
---SM093: Workflow Definition Maintenance
-SELECT * FROM WORKFLOWDEFINITION
-WHERE IDBEOWNER = 
-AND USERKEY = '';
-
---AP100: Voucher Document Type
-SELECT * FROM VOUCHERDOCUMENTTYPE
-WHERE IDBEOWNER = 
-AND USERKEY = '';
-
---AP047: Voucher Payment Term Definition Maintenance
-SELECT * FROM VENDORPAYMENTTERMSDEFINITION
-WHERE IDBEOWNER = 
-AND USERKEY = '';
+SELECT * FROM SXREF_CORE_INTF_QCFS_EXT;
 
 --Imports that have been stamped with the XREF Config
-SELECT * FROM COREINTERFACECONFIGIMPORT;`;
+SELECT * FROM COREINTERFACECONFIGIMPORT;
+
+--Dynamic lookup based on USERKEY (for SM021, SM093, AP100)
+SELECT * FROM BUSINESSENTITY WHERE USERKEY = 'SDC';
+
+--Dynamic lookup based on USERKEY (for AP047 Payment Term Definition)
+SELECT * FROM PAYMENTTERMCONFIG WHERE USERKEY = 'NET15';`;
 
   document.getElementById("output17").value = sql;
 }
