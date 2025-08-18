@@ -1247,18 +1247,43 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <div class="tab-content" id="scenario21">
 <h2>Scenario 21: Processing Time Assessments (QCFSIMPCYC, POSTWKFL)</h2>
 
-<div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
-   None of these queries require inputs. Just select "Generate SQL" or "Show All Queries".
-</div>
+<label>DATEACCT Start (YYYY-MM-DD):</label>
+<input id="input21_dateacct_start" placeholder="e.g., 2025-07-01"/>
+
+<label>DATEACCT End (YYYY-MM-DD):</label>
+<input id="input21_dateacct_end" placeholder="e.g., 2025-07-31"/>
+
+<label>PROCESS_PERIOD Start (YYYY-MM-DD):</label>
+<input id="input21_process_period_start" placeholder="e.g., 2025-07-01"/>
+
+<label>PROCESS_PERIOD End (YYYY-MM-DD):</label>
+<input id="input21_process_period_end" placeholder="e.g., 2025-07-31"/>
+
+<label>QCFSIMPCYC START_DT (>=) (YYYY-MM-DD):</label>
+<input id="input21_qcfsimp_startdt" placeholder="e.g., 2025-07-01"/>
+
+<label>QCFSIMPCYC END_DT (<=) (YYYY-MM-DD):</label>
+<input id="input21_qcfsimp_enddt" placeholder="e.g., 2025-07-31"/>
+
+<label>POSTWKFL START_DT (>=) (YYYY-MM-DD):</label>
+<input id="input21_postwkfl_startdt" placeholder="e.g., 2025-07-01"/>
+
+<label>POSTWKFL END_DT (<=) (YYYY-MM-DD):</label>
+<input id="input21_postwkfl_enddt" placeholder="e.g., 2025-07-31"/>
 
 <button class="btn generate" onclick="generateSQL21()">⚙️ Generate SQL</button>
 <button class="btn default" onclick="showAllQueries21()">🗃 Show All Queries</button>
-<textarea id="output21" placeholder="SQL will appear here." readonly></textarea><button class="btn" onclick="toggleEditable('output21')" title="Edit Output" type="button">✏️</button>
+<textarea id="output21" placeholder="SQL will appear here." readonly></textarea>
+<button class="btn" onclick="toggleEditable('output21')" title="Edit Output" type="button">✏️</button>
 <button class="btn copy" onclick="copySQL('output21')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields('output21')">🔄 Reset</button>
+<button class="btn reset" onclick="resetFields(
+  'input21_dateacct_start','input21_dateacct_end','input21_process_period_start','input21_process_period_end',
+  'input21_qcfsimp_startdt','input21_qcfsimp_enddt','input21_postwkfl_startdt','input21_postwkfl_enddt','output21'
+)">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output21')">💾 Export</button>
-</div><!-- closes <div class="tab-content" id="scenario21"> -->
+</div>
 <!-- Scenario 21 Ends -->
+
 
 <!-- Scenario 22 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario22')">➕ Scenario 22: GL Accounts Configuration and Setup</button>
@@ -2718,80 +2743,87 @@ function generateSQL20() {
 
 // Scenario 21: Processing Time Assessments (QCFSIMPCYC, POSTWKFL)
 function generateSQL21() {
-  let sql = '';
+  const get = id => document.getElementById(id).value.trim();
+  const start = get("input21_dateacct_start");
+  const end = get("input21_dateacct_end");
+  const ppStart = get("input21_process_period_start");
+  const ppEnd = get("input21_process_period_end");
+  const qcfsimpStart = get("input21_qcfsimp_startdt");
+  const qcfsimpEnd = get("input21_qcfsimp_enddt");
+  const postStart = get("input21_postwkfl_startdt");
+  const postEnd = get("input21_postwkfl_enddt");
+
+  let sql = "";
 
   // Query 1
-  sql += `--QUERIES FOR QCFSIMPCYC ELAPSED: \n`;
-  sql += `SELECT DATEACCT, MAX(BATCH_CREATED) QCFSIMPCYC_END_DT\n`;
-  sql += `FROM (\n`;
-  sql += `SELECT DATEACCT, MAX(CREATED) BATCH_CREATED\n`;
-  sql += `FROM BATCHJOURNALENTRYMASTER\n`;
-  sql += `WHERE NAME LIKE 'JIB%'\n`;
-  sql += `AND DATEACCT BETWEEN '1/1/2023' AND '12/2/2023'\n`;
-  sql += `GROUP BY DATEACCT\n`;
-  sql += `UNION ALL\n`;
-  sql += `SELECT DATEACCT, MAX(CREATED) BATCH_CREATED\n`;
-  sql += `FROM BATCHINVOICEMASTER\n`;
-  sql += `WHERE NAME LIKE 'JIB%'\n`;
-  sql += `AND DATEACCT BETWEEN '1/1/2023' AND '12/2/2023'\n`;
-  sql += `GROUP BY DATEACCT ) A\n`;
-  sql += `GROUP BY A.DATEACCT\n`;
-  sql += `ORDER BY A.DATEACCT;\n\n`;
+  sql += "-- QUERIES FOR QCFSIMPCYC ELAPSED:\n";
+  sql += `SELECT DATEACCT, MAX(BATCH_CREATED) QCFSIMPCYC_END_DT
+FROM (
+  SELECT DATEACCT, MAX(CREATED) BATCH_CREATED
+  FROM BATCHJOURNALENTRYMASTER
+  WHERE NAME LIKE 'JIB%' AND DATEACCT BETWEEN '${start}' AND '${end}'
+  GROUP BY DATEACCT
+  UNION ALL
+  SELECT DATEACCT, MAX(CREATED) BATCH_CREATED
+  FROM BATCHINVOICEMASTER
+  WHERE NAME LIKE 'JIB%' AND DATEACCT BETWEEN '${start}' AND '${end}'
+  GROUP BY DATEACCT
+) A
+GROUP BY A.DATEACCT
+ORDER BY A.DATEACCT;\n\n`;
 
   // Query 2
-  sql += `--QUERIES FOR QCFSIMPCYC ELAPSED: \n`;
-  sql += `SELECT A.PROCESS_PERIOD, B.PROCESS_QUEUE_ID, B.PROCESS_ID, B.START_DT, B.END_DT QCFSIMPCYC_START_DT, \n`;
-  sql += `Datediff(minute, B.START_DT, B.END_DT) DATEDIFFMINS \n`;
-  sql += `FROM CEN_DEV16UPS_QCA..JBTRN_PROCESS_ACTIVITY A\n`;
-  sql += `JOIN QARCH_QUEU_PROCESS B\n`;
-  sql += `ON A.PROCESS_QUEUE_ID = B.PROCESS_QUEUE_ID\n`;
-  sql += `WHERE A.PROCESS_PERIOD BETWEEN '1/1/2023' AND '12/1/2023'\n`;
-  sql += `AND A.PROCESS_ID IN ('JBLDJE2CAS')\n`;
-  sql += `AND A.ACTIVE = 1\n`;
-  sql += `ORDER BY A.PROCESS_PERIOD;\n\n`;
+  sql += "-- QUERIES FOR QCFSIMPCYC ELAPSED:\n";
+  sql += `SELECT A.PROCESS_PERIOD, B.PROCESS_QUEUE_ID, B.PROCESS_ID, B.START_DT, B.END_DT QCFSIMPCYC_START_DT,
+DATEDIFF(minute, B.START_DT, B.END_DT) DATEDIFFMINS
+FROM CEN_DEV16UPS_QCA..JBTRN_PROCESS_ACTIVITY A
+JOIN QARCH_QUEU_PROCESS B ON A.PROCESS_QUEUE_ID = B.PROCESS_QUEUE_ID
+WHERE A.PROCESS_PERIOD BETWEEN '${ppStart}' AND '${ppEnd}'
+  AND A.PROCESS_ID IN ('JBLDJE2CAS')
+  AND A.ACTIVE = 1
+ORDER BY A.PROCESS_PERIOD;\n\n`;
 
   // Query 3
-  sql += `--QUERIES FOR QCFSIMPCYC ELAPSED: \n`;
-  sql += `SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, Datediff(minute, START_DT, END_DT) DATEDIFFMINS\n`;
-  sql += `FROM QARCH_QUEU_PROCESS\n`;
-  sql += `WHERE PROCESS_ID = 'QCFSIMPCYC'\n`;
-  sql += `AND START_DT >= '2023-02-08 13:18:58.000' --QCFSIMPCYC_START_DT\n`;
-  sql += `AND START_DT <= '2023-02-08 14:52:56.000' --QCFSIMPCYC_END_DT\n`;
-  sql += `AND STATUS_CD <> 'SXI'\n`;
-  sql += `ORDER BY START_DT;\n\n`;
+  sql += "-- QUERIES FOR QCFSIMPCYC ELAPSED:\n";
+  sql += `SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, DATEDIFF(minute, START_DT, END_DT) DATEDIFFMINS
+FROM QARCH_QUEU_PROCESS
+WHERE PROCESS_ID = 'QCFSIMPCYC'
+  AND START_DT >= '${qcfsimpStart}'
+  AND START_DT <= '${qcfsimpEnd}'
+  AND STATUS_CD <> 'SXI'
+ORDER BY START_DT;\n\n`;
 
   // Query 4
-  sql += `--QUERIES FOR POSTWKFL ELAPSED\n`;
-  sql += `SELECT DATEACCT, MAX(BATCH_POSTED) POSTWKFL_END_DT\n`;
-  sql += `FROM (\n`;
-  sql += `SELECT DATEACCT, MAX(LASTUPDATE) BATCH_POSTED\n`;
-  sql += `FROM BATCHJOURNALENTRYMASTER\n`;
-  sql += `WHERE NAME LIKE 'JIB%'\n`;
-  sql += `AND DATEACCT BETWEEN '1/1/2023' AND '12/2/2023'\n`;
-  sql += `GROUP BY DATEACCT\n`;
-  sql += `UNION ALL\n`;
-  sql += `SELECT DATEACCT, MAX(LASTUPDATE) BATCH_POSTED\n`;
-  sql += `FROM BATCHINVOICEMASTER\n`;
-  sql += `WHERE NAME LIKE 'JIB%'\n`;
-  sql += `AND DATEACCT BETWEEN '1/1/2023' AND '12/2/2023'\n`;
-  sql += `GROUP BY DATEACCT ) A\n`;
-  sql += `GROUP BY A.DATEACCT\n`;
-  sql += `ORDER BY A.DATEACCT;\n\n`;
+  sql += "-- QUERIES FOR POSTWKFL ELAPSED:\n";
+  sql += `SELECT DATEACCT, MAX(BATCH_POSTED) POSTWKFL_END_DT
+FROM (
+  SELECT DATEACCT, MAX(LASTUPDATE) BATCH_POSTED
+  FROM BATCHJOURNALENTRYMASTER
+  WHERE NAME LIKE 'JIB%' AND DATEACCT BETWEEN '${start}' AND '${end}'
+  GROUP BY DATEACCT
+  UNION ALL
+  SELECT DATEACCT, MAX(LASTUPDATE) BATCH_POSTED
+  FROM BATCHINVOICEMASTER
+  WHERE NAME LIKE 'JIB%' AND DATEACCT BETWEEN '${start}' AND '${end}'
+  GROUP BY DATEACCT
+) A
+GROUP BY A.DATEACCT
+ORDER BY A.DATEACCT;\n\n`;
 
   // Query 5
-  sql += `--QUERIES FOR POSTWKFL ELAPSED\n`;
-  sql += `SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, Datediff(minute, START_DT, END_DT) DATEDIFFMINS\n`;
-  sql += `FROM QARCH_QUEU_PROCESS\n`;
-  sql += `WHERE PROCESS_ID = 'POSTWKFL'\n`;
-  sql += `AND START_DT >= '2023-02-08 14:59:52.000' --QCFSIMPCYC_END_DT\n`;
-  sql += `AND START_DT <= '2023-02-08 16:23:28.000' --POSTWKFL_END_DT\n`;
-  sql += `AND STATUS_CD NOT IN ( 'SXI', 'SXL')\n`;
-  sql += `ORDER BY START_DT;\n`;
+  sql += "-- QUERIES FOR POSTWKFL ELAPSED:\n";
+  sql += `SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, DATEDIFF(minute, START_DT, END_DT) DATEDIFFMINS
+FROM QARCH_QUEU_PROCESS
+WHERE PROCESS_ID = 'POSTWKFL'
+  AND START_DT >= '${postStart}'
+  AND START_DT <= '${postEnd}'
+  AND STATUS_CD NOT IN ('SXI', 'SXL')
+ORDER BY START_DT;\n`;
 
-  document.getElementById('output21').value = sql;
+  document.getElementById("output21").value = sql;
 }
 
-// Scenario 22: GL Accounts Configuration and Setup
+
 // Scenario 22: GL Accounts Configuration and Setup
 function generateSQL22() {
   const acct = document.getElementById('input22_account_keyfull')?.value.trim();
@@ -4353,88 +4385,78 @@ Input is Update Date in 'YYYY-MM-DD' format. Specifiy that this Update Date must
 }
 
 //Scenario 21
+// Scenario 21
 function showAllQueries21() {
-  const queries = [
-`--QUERIES FOR QCFSIMPCYC ELAPSED: 
+  const sql = `--QUERIES FOR QCFSIMPCYC ELAPSED: 
 SELECT DATEACCT, MAX(BATCH_CREATED) QCFSIMPCYC_END_DT
-FROM 
-(
-SELECT DATEACCT, MAX(CREATED) BATCH_CREATED
-FROM BATCHJOURNALENTRYMASTER
-WHERE NAME LIKE 'JIB%'
-AND DATEACCT BETWEEN '1/1/2023' AND '12/2/2023'
-GROUP BY DATEACCT
-UNION ALL
-SELECT DATEACCT, MAX(CREATED) BATCH_CREATED
-FROM BATCHINVOICEMASTER
-WHERE NAME LIKE 'JIB%'
-AND DATEACCT BETWEEN '1/1/2023' AND '12/2/2023'
-GROUP BY DATEACCT ) A
+FROM (
+  SELECT DATEACCT, MAX(CREATED) BATCH_CREATED
+  FROM BATCHJOURNALENTRYMASTER
+  WHERE NAME LIKE 'JIB%'
+  AND DATEACCT BETWEEN '' AND ''
+  GROUP BY DATEACCT
+  UNION ALL
+  SELECT DATEACCT, MAX(CREATED) BATCH_CREATED
+  FROM BATCHINVOICEMASTER
+  WHERE NAME LIKE 'JIB%'
+  AND DATEACCT BETWEEN '' AND ''
+  GROUP BY DATEACCT
+) A
 GROUP BY A.DATEACCT
-ORDER BY A.DATEACCT
+ORDER BY A.DATEACCT;
 
---No Input is required. This query will auto generate.`,
-
-`--QUERIES FOR QCFSIMPCYC ELAPSED: 
+--QUERIES FOR QCFSIMPCYC ELAPSED: 
 SELECT A.PROCESS_PERIOD, B.PROCESS_QUEUE_ID, B.PROCESS_ID, B.START_DT, B.END_DT QCFSIMPCYC_START_DT, 
-Datediff(minute, B.START_DT, B.END_DT) DATEDIFFMINS 
+DATEDIFF(minute, B.START_DT, B.END_DT) DATEDIFFMINS 
 FROM CEN_DEV16UPS_QCA..JBTRN_PROCESS_ACTIVITY A
 JOIN QARCH_QUEU_PROCESS B
 ON A.PROCESS_QUEUE_ID = B.PROCESS_QUEUE_ID
-WHERE A.PROCESS_PERIOD BETWEEN '1/1/2023' AND '12/1/2023'
+WHERE A.PROCESS_PERIOD BETWEEN '' AND ''
 AND A.PROCESS_ID IN ('JBLDJE2CAS')
 AND A.ACTIVE = 1
-ORDER BY A.PROCESS_PERIOD
+ORDER BY A.PROCESS_PERIOD;
 
---No Input is required. This query will auto generate.`,
-
-`--QUERIES FOR QCFSIMPCYC ELAPSED: 
-SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, Datediff(minute, START_DT, END_DT) DATEDIFFMINS
+--QUERIES FOR QCFSIMPCYC ELAPSED: 
+SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, DATEDIFF(minute, START_DT, END_DT) DATEDIFFMINS
 FROM QARCH_QUEU_PROCESS
 WHERE PROCESS_ID = 'QCFSIMPCYC'
-AND START_DT >= '2023-02-08 13:18:58.000' --QCFSIMPCYC_START_DT
-AND START_DT <= '2023-02-08 14:52:56.000' --QCFSIMPCYC_END_DT
+AND START_DT >= '' --QCFSIMPCYC_START_DT
+AND START_DT <= '' --QCFSIMPCYC_END_DT
 AND STATUS_CD <> 'SXI'
-ORDER BY START_DT
+ORDER BY START_DT;
 
---No Input is required. This query will auto generate.`,
-
-`--QUERIES FOR POSTWKFL ELAPSED
+--QUERIES FOR POSTWKFL ELAPSED
 SELECT DATEACCT, MAX(BATCH_POSTED) POSTWKFL_END_DT
-FROM 
-(
-SELECT DATEACCT, MAX(LASTUPDATE) BATCH_POSTED
-FROM BATCHJOURNALENTRYMASTER
-WHERE NAME LIKE 'JIB%'
-AND DATEACCT BETWEEN '1/1/2023' AND '12/2/2023'
-GROUP BY DATEACCT
-UNION ALL
-SELECT DATEACCT, MAX(LASTUPDATE) BATCH_POSTED
-FROM BATCHINVOICEMASTER
-WHERE NAME LIKE 'JIB%'
-AND DATEACCT BETWEEN '1/1/2023' AND '12/2/2023'
-GROUP BY DATEACCT ) A
+FROM (
+  SELECT DATEACCT, MAX(LASTUPDATE) BATCH_POSTED
+  FROM BATCHJOURNALENTRYMASTER
+  WHERE NAME LIKE 'JIB%'
+  AND DATEACCT BETWEEN '' AND ''
+  GROUP BY DATEACCT
+  UNION ALL
+  SELECT DATEACCT, MAX(LASTUPDATE) BATCH_POSTED
+  FROM BATCHINVOICEMASTER
+  WHERE NAME LIKE 'JIB%'
+  AND DATEACCT BETWEEN '' AND ''
+  GROUP BY DATEACCT
+) A
 GROUP BY A.DATEACCT
-ORDER BY A.DATEACCT
+ORDER BY A.DATEACCT;
 
---No Input is required. This query will auto generate.`,
-
-`--QUERIES FOR POSTWKFL ELAPSED
-SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, Datediff(minute, START_DT, END_DT) DATEDIFFMINS
+--QUERIES FOR POSTWKFL ELAPSED
+SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, DATEDIFF(minute, START_DT, END_DT) DATEDIFFMINS
 FROM QARCH_QUEU_PROCESS
 WHERE PROCESS_ID = 'POSTWKFL'
-AND START_DT >= '2023-02-08 14:59:52.000' --QCFSIMPCYC_END_DT
-AND START_DT <= '2023-02-08 16:23:28.000' --POSTWKFL_END_DT
-AND STATUS_CD NOT IN ( 'SXI', 'SXL')
-ORDER BY START_DT
+AND START_DT >= '' --QCFSIMPCYC_END_DT
+AND START_DT <= '' --POSTWKFL_END_DT
+AND STATUS_CD NOT IN ('SXI', 'SXL')
+ORDER BY START_DT;`;
 
---No Input is required. This query will auto generate.`
-  ];
-
-  document.getElementById('output21').value = queries.join("\n\n");
+  document.getElementById("output21").value = sql;
 }
 
-//Scenario 22
+
+
 //Scenario 22
 function showAllQueries22() {
   const queries = [
