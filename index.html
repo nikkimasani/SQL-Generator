@@ -416,6 +416,18 @@ body.dark-mode .sidebar-nav .nav-btn:hover {
   background-color: #666;
 }
 
+
+.sidebar-nav.collapsed {
+  width: 50px;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+.sidebar-nav.collapsed .sidebar-title,
+.sidebar-nav.collapsed .nav-btn {
+  display: none;
+}
+
 </style>
 <style>
 body {
@@ -761,6 +773,11 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 </style>
 </head>
 <body>
+
+<button onclick="toggleSidebar()" style="position: fixed; top: 20px; left: 10px; z-index: 100; padding: 6px 10px; font-size: 14px; border-radius: 4px; background-color: #007acc; color: white; border: none; cursor: pointer;">
+☰
+</button>
+
 <div class="container">
 <h1 class="stylish-header" style="font-size: 38px; font-weight: 800; margin-bottom: 14px; color: #1a237e; text-align: center;">🛠 SQL Generator Tool</h1>
 <!--Navigation Bar-->
@@ -1240,10 +1257,10 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
   <h2>Scenario 18: Resolve BU Information</h2>
 
   <label>USERKEY (BU Number):</label>
-  <input id="input18_bu_userkey" placeholder="e.g., 118" />
+  <input id="input18_bu_userkey" placeholder="e.g., BJE0000001" />
 
   <label>USERKEY (BA Number):</label>
-  <input id="input18_ba_userkey" placeholder="e.g., 105365" />
+  <input id="input18_ba_userkey" placeholder="e.g., BI00000089" />
 
   <div class="footnote">
     USERKEY (BU Number) is used to retrieve BUSINESSENTITY.ID, which is matched in the nested query.<br/>
@@ -4950,6 +4967,20 @@ function searchScenarios() {
   });
 }
 </script>
+
+<script>
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar-nav');
+  sidebar.classList.toggle('collapsed');
+  const wrapper = document.querySelector('.container-wrapper');
+  if (sidebar.classList.contains('collapsed')) {
+    wrapper.style.marginLeft = '60px';
+  } else {
+    wrapper.style.marginLeft = '240px';
+  }
+}
+</script>
+
 </body>
 </html>
 <script>
