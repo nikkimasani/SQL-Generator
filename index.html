@@ -373,6 +373,17 @@ textarea {
   height: 100%;
   box-shadow: 2px 0 5px rgba(0,0,0,0.05);
   z-index: 99;
+  transition: width 0.3s ease;
+}
+
+.sidebar-nav.collapsed {
+  width: 50px;
+  overflow: hidden;
+}
+
+.sidebar-nav.collapsed .sidebar-title,
+.sidebar-nav.collapsed .nav-btn {
+  display: none;
 }
 
 .sidebar-title {
@@ -414,18 +425,6 @@ body.dark-mode .sidebar-nav .nav-btn {
 
 body.dark-mode .sidebar-nav .nav-btn:hover {
   background-color: #666;
-}
-
-
-.sidebar-nav.collapsed {
-  width: 50px;
-  overflow: hidden;
-  transition: width 0.3s ease;
-}
-
-.sidebar-nav.collapsed .sidebar-title,
-.sidebar-nav.collapsed .nav-btn {
-  display: none;
 }
 
 </style>
@@ -772,8 +771,8 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 }
 </style>
 </head>
-<body>
 
+<body>
 <button onclick="toggleSidebar()" style="position: fixed; top: 20px; left: 10px; z-index: 100; padding: 6px 10px; font-size: 14px; border-radius: 4px; background-color: #007acc; color: white; border: none; cursor: pointer;">
 ☰
 </button>
@@ -800,7 +799,7 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <p>📤 Click <strong>Show All Queries</strong> to reveal every SQL query for that scenario, even without inputs.</p>
 </div>
 </div>
-<div class="container-wrapper" style="margin-left: 240px;">
+<div class="container-wrapper">
 <!-- Begin HTML Blocks -->
 <!-- Search Bar -->
 <div class="search-container" style="text-align:center; margin: 20px auto;">
@@ -1412,7 +1411,7 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <!-- Footer -->
 <footer style="text-align:center; margin-top:40px; color:#555; font-size:0.9em;">
   Created by Nikki Masani.<br/>
-<small style="color:#888;">Version 2.1.0 — Last updated: 08-2025</small>
+<small style="color:#888;">Version 1.2.0 — Last updated: 2025-08-11</small>
 </footer>
 <!-- Begin JS Blocks for each Scenario -->
 <script>
@@ -4972,12 +4971,6 @@ function searchScenarios() {
 function toggleSidebar() {
   const sidebar = document.querySelector('.sidebar-nav');
   sidebar.classList.toggle('collapsed');
-  const wrapper = document.querySelector('.container-wrapper');
-  if (sidebar.classList.contains('collapsed')) {
-    wrapper.style.marginLeft = '60px';
-  } else {
-    wrapper.style.marginLeft = '240px';
-  }
 }
 </script>
 
