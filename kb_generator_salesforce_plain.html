@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>KB Generator — Salesforce Plain Text Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --bg:#0b1220; --fg:#f2f4f8; --muted:#98a2b3; --card:#121a2b; --border:#233046; }
+    html,body{height:100%}
+    body { margin:0; font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--fg); }
+    .wrap { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+    .card { background: var(--card); border:1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: 0 3px 14px rgba(0,0,0,.35); }
+    h1 { margin: 8px 0 16px; font-size: 22px; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .grid-1 { display:grid; grid-template-columns: 1fr; gap:12px; }
+    label { font-weight:600; display:block; margin:6px 0; }
+    input, select, textarea {
+      width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border);
+      background:#0a1222; color:var(--fg); outline: none; resize: vertical;
+    }
+    textarea { min-height: 100px; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { cursor:pointer; border:1px solid var(--border); background:#1c2a46; color:var(--fg);
+      padding:10px 14px; border-radius:10px; font-weight:600; }
+    .btn:hover { filter: brightness(1.08); }
+    .muted { color: var(--muted); font-size: 12px; }
+    .output { white-space:pre-wrap; background:#0a1222; padding:12px; border-radius:10px; border:1px solid var(--border); min-height: 120px; }
+    .section { margin-top:14px; }
+    .counter { font-size: 12px; color: var(--muted); float: right; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>KB Generator — Salesforce Plain Text Mode</h1>
+
+      <div class="grid">
+        <div><label>KB Article Title</label><input id="title" placeholder="Creating an AFE Supplement"/></div>
+        <div><label>Case Number (optional)</label><input id="caseNumber" placeholder="25-00012345"/></div>
+        <div><label>Product Category</label><input id="productCategory" placeholder="QCFS, QCA, ESUITE"/></div>
+        <div><label>Product Module/Type</label><input id="productType" placeholder="AFE, Posting, Import"/></div>
+        <div><label>Environment / Version</label><input id="environment" placeholder="PRD/2024.04/ V17"/></div>
+        <div><label>Audience</label>
+          <select id="audience"><option>Internal</option><option>Public</option></select></div>
+      </div>
+
+      <div class="grid">
+        <div><label>Objectives (bullets)</label><textarea id="objectives" placeholder="- Create an AFE Supplement
+- Route for approval
+- Validate posting"></textarea></div>
+        <div><label>Prerequisites</label><textarea id="prereqs" placeholder="- Proper user role
+- Access to AFE module
+- Active AFE in Open status"></textarea></div>
+      </div>
+
+      <div class="grid-1" style="margin-top:8px;">
+        <div><label>Overview (one-line purpose)</label><input id="overview" placeholder="This guide walks through creating an AFE Supplement and routing it for approval."/></div>
+        <div><label>Issue / Context (optional)</label><textarea id="issue" placeholder="Describe why the user needs this; symptoms, errors, or business scenario."></textarea></div>
+        <div><label>Numbered Steps (one per line)</label><textarea id="steps" placeholder="1) Navigate to AFE Workbench
+2) Search for target AFE
+3) Click Create Supplement
+4) Fill required fields and Save
+5) Route for approval"></textarea></div>
+        <div class="grid">
+          <div><label>Notes</label><textarea id="notes" placeholder="- Some fields default from the parent AFE
+- Approval route depends on dollar threshold"></textarea></div>
+          <div><label>Troubleshooting Tips</label><textarea id="troubleshooting" placeholder="- If status is locked, verify user permission
+- If route fails, check inbox status or workflow definition"></textarea></div>
+        </div>
+        <div><label>Related Links (one per line)</label><textarea id="related" placeholder="KB: Approving an AFE
+KB: Posting AFE Supplements
+Release Notes 2025.08"></textarea></div>
+        <div><label>Keywords / Tags (comma-separated)</label><input id="tags" placeholder="AFE, Supplement, Approval, Workflow"/></div>
+
+        <div class="row">
+          <button class="btn" onclick="generate()">⚙️ Generate</button>
+          <button class="btn" onclick="copySummary()">📋 Copy Summary (plain)</button>
+          <button class="btn" onclick="copyBody()">📋 Copy Body (plain)</button>
+          <button class="btn" onclick="downloadTxt()">📄 Download .txt</button>
+          <button class="btn" onclick="downloadWord()">📝 Download Word (.doc)</button>
+          <button class="btn" onclick="resetForm()">🔄 Reset</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <label>Salesforce Summary <span class="counter" id="sumCount">0 / 255</span></label>
+        <div id="summaryOut" class="output"></div>
+      </div>
+
+      <div class="section">
+        <label>Salesforce Article Body (PLAIN TEXT)</label>
+        <div id="bodyOut" class="output"></div>
+        <div class="muted">Paste this directly into the Article Body. Then use Salesforce's toolbar to insert screenshots where the placeholders are.</div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function val(id){ return document.getElementById(id).value.trim(); }
+  function lines(text){ return text.split(/\\r?\\n/).map(l=>l.trim()).filter(Boolean); }
+  function bullets(text){ return lines(text).map(l=>'- '+l.replace(/^[-*]\\s*/, '')).join('\\n'); }
+  function toNumbered(text){
+    const arr = lines(text).map(l=>l.replace(/^\\d+[\\).]\\s*/,''));
+    return arr.map((l,i)=> (i+1)+'. '+l).join('\\n');
+  }
+
+  function generate(){
+    const title = val('title') || 'Knowledge Article';
+    const caseNo = val('caseNumber');
+    const cat = val('productCategory'); const mod = val('productType');
+    const env = val('environment'); const aud = val('audience') || 'Internal';
+    const overview = val('overview'); const issue = val('issue');
+    const objectives = val('objectives'); const prereqs = val('prereqs');
+    const steps = toNumbered(val('steps')); const notes = val('notes');
+    const troubleshooting = val('troubleshooting'); const related = val('related'); const tags = val('tags');
+    const now = new Date().toISOString().replace('T',' ').slice(0,16);
+
+    // SUMMARY (<=255 chars). Prefer overview; fallback to context or a default sentence.
+    let summary = (overview || '').trim();
+    if(!summary){
+      let s = (issue || '').replace(/\\s+/g,' ').slice(0,255);
+      if(!s) s = `How to ${title.toLowerCase()}.`;
+      summary = s;
+    }
+    if(summary.length > 255) summary = summary.slice(0,252)+'...';
+    document.getElementById('summaryOut').textContent = summary;
+    document.getElementById('sumCount').textContent = summary.length + ' / 255';
+
+    // PLAIN TEXT BODY
+    const body =
+`${title}
+
+Overview
+--------
+${overview || '(n/a)'}
+
+${issue ? `Context
+-------
+${issue}
+
+` : ''}${objectives ? `Objectives
+----------
+${bullets(objectives)}
+
+` : ''}${prereqs ? `Prerequisites
+-------------
+${bullets(prereqs)}
+
+` : ''}Instructions
+------------
+${steps || '1. '}
+
+${notes ? `Notes / Gotchas
+---------------
+${bullets(notes)}
+
+` : ''}${troubleshooting ? `Troubleshooting
+--------------
+${bullets(troubleshooting)}
+
+` : ''}Screenshots
+----------
+[Insert Screenshot 1]
+[Insert Screenshot 2]
+[Insert Screenshot 3]
+
+Related Articles
+----------------
+${lines(related).map(l=>'- '+l).join('\\n')}
+
+Meta
+----
+- Product: ${cat} / ${mod}
+- Environment: ${env}
+- Audience: ${aud}
+- Case #: ${caseNo || '(n/a)'}
+- Keywords: ${tags || ''}
+- Generated: ${now}
+`;
+    document.getElementById('bodyOut').textContent = body;
+  }
+
+  function copySummary(){
+    const txt = document.getElementById('summaryOut').textContent;
+    navigator.clipboard.writeText(txt);
+  }
+  function copyBody(){
+    const txt = document.getElementById('bodyOut').textContent;
+    navigator.clipboard.writeText(txt);
+  }
+
+  function downloadTxt(){
+    generate();
+    const title = (val('title') || 'kb_draft').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+    const blob = new Blob([document.getElementById('bodyOut').textContent], {type:'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${title || 'kb'}.txt`;
+    a.click();
+  }
+
+  function downloadWord(){
+    // Save as .doc but still plain text content for easy pasting; user can insert images in Word then paste text into Salesforce.
+    generate();
+    const content = document.getElementById('bodyOut').textContent.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\n/g,'<br/>');
+    const title = (val('title') || 'kb_draft').replace(/[^a-z0-9\\-\\s_\\.]/gi,' ').trim() || 'kb_draft';
+    const preHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title>
+      <style>body{font-family:Segoe UI,Arial,sans-serif; white-space:normal}</style></head><body>`;
+    const postHtml = '</body></html>';
+    const html = preHtml + '<div>'+content+'</div>' + postHtml;
+    const blob = new Blob(['\\ufeff', html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `${title}.doc`; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  }
+
+  function resetForm(){
+    ['title','caseNumber','productCategory','productType','environment','overview','issue','objectives','prereqs','steps','notes','troubleshooting','related','tags'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('summaryOut').textContent=''; document.getElementById('sumCount').textContent='0 / 255';
+    document.getElementById('bodyOut').textContent='';
+  }
+</script>
+</body>
+</html>
