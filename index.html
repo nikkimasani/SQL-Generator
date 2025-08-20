@@ -1242,17 +1242,60 @@ WHERE BD.VOUNUM IN ('')
 
 
 <!-- Scenario 11 Starts-->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario11')">➕ Scenario 11: Deposit Batches(AR308)</button><div class="tab-content" id="scenario11">
-<h2>Scenario 11: Deposit Batches</h2>
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario11')">➕ Scenario 11: Deposit Batches (AR308)</button><div class="tab-content" id="scenario11">
+<template class="sql-index">
+--Query the Batch Deposit tables to view Deposit Batch details:
+SELECT E.USERKEY, A.USERKEY, A.STATUSWORKFLOW, * 
+FROM BATCHDEPOSITWITHMATCHMASTER A
+JOIN BATCHDWMCUSTOMERS B ON A.ID = B.IDBATDWMMASTER
+JOIN BATCHDWMRECEIPTS D ON B.ID = D.IDBATDWMCUSTOMER
+JOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID
+WHERE A.USERKEY= '';
+
+--Query the Batch Deposit tables to retrieve the total number of columns in Deposit Batches in Post Pending Status:
+SELECT A.USERKEY, A.NAME, count(*) 
+FROM BATCHDEPOSITWITHMATCHMASTER A
+JOIN BATCHDWMCUSTOMERS B ON A.ID = B.IDBATDWMMASTER
+JOIN BATCHDWMINVOICES C ON B.ID = C.IDBATDWMCUSTOMER
+JOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID
+WHERE A.USERKEY IN (
+  SELECT USERKEY FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90
+)
+GROUP BY A.USERKEY, A.NAME;
+
+--Match the USERKEY to Deposit Journal batches:
+SELECT * FROM AUDITTRANSACTIONLOG 
+WHERE BATCHUSERKEY IN ('');
+
+--Join to Deposit Journal to review the Deposits:
+SELECT * FROM DEPOSITJOURNAL 
+WHERE DEPOSITNUMBER IN (
+  SELECT REFNUM 
+  FROM AUDITTRANSACTIONLOG 
+  WHERE BATCHUSERKEY IN ('')
+);
+
+--Link to Workflow Inbox to review the approval or rejection:
+SELECT * FROM UVW_WORKFLOWINBOX 
+WHERE IDBATCHMASTER IN (
+  SELECT IDBATCHMASTER 
+  FROM AUDITTRANSACTIONLOG 
+  WHERE BATCHUSERKEY IN ('')
+);
+</template>
+
+<h2>Scenario 11: Deposit Batches (AR308)</h2>
 <label>USERKEY (If multiple values, please separate with commas.):</label>
 <input id="input11_userkey" placeholder="e.g., BD00000018, BD00000019"/>
 <button class="btn generate" onclick="generateSQL11()">⚙️ Generate SQL</button>
 <button class="btn default" onclick="showAllQueries11()">🗃 Show All Queries</button>
-<textarea id="output11" placeholder="SQL will appear here..." readonly=""></textarea><button class="btn" onclick="toggleEditable('output11')" title="Edit Output" type="button">✏️</button>
+<textarea id="output11" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn" onclick="toggleEditable('output11')" title="Edit Output" type="button">✏️</button>
 <button class="btn copy" onclick="copySQL('output11')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('input11_userkey','output11')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output11')">💾 Export</button>
 <!-- Scenario 11 Ends -->
+
 
 
 <!-- Scenario 12 Starts -->
@@ -2580,10 +2623,25 @@ function generateSQL10() {
 
 // Scenario 11
 function generateSQL11() {
-  const userkey = document.getElementById("input11_userkey").value.trim();
-  let sql = `--Query the Batch Deposit tables to view Deposit Batch details:\nSELECT * FROM BATCHDEPOSITWITHMATCHMASTER A JOIN BATCHDWMCUSTOMERS B ON A.ID = B.IDBATDWMMASTER JOIN BATCHDWMRECEIPTS D ON B.ID = D.IDBATDWMCUSTOMER JOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID WHERE A.USERKEY IN ('${userkey}');\n\n`;
-  sql += `--Total number of deposit batches in Post Pending Status:\nSELECT A.USERKEY, A.NAME, COUNT(*) FROM BATCHDEPOSITWITHMATCHMASTER A JOIN BATCHDWMINVOICES C ON A.ID = C.IDBATDWMCUSTOMER JOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID WHERE A.USERKEY IN (SELECT USERKEY FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90) GROUP BY A.USERKEY, A.NAME;\n`;
-  document.getElementById("output11").value = sql;
+  const userkeyInput = document.getElementById('input11_userkey').value.trim();
+  const userkeys = userkeyInput ? userkeyInput.split(',').map(k => `'${k.trim()}'`).join(', ') : '';
+
+  let queries = [];
+
+  if (userkeys) {
+    queries.push(`--Query the Batch Deposit tables to view Deposit Batch details:\nSELECT E.USERKEY, A.USERKEY, A.STATUSWORKFLOW, * \nFROM BATCHDEPOSITWITHMATCHMASTER A\nJOIN BATCHDWMCUSTOMERS B ON A.ID = B.IDBATDWMMASTER\nJOIN BATCHDWMRECEIPTS D ON B.ID = D.IDBATDWMCUSTOMER\nJOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE A.USERKEY IN (${userkeys});`);
+
+    queries.push(`--Match the USERKEY to Deposit Journal batches:\nSELECT * FROM AUDITTRANSACTIONLOG \nWHERE BATCHUSERKEY IN (${userkeys});`);
+
+    queries.push(`--Join to Deposit Journal to review the Deposits:\nSELECT * FROM DEPOSITJOURNAL \nWHERE DEPOSITNUMBER IN (\n  SELECT REFNUM \n  FROM AUDITTRANSACTIONLOG \n  WHERE BATCHUSERKEY IN (${userkeys})\n);`);
+
+    queries.push(`--Link to Workflow Inbox to review the approval or rejection:\nSELECT * FROM UVW_WORKFLOWINBOX \nWHERE IDBATCHMASTER IN (\n  SELECT IDBATCHMASTER \n  FROM AUDITTRANSACTIONLOG \n  WHERE BATCHUSERKEY IN (${userkeys})\n);`);
+  }
+
+  // Query 2: no input required
+  queries.unshift(`--Query the Batch Deposit tables to retrieve the total number of columns in Deposit Batches in Post Pending Status:\nSELECT A.USERKEY, A.NAME, count(*) \nFROM BATCHDEPOSITWITHMATCHMASTER A\nJOIN BATCHDWMCUSTOMERS B ON A.ID = B.IDBATDWMMASTER\nJOIN BATCHDWMINVOICES C ON B.ID = C.IDBATDWMCUSTOMER\nJOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE A.USERKEY IN (\n  SELECT USERKEY FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90\n)\nGROUP BY A.USERKEY, A.NAME;`);
+
+  document.getElementById('output11').value = queries.join('\n\n');
 }
 
 function generateSQL12() {
@@ -4511,6 +4569,24 @@ GROUP BY BATCHUSERKEY, KEYFULL, JECUSTOMCODEBLOCK__NOTES`
 
   document.getElementById("output10").value = queries.join("\n\n");
 }
+
+//Scenario 11
+function showAllQueries11() {
+  const queries = [];
+
+  queries.push(`--Query the Batch Deposit tables to view Deposit Batch details:\nSELECT E.USERKEY, A.USERKEY, A.STATUSWORKFLOW, * \nFROM BATCHDEPOSITWITHMATCHMASTER A\nJOIN BATCHDWMCUSTOMERS B ON A.ID = B.IDBATDWMMASTER\nJOIN BATCHDWMRECEIPTS D ON B.ID = D.IDBATDWMCUSTOMER\nJOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE A.USERKEY= '';`);
+
+  queries.push(`--Query the Batch Deposit tables to retrieve the total number of columns in Deposit Batches in Post Pending Status:\nSELECT A.USERKEY, A.NAME, count(*) \nFROM BATCHDEPOSITWITHMATCHMASTER A\nJOIN BATCHDWMCUSTOMERS B ON A.ID = B.IDBATDWMMASTER\nJOIN BATCHDWMINVOICES C ON B.ID = C.IDBATDWMCUSTOMER\nJOIN BUSINESSENTITY E ON A.IDBEOWNER = E.ID\nWHERE A.USERKEY IN (\n  SELECT USERKEY FROM UVW_WORKFLOWINBOX WHERE STATUSWORKFLOW = 90\n)\nGROUP BY A.USERKEY, A.NAME;`);
+
+  queries.push(`--Match the USERKEY to Deposit Journal batches:\nSELECT * FROM AUDITTRANSACTIONLOG \nWHERE BATCHUSERKEY IN ('');`);
+
+  queries.push(`--Join to Deposit Journal to review the Deposits:\nSELECT * FROM DEPOSITJOURNAL \nWHERE DEPOSITNUMBER IN (\n  SELECT REFNUM \n  FROM AUDITTRANSACTIONLOG \n  WHERE BATCHUSERKEY IN ('')\n);`);
+
+  queries.push(`--Link to Workflow Inbox to review the approval or rejection:\nSELECT * FROM UVW_WORKFLOWINBOX \nWHERE IDBATCHMASTER IN (\n  SELECT IDBATCHMASTER \n  FROM AUDITTRANSACTIONLOG \n  WHERE BATCHUSERKEY IN ('')\n);`);
+
+  document.getElementById('output11').value = queries.join('\n\n');
+}
+
 
 
 
