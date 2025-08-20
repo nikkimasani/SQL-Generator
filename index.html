@@ -1937,13 +1937,90 @@ ORDER BY A.KEYFULL
 
 <!-- ✅ BEGIN Group 2 -->
 
-<button class="accordion-btn group-btn" onclick="toggleGroup('group2')" style="background: linear-gradient(to right, #007BFF, #0056b3); color: #fff; font-weight: bold; border-radius: 6px; padding: 10px 15px; box-shadow: 0 3px 6px rgba(0,0,0,0.3);">📂 Group 2: QRA, QDO</button>
+<!-- 📂 Group 2: QDO, QRA -->
+<button class="accordion-btn group-btn" onclick="toggleGroup('group2')" style="background: linear-gradient(to right, #8e44ad, #6c3483); color: #fff; font-weight: bold; border-radius: 6px; padding: 10px 15px; box-shadow: 0 3px 6px rgba(0,0,0,0.3);">📂 Group 2: QDO, QRA </button>
 <div class="scenario-group" id="group2" style="display: none;">
-<div style="padding:10px; font-style:italic; color:gray;">
-    🚧 This section is under construction. Scenarios for QRA and QDO will appear here.
-  </div>
-<!--Placeholder for Group 2 Scenario Buttons-->
+
+<!-- Scenario 2.1 -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario201')">➕ Scenario 2.1: Max Sequence in QDO Transaction</button>
+<div class="tab-content" id="scenario201">
+  <template class="sql-index">
+--Query to find the max sequence number in all related DONL tables:
+SELECT Max(TRANS_GRP_SEQ_NO)
+FROM (
+	SELECT Max(TRANS_GRP_SEQ_NO) AS TRANS_GRP_SEQ_NO FROM DONL_INT_FUNDS_XFER_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_INT_FUNDS_XFER_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_OWNR_EXCPT_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_OWNR_EXCPT_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_PAY_CD_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_PAY_CD_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_DO_HIST
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DO_HIST
+) A;
+
+--Query to find TRANS_GRP_SEQ_NO setup:
+SELECT * FROM QARCH_TRAN_SEQ WHERE SEQ_NM = 'TRANS_GRP_SEQ_NO';
+  </template>
+  <h2>Scenario 2.1: Max Sequence in QDO Transaction</h2>
+  <div class="footnote">⚠️ No input required. Click "Generate SQL" or "Show All Queries" to populate queries.</div>
+  <button class="btn generate" onclick="generateSQL201()">⚙️ Generate SQL</button>
+  <button class="btn default" onclick="showAllQueries201()">🗃 Show All Queries</button>
+  <textarea id="output201" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output201')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('output201')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output201')">💾 Export</button>
 </div>
+
+<!-- Scenario 2.2 -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario202')">➕ Scenario 2.2: Funds Transfer by Group Number</button>
+<div class="tab-content" id="scenario202">
+  <template class="sql-index">
+--Query to find Funds transfer information based on a Group Number:
+SELECT H.*, DTL.*
+FROM DONL_INT_FUNDS_XFER_HDR H
+JOIN DONL_INT_FUNDS_XFER_DTL DTL ON H.TRANS_SEQ_NO = DTL.TRANS_SEQ_NO
+WHERE H.GRP_NO = '';
+  </template>
+  <h2>Scenario 2.2: Funds Transfer by Group Number</h2>
+  <label>GRP_NO</label>
+  <input id="input202_grpno" placeholder="e.g., 40395"/>
+  <button class="btn generate" onclick="generateSQL202()">⚙️ Generate SQL</button>
+  <button class="btn default" onclick="showAllQueries202()">🗃 Show All Queries</button>
+  <textarea id="output202" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output202')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input202_grpno','output202')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output202')">💾 Export</button>
+</div>
+
+<!-- Scenario 2.3 -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario203')">➕ Scenario 2.3: Maintenance Group Status</button>
+<div class="tab-content" id="scenario203">
+  <template class="sql-index">
+--Query to confirm Status Code description:
+SELECT * FROM GCDE_GRP_STAT;
+
+--Query to review Maintenance Group information:
+SELECT GRP_STAT_CD, * FROM DONL_DVD_GRP ORDER BY UPDT_DT DESC;
+  </template>
+  <h2>Scenario 2.3: Maintenance Group Status</h2>
+  <div class="footnote">⚠️ No input required. Click "Generate SQL" or "Show All Queries" to populate queries.</div>
+  <button class="btn generate" onclick="generateSQL203()">⚙️ Generate SQL</button>
+  <button class="btn default" onclick="showAllQueries203()">🗃 Show All Queries</button>
+  <textarea id="output203" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn copy" onclick="copySQL('output203')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('output203')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output203')">💾 Export</button>
+</div>
+
+</div> <!-- end group2 -->
+
 <!-- Footer -->
 <footer style="text-align:center; margin-top:40px; color:#555; font-size:0.9em;">
   Created by Nikki Masani.<br/>
@@ -3778,6 +3855,69 @@ function generateSQL22() {
   document.getElementById('output22').value = sql;
 }
 
+//Scenario 1 (Group 2)
+function generateSQL201() {
+  let output = `--Query to find the max sequence number in all related DONL tables: 
+SELECT Max(TRANS_GRP_SEQ_NO)
+FROM (
+	SELECT Max(TRANS_GRP_SEQ_NO) AS TRANS_GRP_SEQ_NO FROM DONL_INT_FUNDS_XFER_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_INT_FUNDS_XFER_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_OWNR_EXCPT_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_OWNR_EXCPT_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_PAY_CD_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_PAY_CD_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_DO_HIST
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DO_HIST
+) A;
+
+--Query to find TRANS_GRP_SEQ_NO setup:
+SELECT * 
+FROM QARCH_TRAN_SEQ 
+WHERE SEQ_NM = 'TRANS_GRP_SEQ_NO';`;
+
+  document.getElementById("output201").value = output;
+}
+
+
+//Scenario 2 (Group 2)
+function generateSQL202() {
+  const grpno = document.getElementById("input202_grpno").value.trim();
+  if (!grpno) {
+    alert("Please enter a GRP_NO.");
+    return;
+  }
+
+  let output = `--Query to find Funds transfer information based on a Group Number: 
+SELECT H.*, DTL.*
+FROM DONL_INT_FUNDS_XFER_HDR H
+JOIN DONL_INT_FUNDS_XFER_DTL DTL ON H.TRANS_SEQ_NO = DTL.TRANS_SEQ_NO
+WHERE H.GRP_NO = '${grpno}';`;
+
+  document.getElementById("output202").value = output;
+}
+
+
+//Scenario 3 (Group 2)
+function generateSQL203() {
+  let output = `--Query to confirm Status Code description:
+SELECT * 
+FROM GCDE_GRP_STAT;
+
+--Query to review Maintenance Group information:
+SELECT GRP_STAT_CD, * 
+FROM DONL_DVD_GRP 
+ORDER BY UPDT_DT DESC;`;
+
+  document.getElementById("output203").value = output;
+}
+
 
 
 </script>
@@ -5440,6 +5580,58 @@ No Input is required. This query will auto generate.`
   ];
 
   document.getElementById('output22').value = queries.join("\n\n");
+}
+
+function showAllQueries201() {
+  let output = `--Query to find the max sequence number in all related DONL tables: 
+SELECT Max(TRANS_GRP_SEQ_NO)
+FROM (
+	SELECT Max(TRANS_GRP_SEQ_NO) AS TRANS_GRP_SEQ_NO FROM DONL_INT_FUNDS_XFER_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_INT_FUNDS_XFER_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_OWNR_EXCPT_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_OWNR_EXCPT_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_PAY_CD_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_PAY_CD_MAINT_HDR
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DVD_DO_HIST
+	UNION ALL
+	SELECT Max(TRANS_GRP_SEQ_NO) FROM DONL_DO_HIST
+) A;
+
+--Query to find TRANS_GRP_SEQ_NO setup:
+SELECT * 
+FROM QARCH_TRAN_SEQ 
+WHERE SEQ_NM = 'TRANS_GRP_SEQ_NO';`;
+
+  document.getElementById("output201").value = output;
+}
+
+function showAllQueries202() {
+  let output = `--Query to find Funds transfer information based on a Group Number: 
+SELECT H.*, DTL.*
+FROM DONL_INT_FUNDS_XFER_HDR H
+JOIN DONL_INT_FUNDS_XFER_DTL DTL ON H.TRANS_SEQ_NO = DTL.TRANS_SEQ_NO
+WHERE H.GRP_NO = '';`;
+
+  document.getElementById("output202").value = output;
+}
+
+function showAllQueries203() {
+  let output = `--Query to confirm Status Code description:
+SELECT * 
+FROM GCDE_GRP_STAT;
+
+--Query to review Maintenance Group information:
+SELECT GRP_STAT_CD, * 
+FROM DONL_DVD_GRP 
+ORDER BY UPDT_DT DESC;`;
+
+  document.getElementById("output203").value = output;
 }
 
 
