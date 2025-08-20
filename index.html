@@ -1164,21 +1164,31 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 </div><!-- closes <div class="tab-content" id="scenario13"> -->
 
 <!-- Scenario 14 Starts-->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario14')">➕ Scenario 14: Business Associate</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario14')">➕ Scenario 14: Business Associate (BA005 or BA WEB)</button>
 <div class="tab-content" id="scenario14">
-<h2>Scenario 14: Business Associate (BA005 / BA Web)</h2>
-<label>BA_NO:</label>
-<input id="input14_ba_no" placeholder="e.g., 12345, 67890"/>
-<label>PRIMARY_BP_NO:</label>
-<input id="input14_primary_bp_no" placeholder="e.g., 32145"/>
+<h2>Scenario 14: Business Associate (BA005 or BA WEB)</h2>
+
+<label>BA_NO (If multiple values, please separate with commas.):</label>
+<input id="input14_bano" placeholder="e.g., 12345, 67890"/>
+
+<label>PRIMARY_BP_NO (If multiple values, please separate with commas.):</label>
+<input id="input14_primarybpno" placeholder="e.g., 12345, 67890"/>
+
+<div class="footnote">
+  ⚠️ Only queries matching provided input fields will generate. Queries with no required input will always show.
+</div>
+
 <button class="btn generate" onclick="generateSQL14()">⚙️ Generate SQL</button>
 <button class="btn default" onclick="showAllQueries14()">🗃 Show All Queries</button>
-<textarea id="output14" placeholder="SQL will appear here..." readonly=""></textarea><button class="btn" onclick="toggleEditable('output14')" title="Edit Output" type="button">✏️</button>
+<textarea id="output14" placeholder="SQL will appear here..." readonly></textarea>
+<button class="btn" onclick="toggleEditable('output14')" title="Edit Output" type="button">✏️</button>
 <button class="btn copy" onclick="copySQL('output14')">📋 Copy</button>
-<button class="btn reset" onclick="resetFields('input14_ba_no','input14_primary_bp_no','output14')">🔄 Reset</button>
+<button class="btn reset" onclick="resetFields('input14_bano','input14_primarybpno','output14')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output14')">💾 Export</button>
-</div>
 <!-- Scenario 14 Ends -->
+</div>
+
+
 
 
 <!-- Scenario 15 Starts -->
@@ -2328,75 +2338,84 @@ function generateSQL13() {
 
 // —— Scenario 14: Business Associate (BA005 / BA Web)
 function generateSQL14() {
-  const baRaw = document.getElementById("input14_ba_no").value.trim();
-  const bpRaw = document.getElementById("input14_primary_bp_no").value.trim();
+  const baNos = document.getElementById("input14_bano").value.split(",").map(x => x.trim()).filter(Boolean);
+  const bpNos = document.getElementById("input14_primarybpno").value.split(",").map(x => x.trim()).filter(Boolean);
+  let sqlOutput = "";
 
-  const listify = str =>
-    str.split(",").map(v => v.trim()).filter(Boolean).map(v => `'${v}'`).join(", ");
+  // Queries 1-2
+  if (baNos.length) {
+    sqlOutput += "--Review Business Entities in BA005/BA Web:\n";
+    sqlOutput += `SELECT * FROM SCTRL_BA_ENTITY WHERE BA_NO IN (${baNos.map(no => `'${no}'`).join(", ")});\n\n`;
 
-  const baList = baRaw ? listify(baRaw) : null;
-  const bpList = bpRaw ? listify(bpRaw) : null;
+    sqlOutput += "--Review Business Associate Address Tab in BA005/BA Web:\n";
+    sqlOutput += `SELECT * FROM SCTRL_BA_ADDRESS WHERE BA_NO IN (${baNos.map(no => `'${no}'`).join(", ")});\n\n`;
+  }
 
-  let sql = "";
+  // Query 3
+  if (bpNos.length) {
+    sqlOutput += "--Review Business Associate Contacts Tab in BA005/BA Web:\n";
+    sqlOutput += `SELECT * FROM SCTRL_CONTACT WHERE PRIMARY_BP_NO IN (${bpNos.map(no => `'${no}'`).join(", ")});\n\n`;
+  }
 
-  const baQueries = [
-    { label: "--Review Business Entities in BA005/BA Web:", table: "SCTRL_BA_ENTITY", col: "BA_NO" },
-    { label: "--Review Business Associate Address Tab in BA005/BA Web:", table: "SCTRL_BA_ADDRESS", col: "BA_NO" },
-    { label: "--Review Business Associate Contacts Address Tab in BA005/BA Web:", table: "SCTRL_BA_CONTACT_ADDRESS", col: "BA_NO" },
-    { label: "--Review Business Associate Addresses Tab>Usages  in BA005/BA Web:", table: "SCTRL_BA_USAGE", col: "BA_NO" },
-    { label: "--Review Business Associate Addresses Tab>Attributes in BA005/BA Web:", table: "SCTRL_BA_ADDRESS_ATTR", col: "BA_NO" },
-    { label: "--Review Business Associate Addresses Tab>Revenue in BA005/BA Web:", table: "SCTRL_BA_ADDRESS_RVNU", col: "BA_NO" },
-    { label: "--Review Business Associate QCFS/Core Financials tab in BA005/BA Web:", table: "SCTRL_BA_QCFS_EXT", col: "BA_NO" },
-    { label: "--Review Business Associate Tax IDs tab in BA005/BA Web:", table: "SCTRL_BA_TAX_ID", col: "BA_NO" },
-    { label: "--Review Business Associate Address Tab > Overrides >Vendor Payee Override", table: "SCTRL_BA_ADDRESS_VENDOR", col: "BA_NO" },
-    { label: "--Review Business Associate Address Tab > Overrides >Revenue Payee Override", table: "SCTRL_BA_ADDRESS_RVNU", col: "BA_NO" },
-    { label: "--Review Business Associate Address Tab > Overrides >1099  Override", table: "SCTRL_BA_ADDRESS_1099", col: "BA_NO" },
-    { label: "--Review Business Associate Bank Info Tab", table: "SCTRL_DEPOSITORY_OWNR_ACCT", col: "BA_NO" },
-    { label: "--Review Business Associate Bank Info Tab", table: "SXREF_DEPOSITORY", col: "BA_NO" },
+  // Queries 4–14 (all use BA_NO)
+  const baOnlyQueries = [
+    { label: "Contacts Address Tab", table: "SCTRL_BA_CONTACT_ADDRESS" },
+    { label: "Addresses Tab>Usages", table: "SCTRL_BA_USAGE" },
+    { label: "Addresses Tab>Attributes", table: "SCTRL_BA_ADDRESS_ATTR" },
+    { label: "Addresses Tab>Revenue", table: "SCTRL_BA_ADDRESS_RVNU" },
+    { label: "QCFS/Core Financials tab", table: "SCTRL_BA_QCFS_EXT" },
+    { label: "Tax IDs tab", table: "SCTRL_BA_TAX_ID" },
+    { label: "Overrides > Vendor Payee", table: "SCTRL_BA_ADDRESS_VENDOR" },
+    { label: "Overrides > Revenue Payee", table: "SCTRL_BA_ADDRESS_RVNU" },
+    { label: "Overrides > 1099", table: "SCTRL_BA_ADDRESS_1099" },
+    { label: "Bank Info Tab 1", table: "SCTRL_DEPOSITORY_OWNR_ACCT" },
+    { label: "Bank Info Tab 2", table: "SXREF_DEPOSITORY" }
   ];
 
-  const bpQueries = [
-    { label: "--Review Business Associate Contacts Tab in BA005/BA Web:", table: "SCTRL_CONTACT", col: "PRIMARY_BP_NO" },
-  ];
+  if (baNos.length) {
+    for (const q of baOnlyQueries) {
+      sqlOutput += `--Review Business Associate ${q.label} in BA005/BA Web:\n`;
+      sqlOutput += `SELECT * FROM ${q.table} WHERE BA_NO IN (${baNos.map(no => `'${no}'`).join(", ")});\n\n`;
+    }
+  }
 
-  const staticQueries = [
-    {
-      label: "--Open query for all Business Units:",
-      query: "SELECT * FROM SCTRL_BUS_UNIT"
-    },
-    {
-      label: "--Query to check for any Vendor BAs that have become unsynced from their Global BUs.",
-      query: `SELECT DISTINCT B.USERKEY FROM VENDOR A 
-JOIN VENDOR B ON A.IDGLOBAL = B.ID 
-AND A.USERKEY!=B.USERKEY`
-    },
-    {
-      label: "--View Vendor Account coding\n--Vendor Account Coded",
-      query: `SELECT DISTINCT F.BUS_UNIT_CD, D.BA_NO, D.BA_NM1, D.BA_NM2, D.BA_NM3, E.KEYFULL, B.VOUNUM
+  // Query 15 — No input required
+  sqlOutput += "--Open query for all Business Units:\n";
+  sqlOutput += "SELECT * FROM SCTRL_BUS_UNIT;\n\n";
+
+  // Query 16 — No input required
+  sqlOutput += "--Query to check for any Vendor BAs that have become unsynced from their Global BUs:\n";
+  sqlOutput += `SELECT DISTINCT B.USERKEY FROM VENDOR A 
+JOIN VENDOR B
+ON A.IDGLOBAL = B.ID
+AND A.USERKEY!=B.USERKEY;\n\n`;
+
+  // Query 17 — No input required
+  sqlOutput += "--View Vendor Account coding\n--Vendor Account Coded\n";
+  sqlOutput += `SELECT DISTINCT F.BUS_UNIT_CD, D.BA_NO, D.BA_NM1, D.BA_NM2, D.BA_NM3, E.KEYFULL, B.VOUNUM
 FROM dbo.BATCHVOUCHERGLDISTRIBUTION A
 LEFT JOIN dbo.BATCHVOUCHERDETAIL B ON A.IDBATVOUDETAIL = B.ID
 LEFT JOIN VENDOR C ON B.IDVENDOR = C.ID
 LEFT JOIN SCTRL_BA_ENTITY D ON C.USERKEY = D.BA_NO
 LEFT JOIN ACCOUNT E ON A.IDACCOUNT = E.ID
-LEFT JOIN BUSINESSENTITY F ON A.IDBEOWNER = F.ID`
+LEFT JOIN BUSINESSENTITY F ON A.IDBEOWNER = F.ID;\n\n`;
+
+  // Queries 18–19 — BA_NO input
+  if (baNos.length) {
+    sqlOutput += "--Query the BA History (SHIST):\n";
+    for (const no of baNos) {
+      sqlOutput += `SELECT ENTY_TYPE_CD, USER_ID, UPDT_DT, CHANGE_TYPE_CD, * FROM SHIST_BA_ADDRESS WHERE BA_NO = '${no}';\n`;
     }
-  ];
+    sqlOutput += "\n";
 
-  [...baQueries, ...bpQueries].forEach(q => {
-    const isBA = q.col === "BA_NO";
-    const input = isBA ? baList : bpList;
-    if (input) {
-      sql += `${q.label}\nSELECT * FROM ${q.table} WHERE ${q.col} IN (${input});\n\n`;
-    } else {
-      sql += `${q.label}\n--SELECT * FROM ${q.table} WHERE ${q.col} IN ('');\n\n`;
+    sqlOutput += "--Query the BA History (QHIST):\n";
+    for (const no of baNos) {
+      sqlOutput += `SELECT * FROM QHIST_BA_ADDRESS WHERE BA_NO = '${no}';\n`;
     }
-  });
+    sqlOutput += "\n";
+  }
 
-  staticQueries.forEach(q => {
-    sql += `${q.label}\n${q.query};\n\n`;
-  });
-
-  document.getElementById("output14").value = sql.trim();
+  document.getElementById("output14").value = sqlOutput;
 }
 
 //Scenario 15
@@ -4242,73 +4261,63 @@ ORDER BY CREATED
 
 //Scenario 14
 function showAllQueries14() {
-  const sql = `--Review Business Entities in BA005/BA Web:
-SELECT * FROM SCTRL_BA_ENTITY WHERE BA_NO IN ('')
+  let sqlOutput = "";
 
---Review Business Associate Address Tab in BA005/BA Web:
-SELECT * FROM SCTRL_BA_ADDRESS WHERE BA_NO IN ('')
+  sqlOutput += "--Review Business Entities in BA005/BA Web:\n";
+  sqlOutput += "SELECT * FROM SCTRL_BA_ENTITY WHERE BA_NO IN ('');\n\n";
 
---Review Business Associate Contacts Tab in BA005/BA Web:
-SELECT * FROM SCTRL_CONTACT WHERE PRIMARY_BP_NO IN ('')
+  sqlOutput += "--Review Business Associate Address Tab in BA005/BA Web:\n";
+  sqlOutput += "SELECT * FROM SCTRL_BA_ADDRESS WHERE BA_NO IN ('');\n\n";
 
---Review Business Associate Contacts Address Tab in BA005/BA Web:
-SELECT * FROM SCTRL_BA_CONTACT_ADDRESS WHERE BA_NO IN ('')
+  sqlOutput += "--Review Business Associate Contacts Tab in BA005/BA Web:\n";
+  sqlOutput += "SELECT * FROM SCTRL_CONTACT WHERE PRIMARY_BP_NO IN ('');\n\n";
 
---Review Business Associate Addresses Tab>Usages in BA005/BA Web:
-SELECT * FROM SCTRL_BA_USAGE WHERE BA_NO IN ('')
+  const showQueries = [
+    { label: "Contacts Address Tab", table: "SCTRL_BA_CONTACT_ADDRESS" },
+    { label: "Addresses Tab>Usages", table: "SCTRL_BA_USAGE" },
+    { label: "Addresses Tab>Attributes", table: "SCTRL_BA_ADDRESS_ATTR" },
+    { label: "Addresses Tab>Revenue", table: "SCTRL_BA_ADDRESS_RVNU" },
+    { label: "QCFS/Core Financials tab", table: "SCTRL_BA_QCFS_EXT" },
+    { label: "Tax IDs tab", table: "SCTRL_BA_TAX_ID" },
+    { label: "Overrides > Vendor Payee", table: "SCTRL_BA_ADDRESS_VENDOR" },
+    { label: "Overrides > Revenue Payee", table: "SCTRL_BA_ADDRESS_RVNU" },
+    { label: "Overrides > 1099", table: "SCTRL_BA_ADDRESS_1099" },
+    { label: "Bank Info Tab 1", table: "SCTRL_DEPOSITORY_OWNR_ACCT" },
+    { label: "Bank Info Tab 2", table: "SXREF_DEPOSITORY" }
+  ];
 
---Review Business Associate Addresses Tab>Attributes in BA005/BA Web:
-SELECT * FROM SCTRL_BA_ADDRESS_ATTR WHERE BA_NO IN ('')
+  for (const q of showQueries) {
+    sqlOutput += `--Review Business Associate ${q.label} in BA005/BA Web:\n`;
+    sqlOutput += `SELECT * FROM ${q.table} WHERE BA_NO IN ('');\n\n`;
+  }
 
---Review Business Associate Addresses Tab>Revenue in BA005/BA Web:
-SELECT * FROM SCTRL_BA_ADDRESS_RVNU WHERE BA_NO IN ('')
+  sqlOutput += "--Open query for all Business Units:\n";
+  sqlOutput += "SELECT * FROM SCTRL_BUS_UNIT;\n\n";
 
---Review Business Associate QCFS/Core Financials tab in BA005/BA Web:
-SELECT * FROM SCTRL_BA_QCFS_EXT WHERE BA_NO IN ('')
-
---Review Business Associate Tax IDs tab in BA005/BA Web:
-SELECT * FROM SCTRL_BA_TAX_ID WHERE BA_NO IN ('')
-
---Review Business Associate Address Tab > Overrides >Vendor Payee Override:
-SELECT * FROM SCTRL_BA_ADDRESS_VENDOR WHERE BA_NO IN ('')
-
---Review Business Associate Address Tab > Overrides >Revenue Payee Override:
-SELECT * FROM SCTRL_BA_ADDRESS_RVNU WHERE BA_NO IN ('')
-
---Review Business Associate Address Tab > Overrides >1099 Override:
-SELECT * FROM SCTRL_BA_ADDRESS_1099 WHERE BA_NO IN ('')
-
---Review Business Associate Bank Info Tab:
-SELECT * FROM SCTRL_DEPOSITORY_OWNR_ACCT WHERE BA_NO IN ('')
-
---Review Business Associate Bank Info Tab:
-SELECT * FROM SXREF_DEPOSITORY WHERE BA_NO IN ('')
-
---Open query for all Business Units:
-SELECT * FROM SCTRL_BUS_UNIT
-
---Query to check for any Vendor BAs that have become unsynced from their Global BUs:
-SELECT DISTINCT B.USERKEY FROM VENDOR A 
+  sqlOutput += "--Query to check for any Vendor BAs that have become unsynced from their Global BUs:\n";
+  sqlOutput += `SELECT DISTINCT B.USERKEY FROM VENDOR A 
 JOIN VENDOR B
 ON A.IDGLOBAL = B.ID
-AND A.USERKEY!=B.USERKEY
+AND A.USERKEY!=B.USERKEY;\n\n`;
 
---View Vendor Account coding:
-SELECT DISTINCT F.BUS_UNIT_CD, D.BA_NO, D.BA_NM1, D.BA_NM2, D.BA_NM3, E.KEYFULL, B.VOUNUM
+  sqlOutput += "--View Vendor Account coding\n--Vendor Account Coded\n";
+  sqlOutput += `SELECT DISTINCT F.BUS_UNIT_CD, D.BA_NO, D.BA_NM1, D.BA_NM2, D.BA_NM3, E.KEYFULL, B.VOUNUM
 FROM dbo.BATCHVOUCHERGLDISTRIBUTION A
-LEFT JOIN dbo.BATCHVOUCHERDETAIL B
-ON A.IDBATVOUDETAIL = B.ID
-LEFT JOIN VENDOR C
-ON B.IDVENDOR = C.ID
-LEFT JOIN SCTRL_BA_ENTITY D
-ON C.USERKEY = D.BA_NO
-LEFT JOIN ACCOUNT E
-ON A.IDACCOUNT = E.ID
-LEFT JOIN BUSINESSENTITY F
-ON A.IDBEOWNER = F.ID`;
+LEFT JOIN dbo.BATCHVOUCHERDETAIL B ON A.IDBATVOUDETAIL = B.ID
+LEFT JOIN VENDOR C ON B.IDVENDOR = C.ID
+LEFT JOIN SCTRL_BA_ENTITY D ON C.USERKEY = D.BA_NO
+LEFT JOIN ACCOUNT E ON A.IDACCOUNT = E.ID
+LEFT JOIN BUSINESSENTITY F ON A.IDBEOWNER = F.ID;\n\n`;
 
-  document.getElementById("output14").value = sql;
+  sqlOutput += "--Query the BA History (SHIST):\n";
+  sqlOutput += "SELECT ENTY_TYPE_CD, USER_ID, UPDT_DT, CHANGE_TYPE_CD, * FROM SHIST_BA_ADDRESS WHERE BA_NO = '';\n\n";
+
+  sqlOutput += "--Query the BA History (QHIST):\n";
+  sqlOutput += "SELECT * FROM QHIST_BA_ADDRESS WHERE BA_NO = '';\n\n";
+
+  document.getElementById("output14").value = sqlOutput;
 }
+
 
 //Scenario 15
 function showAllQueries15() {
