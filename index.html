@@ -821,6 +821,45 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 1 Starts-->
 <button class="accordion-btn" data-keywords="step process queue message log trace lock" onclick="toggleAccordion(this,'scenario1')">➕ Scenario 1: Triage Failing Process</button><div class="tab-content" id="scenario1">
+<template class="sql-index">
+---Query the Process Queue table to view the status and other relevant details about the process:
+SELECT START_DT,PROCESS_QUEUE_ID,PROCESS_ID,STATUS_CD,USER_ID, PARENT_PROCESS_QUEUE_ID, MASTER_PROCESS_QUEUE_ID,DATEDIFF (MINUTE, START_DT, END_DT) as TIMEDIFF_IN_MIN,USER_ID,* 
+FROM QARCH_QUEU_PROCESS 
+WHERE PROCESS_QUEUE_ID IN ('') 
+ORDER BY QUEUE_DT DESC;
+
+----Query the Message Log table to view any errors that were logged for the process.
+SELECT LOG_MSG, LOG_DATE, PROCESS_QUEUE_ID, PROCESS_STEP_QUEUE_ID, LOG_MSG_TYPE_CD, * 
+FROM QARCH_PROCESS_MSG_LOG 
+WHERE PROCESS_QUEUE_ID IN ('') 
+ORDER BY PROCESS_LOG_ID ASC;
+
+----Query the Process Step table to see what steps were successful.
+SELECT * 
+FROM QARCH_QUEU_PROCESS_STEP 
+WHERE PROCESS_STEP_QUEUE_ID = ' ' 
+ORDER BY SEQ_NO ASC;
+
+----Query the SQL Trace to see if any sql was logged for any of the process steps.
+SELECT REGISTERED_SQL_NAME, SQL_STATEMENT_PART1, * 
+FROM QARCH_QFCBATCH_SQL_TRACE 
+WHERE PROCESS_QUEUE_ID in ('') 
+ORDER BY SQL_SUCCESS_IND ASC;
+
+----Query the Process Queue table for a breakdown of any child processes.
+SELECT PROCESS_QUEUE_ID, PROCESS_ID, STATUS_CD, START_DT, END_DT, DATEDIFF(MINUTE, START_DT, END_DT) AS "TIME TO COMPLETE"
+FROM QARCH_QUEU_PROCESS
+WHERE MASTER_PROCESS_QUEUE_ID = ''
+GROUP BY PROCESS_QUEUE_ID, PROCESS_ID, STATUS_CD, START_DT, END_DT
+ORDER BY STATUS_CD;
+
+----Query the lock table to verify if there are any active locks related to the process
+SELECT * 
+FROM QARCH_LOCK 
+WHERE PROCESS_QUEUE_ID = ' ' 
+ORDER BY UPDT_DT DESC;
+</template>
+
 <h2>Scenario 1: Triage Failing Process</h2>
 <label>PROCESS_QUEUE_ID(If multiple values, please separate with commas.)</label>
 <input id="processQueueId" placeholder="e.g., 1371670,1371671 "/>
@@ -841,6 +880,60 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 2 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario2')">➕ Scenario 2: AFE Workflow Triage</button><div class="tab-content" id="scenario2">
+<template class="sql-index">
+--View AFE Details : 
+SELECT AFE_NO, ORIG_DESKID_NO, APRV_DESKID_NO, ENGR_DESKID_NO,WF_ROUTE_NM_SELECTED,WF_ROUTE_NM_OVERRIDE, * 
+FROM dbo.QCTRL_AFE_HDR 
+WHERE AFE_NO IN ('');
+
+--View the AFE Workflow for a specific AFE:
+SELECT * 
+FROM QWF_TRAN_INBOX_AFE QW 
+JOIN QARCH_WF_TRAN_INBOX_BASE QA ON QW.ID_WF_INBOX = QA.ID_WF_INBOX 
+WHERE AFE_NO IN ('');
+
+--Using the RESULT of the ID_WF_INBOX populated from the last query, retreive the WF Inbox Details :
+SELECT QUEUE_DT, ACTION_DT, ASSIGNED_DESK_NM, ASSIGNED_USER_ID,APRV_LIMIT, INBOX_ACTION_CD, INBOX_TYPE_CD, INBOX_ACTION_CD,* 
+FROM QARCH_WF_TRAN_INBOX_BASE 
+WHERE ID_WF_INBOX IN (' ');
+
+--View the audit steps taken for the AFE Approval:
+SELECT AFE.AFE_NO, WF_AUDIT.SYSTEM_COMMENT, WF_AUDIT.WF_INSTANCE_ID, WF_AUDIT.ACTION_DT, WF_AUDIT.ACTION_USER_ID, WF_AUDIT.*
+FROM QCTRL_AFE_HDR AS AFE
+JOIN QWF_TRAN_AUDIT_AFE AS WF
+  ON WF.AFE_NO = AFE.AFE_NO
+JOIN QARCH_WF_TRAN_ROUTE_AUDIT_BASE AS WF_AUDIT
+WHERE AFE.AFE_NO = ' '
+ORDER BY WF_AUDIT.ACTION_DT ASC;
+
+--View the AFE Route Steps
+SELECT DESK_NM, * 
+FROM QARCH_WF_ROUTE_SMPL_STEP AS A
+LEFT JOIN QARCH_WF_ROUTE_SMPL_STEP_DESK AS B
+  ON A.ID_WF_ROUTE_SMPL_STEP = B.ID_WF_ROUTE_SMPL_STEP
+WHERE WF_ROUTE_NM = '  '
+ORDER BY A.ROUTE_STEP_SEQ_NO;
+
+--View the DESK Details for those on an AFE Route:
+SELECT * FROM QARCH_WF_DESK WHERE DESK_NM IN ('');
+SELECT * FROM QARCH_WF_DESK_DELEGATE WHERE DESK_NM IN ('');
+
+--View the AFE Desks and Approvals on an AFE
+SELECT AFE.AFE_NO, WF_AUDIT.SYSTEM_COMMENT, WF_AUDIT.WF_INSTANCE_ID, WF_AUDIT.ACTION_DT, WF_AUDIT.ACTION_USER_ID,  WF_AUDIT.*
+FROM QCTRL_AFE_HDR AS AFE
+JOIN QWF_TRAN_AUDIT_AFE AS WF
+  ON WF.AFE_NO = AFE.AFE_NO
+JOIN QARCH_WF_TRAN_ROUTE_AUDIT_BASE AS WF_AUDIT
+  ON WF.ID_WF_AUDIT = WF_AUDIT.ID_WF_AUDIT
+WHERE AFE.AFE_NO ='' 
+ORDER BY WF_AUDIT.ACTION_DT ASC;
+
+--View the AFE Affiliates for any AFE:
+SELECT *  
+FROM QXREF_AFE_AFFILIATES 
+WHERE PRIMARY_AFE_NO = ' ';
+</template>
+
 <h2>Scenario 2: AFE Workflow Triage</h2>
 <label>AFE_NO (If multiple values, please separate with commas.)</label>
 <input id="afe2" placeholder="e.g., 180777,R15025"/>
@@ -863,6 +956,22 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 3 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario3')">➕ Scenario 3: User Management Triage</button><div class="tab-content" id="scenario3">
+<template class="sql-index">
+SELECT
+QSGM.UPDT_DT,
+QSGM.SEC_USER_ID,
+QSU.SEC_USER_EMAIL_ADDR,
+QSU.SEC_USER_NM,
+QSG.GRP_DESCR,
+QSG.GRP_ID,
+QSGM.USER_ID,
+QSGM.APP_LAYER_CD
+FROM QARCH_SEC_GRP_MEMBER QSGM, QARCH_SEC_GRP QSG, QARCH_SEC_USER QSU
+WHERE QSGM.GRP_ID = QSG.GRP_ID
+AND QSGM.SEC_USER_ID = QSU.SEC_USER_ID
+AND QSGM.SEC_USER_ID = '';
+</template>
+
 <h2>Scenario 3: User Management Triage</h2>
 <label>SEC_USER_ID</label>
 <input id="secuserid3" placeholder="e.g., JIM_BEAN"/>
@@ -877,6 +986,16 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 4 Starts -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario4')">➕ Scenario 4: GL025 Batch Triage</button><div class="tab-content" id="scenario4">
+<template class="sql-index">
+--Query the BATCHINVOICEMASTER tables to view INVOICE details: 
+SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
+* FROM BATCHVOUCHERMASTER BM 
+JOIN BATCHVOUCHERDETAIL BD ON BM.ID = BD.IDBATVOUMASTER
+JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
+--WHERE USERKEY IN ('') 
+WHERE BD.VOUNUM IN ('')
+</template>
+
 <h2>Scenario 4: GL025 Batch Triage</h2>
 <label>ACCTG_MTH (YYYY-MM-DD)</label>
 <input id="acctgMth4" placeholder="e.g., 2025-07-01"/>
@@ -901,6 +1020,16 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 5 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario5')">➕ Scenario 5: AP055 and AP076 Batch Triage</button><div class="tab-content" id="scenario5">
+<template class="sql-index">
+--Query the BATCHINVOICEMASTER tables to view INVOICE details: 
+SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
+* FROM BATCHVOUCHERMASTER BM 
+JOIN BATCHVOUCHERDETAIL BD ON BM.ID = BD.IDBATVOUMASTER
+JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
+--WHERE USERKEY IN ('') 
+WHERE BD.VOUNUM IN ('')
+</template>
+
 <h2>Scenario 5: AP055 and AP076 Batch Triage</h2>
 <label>ACCTG_MTH (YYYY-MM-DD)</label>
 <input id="acctgMth5" placeholder="e.g., 2025-07-01"/>
@@ -925,6 +1054,16 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 6 Starts -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario6')">➕ Scenario 6: BR005 Bank Reconcilation</button><div class="tab-content" id="scenario6">
+<template class="sql-index">
+--Query the BATCHINVOICEMASTER tables to view INVOICE details: 
+SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
+* FROM BATCHVOUCHERMASTER BM 
+JOIN BATCHVOUCHERDETAIL BD ON BM.ID = BD.IDBATVOUMASTER
+JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
+--WHERE USERKEY IN ('') 
+WHERE BD.VOUNUM IN ('')
+</template>
+
 <h2>Scenario 6: BR005 Bank Reconcilation</h2>
 <label>USERKEY (If multiple values, please separate with commas.)</label>
 <input id="userkey6" placeholder="e.g., BR00000006,BR00000007"/>
@@ -939,6 +1078,16 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 7 Starts -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario7')">➕ Scenario 7: Check Run (AP061) Batches</button><div class="tab-content" id="scenario7">
+<template class="sql-index">
+--Query the BATCHINVOICEMASTER tables to view INVOICE details: 
+SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
+* FROM BATCHVOUCHERMASTER BM 
+JOIN BATCHVOUCHERDETAIL BD ON BM.ID = BD.IDBATVOUMASTER
+JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
+--WHERE USERKEY IN ('') 
+WHERE BD.VOUNUM IN ('')
+</template>
+
 <h2>Scenario 7: Check Run (AP061) Batches</h2>
 <label>USERKEY (If multiple values, please separate with commas.):</label>
 <input id="input7_userkey" placeholder="e.g., BCK0000001,BCK0000002"/>
@@ -959,6 +1108,16 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 8 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario8')">➕ Scenario 8: QCFS Imports</button><div class="tab-content" id="scenario8">
+<template class="sql-index">
+--Query the BATCHINVOICEMASTER tables to view INVOICE details: 
+SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
+* FROM BATCHVOUCHERMASTER BM 
+JOIN BATCHVOUCHERDETAIL BD ON BM.ID = BD.IDBATVOUMASTER
+JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
+--WHERE USERKEY IN ('') 
+WHERE BD.VOUNUM IN ('')
+</template>
+
 <h2>Scenario 8: QCFS Imports</h2>
 <div class="footnote">All three inputs (JOURNAL_ID, TRANS_TYPE, and ACCTG_MTH) are required to generate the SQL.</div>
 <label>JOURNAL_ID (If multiple values, please separate with commas.):</label>
@@ -978,6 +1137,16 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 9 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario9')">➕ Scenario 9: Maintenance Application</button><div class="tab-content" id="scenario9">
+<template class="sql-index">
+--Query the BATCHINVOICEMASTER tables to view INVOICE details: 
+SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
+* FROM BATCHVOUCHERMASTER BM 
+JOIN BATCHVOUCHERDETAIL BD ON BM.ID = BD.IDBATVOUMASTER
+JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
+--WHERE USERKEY IN ('') 
+WHERE BD.VOUNUM IN ('')
+</template>
+
 <h2>Scenario 9: Maintenance Application</h2>
 <label>PROCESS_ID:</label>
 <input id="input9_process_id" placeholder="e.g., ADPUPLOAD"/>
@@ -1002,6 +1171,16 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 10 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario10')">➕ Scenario 10: Batch Vouchers</button><div class="tab-content" id="scenario10">
+<template class="sql-index">
+--Query the BATCHINVOICEMASTER tables to view INVOICE details: 
+SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
+* FROM BATCHVOUCHERMASTER BM 
+JOIN BATCHVOUCHERDETAIL BD ON BM.ID = BD.IDBATVOUMASTER
+JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
+--WHERE USERKEY IN ('') 
+WHERE BD.VOUNUM IN ('')
+</template>
+
 <h2>Scenario 10: Batch Vouchers</h2>
 
 <label>VOUNUM (If multiple values, please separate with commas.):</label>
@@ -1078,6 +1257,103 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 
 <!-- Scenario 12 Starts -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario12')">➕ Scenario 12: JIB</button><div class="tab-content" id="scenario12">
+<template class="sql-index">
+--Review the processes tied to the JB005 for an accounting month:
+SELECT MASTER_PROCESS_QUEUE_ID, PROCESS_QUEUE_ID, PROCESS_ID,STATUS_CD, START_DT, END_DT, DATEDIFF (MINUTE, START_DT, END_DT) as TIMEDIFF_IN_MIN,USER_ID,
+* FROM QARCH_QUEU_PROCESS A WHERE PROCESS_ID IN ('JBLDWCVOL','JBCALCCOMP','JBMISCOH','JBOPENBILL','JBPRODOH','JBVEHCALC',
+'JBGLIMPORT','JBLOADCSL','JBPROPALLC','JBREBILL','JBOWNALLOC','JBRBINVMN','JBINVMNPRC','JBJOURNAL','JBLDJE2CAS','JBROLLDATE')
+AND START_DT >= '' ORDER BY QUEUE_DT DESC
+
+--Review the JIB journal tables in QCA:
+SELECT * FROM JBTRN_JIB_JOURNAL WHERE PROCESS_QUEUE_ID = ' '
+SELECT SUM (JOURNAL_AMOUNT)  FROM JBTRN_JIB_JOURNAL WHERE PROCESS_QUEUE_ID = ' '
+SELECT * FROM JBSTG_CORE_INTFC_EXP WHERE PROCESS_QUEUE_ID = ' '
+
+--JIB Batches pending to post from Batch Journal Entry
+select A.ID, A.USERKEY, A.NAME, count(*) 
+FROM BATCHJOURNALENTRYMASTER A
+join BATCHJOURNALENTRYDETAIL B
+on A.ID = B.IDBATJE
+join BATCHJOURNALENTRYLINE C
+on B.ID = C.IDBATJEDETAIL
+join BATCHJECUSTOMCODEBLOCKUPSTREAM D
+on C.ID = D.IDBATJELINE
+join BUSINESSENTITY E
+on A.IDBEOWNER = E.ID
+where A.NAME like 'JIB%'
+group by A.USERKEY, A.NAME, A.ID
+order by A.ID desc
+
+--JIB Batches pending to post from Batch Invoice Master
+select A.ID, A.USERKEY, A.NAME, count(*) 
+FROM BATCHINVOICEMASTER A
+join BATCHINVOICEDETAIL B
+on A.ID = B.IDBATINVMASTER
+join BATCHINVOICELINEITEM C
+on B.ID = C.IDBATINVDETAIL
+join BATCHINVOICECUSTOMCODEBLOCKUPSTREAM D
+on C.ID = D.IDBATINVLINEITEM
+join BUSINESSENTITY E
+on A.IDBEOWNER = E.ID
+where A.NAME like 'JIB%'
+group by A.USERKEY, A.NAME, A.ID
+order by A.ID desc
+
+--Trace JIB Accounting Entries in the STRAN Tables. These entries will post after running QCFSIMPCYC and POSTWKFL:
+select * 
+from STRAN_CORE_INTFC A
+join SEXTN_CORE_INTFC_JIB B
+on A.ID = B.IDCOREINTFC
+where JOURNAL_ID = 'QCFS'
+and TRANS_TYPE = 'PP'
+AND UPDT_DT >= ''
+
+--Review the path and count data of the JIBLINK Export
+select EXPORTED_ROWS, UPDT_DT, * 
+from CEN_PRD16UPS_QFC..QARCH_TRAN_IMPEXP_STATUS A 
+where IMPEXP_ID = 'JIBLINKEXP'
+order by A.EXPORTED_ROWS desc
+
+--Number of records for Owner Allocation (OA) and rebillings (REB) that are processed from the tables JBTRN_INVOICE_DETAIL and JBTRN_INVOICE_HEADER
+select SYSTEM_SOURCE, PROCESS_PERIOD,  count(*)
+from JBTRN_INVOICE_DETAIL
+GROUP BY SYSTEM_SOURCE, PROCESS_PERIOD
+order by PROCESS_PERIOD DESC
+
+SELECT SYSTEM_SOURCE, PROCESS_PERIOD, count(*)
+from JBTRN_INVOICE_HEADER
+GROUP BY SYSTEM_SOURCE, PROCESS_PERIOD
+ORDER BY PROCESS_PERIOD DESC
+
+--Review JB080 to review CTF transactions
+SELECT COUNT (*)   from JBTRN_CTF 
+WHERE PROCESS_PERIOD = ''
+
+--Review JB080 to review CTF transactions
+SELECT COUNT (1) from JBTRN_COST_SUBLEDGER 
+WHERE PROCESS_PERIOD = ''
+
+--Review JB080 to review CTF transactions
+SELECT COUNT(1) from JBTRN_JIB_JOURNAL 
+WHERE PROCESS_PERIOD = ''
+
+--Review JB080 to review CTF transactions
+SELECT COUNT (1) from JBTRN_COST_SUBLEDGER 
+WHERE PROCESS_PERIOD = ''
+
+--Review JB080 to review CTF transactions
+SELECT COUNT (1) from JBTRN_JIB_JOURNAL 
+WHERE PROCESS_PERIOD = ''
+
+--Review JB080 to review CTF transactions
+SELECT COUNT (1) from JBADT_JIB_JOURNAL_HISTORY 
+WHERE PROCESS_PERIOD = ''
+
+--Review JB080 to review CTF transactions
+SELECT COUNT (1) from JBADT_JIB_JOURNAL_HISTORY 
+WHERE PROCESS_PERIOD = ' '
+</template>
+
 <h2>Scenario 12: JIB</h2>
 <label>START_DT ≥ (YYYY-MM-DD):</label>
 <input id="input12_start_dt" placeholder="e.g., 2025-06-01"/>
@@ -1099,6 +1375,20 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <!-- Scenario 13 Starts -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario13')">➕ Scenario 13: General Batch, QCFS Export/Import, Open Item</button>
 <div class="tab-content" id="scenario13">
+<template class="sql-index">
+--Query to retreive details for any Invoice Adjustments: 
+SELECT E.USERKEY, A.USERKEY, A.STATUSWORKFLOW,  *
+FROM BATCHPAYMENTAPPLICATIONMASTER A
+join BATCHPAYMENTAPPLICATIONCUSTOMER  B
+on A.ID = B.IDBATAPPLMASTER
+join BATCHPAYMENTAPPLICATIONOPENITEM C
+on B.ID = C.IDBATAPPLCUSTOMER
+join BUSINESSENTITY E
+on A.IDBEOWNER = E.ID
+where A.USERKEY= ''
+--Input is USERKEY
+</template>
+
 <h2>Scenario 13: General Batch, QCFS Export/Import, Open Item</h2>
 
 <label>USERKEY (If multiple values, please separate with commas.):</label>
@@ -1161,11 +1451,44 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 )">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output13')">💾 Export</button>
 <!-- Scenario 13 Ends -->
-</div><!-- closes <div class="tab-content" id="scenario13"> -->
+</div><!-- closes <div class="tab-content" id="scenario13">
+<template class="sql-index">
+--Query to retreive details for any Invoice Adjustments: 
+SELECT E.USERKEY, A.USERKEY, A.STATUSWORKFLOW,  *
+FROM BATCHPAYMENTAPPLICATIONMASTER A
+join BATCHPAYMENTAPPLICATIONCUSTOMER  B
+on A.ID = B.IDBATAPPLMASTER
+join BATCHPAYMENTAPPLICATIONOPENITEM C
+on B.ID = C.IDBATAPPLCUSTOMER
+join BUSINESSENTITY E
+on A.IDBEOWNER = E.ID
+where A.USERKEY= ''
+--Input is USERKEY
+</template>
+ -->
 
 <!-- Scenario 14 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario14')">➕ Scenario 14: Business Associate (BA005 or BA WEB)</button>
 <div class="tab-content" id="scenario14">
+<!-- Replace Scenario 14's template with this -->
+<template class="sql-index">
+--Review Business Entities in BA005/BA Web:
+SELECT * FROM SCTRL_BA_ENTITY WHERE BA_NO IN ('');
+
+--Review Business Associate Address Tab in BA005/BA Web:
+SELECT * FROM SCTRL_BA_ADDRESS WHERE BA_NO IN ('');
+
+--Review Business Associate Contacts Tab in BA005/BA Web:
+SELECT * FROM SCTRL_CONTACT WHERE PRIMARY_BP_NO IN ('');
+
+--Review Business Associate Contacts Address Tab in BA005/BA Web:
+SELECT * FROM SCTRL_CONTACT_ADDRESS WHERE PRIMARY_BP_NO IN ('');
+
+--BA History / History of Changes:
+BA_HISTORY, HISTORY, HISTORICAL, HIST
+</template>
+
+
 <h2>Scenario 14: Business Associate (BA005 or BA WEB)</h2>
 
 <label>BA_NO (If multiple values, please separate with commas.):</label>
@@ -1194,6 +1517,14 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <!-- Scenario 15 Starts -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario15')">➕ Scenario 15: ADPUPLOAD</button>
 <div class="tab-content" id="scenario15">
+<template class="sql-index">
+--Query details for ADP Import using an update date:
+select * from QARCH_TRAN_IMPEXP_STATUS 
+where IMPEXP_ID = 'ADPQSTAGCOREIMP' 
+and UPDT_DT BETWEEN '' AND ''
+--Input will be UPDT_DT - Provide both a starting and ending update date (in YYYY-MM-DD format). Both are required.
+</template>
+
 <h2>Scenario 15: ADPUPLOAD</h2>
 <label>Start UPDT_DT (YYYY-MM-DD):</label>
 <input id="input15_start" placeholder="e.g., 2025-01-01"/>
@@ -1212,6 +1543,37 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <!-- Scenario 16 Starts -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario16')">➕ Scenario 16: Account Set Up (GL095) &amp; Chart of Accounts (GL013)</button>
 <div class="tab-content" id="scenario16">
+<template class="sql-index">
+--Query existing account details on GL095:
+SELECT TOP 100 * 
+FROM GENERALJOURNAL GJ 
+JOIN BUSINESSENTITY BE ON GJ.IDBEOWNER = BE.ID
+JOIN GENERALJOURNALLINE GJL ON GJ.ID = GJL.IDGENERALJOURNAL
+JOIN ACCOUNT ACC ON ACC.ID = GJL.IDACCOUNT
+WHERE GJ.IDBEOWNER IN ('') AND ACC.KEYFULL=''
+
+--Query additional account details from Account table:
+SELECT B.* FROM ACCOUNT A
+JOIN UPS_ACCOUNT B ON A.ID = B.ID
+WHERE KEYFULL = ''
+
+--Query Chart of Accounts by Business Unit:
+select A.* from ACCOUNT A (NOLOCK) 
+JOIN UPS_ACCOUNT UA ON UA.IDACCOUNT = A.ID 
+WHERE A.IDBEOWNER = 
+
+--Query changes to a Business Unit(BA_NO):
+SELECT * from SHIST_BA_ENTITY WHERE BA_NO = ' '
+
+--Query changes to an Account setup:
+SELECT * FROM ACCOUNTHISTORY WHERE KEYFULL = ' '
+
+--Query Details on GL095 by Account Number:
+SELECT ... 
+-- (omitted for brevity, full long SQL query from your input goes here exactly as is, ending in:)
+WHERE KEYFULL = ''
+</template>
+
 <h2>Scenario 16: Account Set Up (GL095) &amp; Chart of Accounts (GL013)</h2>
 <label>KEYFULL (Format: xxxx-xxxx):</label>
 <input id="input16_keyfull" placeholder="e.g., 1200-2234"/>
@@ -1231,6 +1593,10 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <!-- Scenario 17 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">➕ Scenario 17: Cross Reference(MT100) / Journal Definitions (SM021)/Workflow Definitions (SM093)/Voucher Payment Term Definition (AP047)</button>
 <div class="tab-content" id="scenario17">
+<template class="sql-index">
+--MT100 > ${label}\n
+</template>
+
 <h2>Scenario 17: Cross Reference(MT100) / Journal Definitions (SM021)/Workflow Definitions (SM093)/Voucher Payment Term Definition (AP047)</h2>
 
 <label>TRANS_TYPE (If multiple values, please separate with commas.):</label>
@@ -1271,6 +1637,10 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <!-- Scenario 18 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario18')">➕ Scenario 18: Resolve BU Information</button>
 <div class="tab-content" id="scenario18">
+<template class="sql-index">
+--Audit of batches posted during a POSTWKFLOW Run\n
+</template>
+
   <h2>Scenario 18: Resolve BU Information</h2>
 
   <label>USERKEY (BU Number):</label>
@@ -1298,6 +1668,10 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <!-- Scenario 19 Starts -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario19')">➕ Scenario 19: POSTWKFL</button>
 <div class="tab-content" id="scenario19">
+<template class="sql-index">
+--Query the Process Tables to identify any jobs that are running an Archive step: \n
+</template>
+
 <h2>Scenario 19: POSTWKFL</h2>
 <label>Created Start Date (YYYY-MM-DD)Both "From" AND "To" Dates are required</label>
 <input id="input19_createdStart" placeholder="e.g., 2025-08-01"/>
@@ -1330,6 +1704,20 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <!-- Scenario 20 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario20')">➕ Scenario 20: Archive & Purge</button>
 <div class="tab-content" id="scenario20">
+<template class="sql-index">
+--Query the Process Tables to identify any jobs that are running an Archive step: 
+select * from QARCH_QUEU_PROCESS A
+join QARCH_QUEU_PROCESS_STEP B
+on A.PROCESS_QUEUE_ID = B.PROCESS_QUEUE_ID
+join QARCH_CTRL_PROCESS_STEP  C
+on B.PROCESS_STEP_ID = C.PROCESS_STEP_ID
+and B.METADATA_LAYER_CD = C.APP_LAYER_CD
+where UPPER(C.CPP_DLL_CLASS_NM) like '%ARCHIVE%'
+order by A.PROCESS_QUEUE_ID desc
+
+--No input will be required. This query will auto generate.
+</template>
+
 <h2>Scenario 20: Archive & Purge</h2>
 
 <label>Update Date (YYYY-MM-DD) — must be older than 30 days:</label>
@@ -1346,6 +1734,73 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <!-- Scenario 21 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario21')">➕ Scenario 21: Processing Time Assessments (QCFSIMPCYC, POSTWKFL)</button>
 <div class="tab-content" id="scenario21">
+<template class="sql-index">
+--QUERIES FOR QCFSIMPCYC ELAPSED: 
+SELECT DATEACCT, MAX(BATCH_CREATED) QCFSIMPCYC_END_DT
+FROM (
+  SELECT DATEACCT, MAX(CREATED) BATCH_CREATED
+  FROM BATCHJOURNALENTRYMASTER
+  WHERE NAME LIKE 'JIB%'
+  AND DATEACCT BETWEEN '' AND ''
+  GROUP BY DATEACCT
+  UNION ALL
+  SELECT DATEACCT, MAX(CREATED) BATCH_CREATED
+  FROM BATCHINVOICEMASTER
+  WHERE NAME LIKE 'JIB%'
+  AND DATEACCT BETWEEN '' AND ''
+  GROUP BY DATEACCT
+) A
+GROUP BY A.DATEACCT
+ORDER BY A.DATEACCT;
+
+--QUERIES FOR QCFSIMPCYC ELAPSED: 
+SELECT A.PROCESS_PERIOD, B.PROCESS_QUEUE_ID, B.PROCESS_ID, B.START_DT, B.END_DT QCFSIMPCYC_START_DT, 
+DATEDIFF(minute, B.START_DT, B.END_DT) DATEDIFFMINS 
+FROM CEN_DEV16UPS_QCA..JBTRN_PROCESS_ACTIVITY A
+JOIN QARCH_QUEU_PROCESS B
+ON A.PROCESS_QUEUE_ID = B.PROCESS_QUEUE_ID
+WHERE A.PROCESS_PERIOD BETWEEN '' AND ''
+AND A.PROCESS_ID IN ('JBLDJE2CAS')
+AND A.ACTIVE = 1
+ORDER BY A.PROCESS_PERIOD;
+
+--QUERIES FOR QCFSIMPCYC ELAPSED: 
+SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, DATEDIFF(minute, START_DT, END_DT) DATEDIFFMINS
+FROM QARCH_QUEU_PROCESS
+WHERE PROCESS_ID = 'QCFSIMPCYC'
+AND START_DT >= '' --QCFSIMPCYC_START_DT
+AND START_DT <= '' --QCFSIMPCYC_END_DT
+AND STATUS_CD <> 'SXI'
+ORDER BY START_DT;
+
+--QUERIES FOR POSTWKFL ELAPSED
+SELECT DATEACCT, MAX(BATCH_POSTED) POSTWKFL_END_DT
+FROM (
+  SELECT DATEACCT, MAX(LASTUPDATE) BATCH_POSTED
+  FROM BATCHJOURNALENTRYMASTER
+  WHERE NAME LIKE 'JIB%'
+  AND DATEACCT BETWEEN '' AND ''
+  GROUP BY DATEACCT
+  UNION ALL
+  SELECT DATEACCT, MAX(LASTUPDATE) BATCH_POSTED
+  FROM BATCHINVOICEMASTER
+  WHERE NAME LIKE 'JIB%'
+  AND DATEACCT BETWEEN '' AND ''
+  GROUP BY DATEACCT
+) A
+GROUP BY A.DATEACCT
+ORDER BY A.DATEACCT;
+
+--QUERIES FOR POSTWKFL ELAPSED
+SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, DATEDIFF(minute, START_DT, END_DT) DATEDIFFMINS
+FROM QARCH_QUEU_PROCESS
+WHERE PROCESS_ID = 'POSTWKFL'
+AND START_DT >= '' --QCFSIMPCYC_END_DT
+AND START_DT <= '' --POSTWKFL_END_DT
+AND STATUS_CD NOT IN ('SXI', 'SXL')
+ORDER BY START_DT;
+</template>
+
 <h2>Scenario 21: Processing Time Assessments (QCFSIMPCYC, POSTWKFL)</h2>
 
 <label>DATEACCT Start (YYYY-MM-DD):</label>
@@ -1389,6 +1844,26 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <!-- Scenario 22 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario22')">➕ Scenario 22: GL Accounts Configuration and Setup</button>
 <div class="tab-content" id="scenario22">
+<template class="sql-index">
+--JB500 Updates: 
+--BILLING: 
+SELECT DISTINCT 'PRM' BUSINESS_SEGMENT, '27' EVENT, '191' KEYWORD, 'C' ENTRY_TYPE, '*' COMPANY,
+UA.JIBGROUP JIB_GROUP_CODE, A.KEYFULL ACCOUNT, '' PICKLIST, '*' AFFILIATE_COMPANY, CONCAT(LEFT(A.KEYFULL, 1), '1', RIGHT(A.KEYFULL, 7)) OFFSET_ACCOUNT,
+'' PICKLIST, '' RESOURCE_CATEGORY, A.NAME DESCRIPTION
+FROM ACCOUNT A
+JOIN UPS_ACCOUNT UA
+ON A.ID = UA.IDACCOUNT
+LEFT JOIN JBONL_ACCOUNT_DEFAULT J
+ON A.KEYFULL = J.ACCOUNT
+AND J.KEYWORD_ID = '191'
+WHERE UA.JIBGROUP IS NOT NULL
+AND J.ACCOUNT IS NULL
+AND A.HEADERACCOUNT = 0
+AND UA.JIBGROUP <> 'PREPAY'
+ORDER BY A.KEYFULL
+--No Input is required. This query will auto generate.
+</template>
+
   <h2>Scenario 22: GL Accounts Configuration and Setup</h2>
 
   <label>ACCOUNT_KEYFULL (xxxx-xxxx format):</label>
@@ -1447,19 +1922,9 @@ function toggleAccordion(button, contentId) {
   button.innerHTML = button.innerHTML.replace(/^➕|➖/, isActive ? '➕' : '➖');
 }
 
-  function expandAll() {
-    const buttons = document.querySelectorAll(".accordion-btn");
-    const contents = document.querySelectorAll(".tab-content");
-    buttons.forEach(btn => btn.classList.add("active"));
-    contents.forEach(content => content.classList.add("active"));
-  }
+  
 
-  function collapseAll() {
-    const buttons = document.querySelectorAll(".accordion-btn");
-    const contents = document.querySelectorAll(".tab-content");
-    buttons.forEach(btn => btn.classList.remove("active"));
-    contents.forEach(content => content.classList.remove("active"));
-  }
+  
 
 
 function toggleAccordion(button, contentId) {
@@ -5053,6 +5518,591 @@ function toggleSidebar() {
 }
 </script>
 
+
+<!-- Smart Search v3 (self-healing): robust mapping + auto hidden-SQL indexing -->
+<style>
+  .highlight { background: yellow; }
+</style>
+<script>
+(function(){
+  // --- helper: extract strings from function source (backticks, "double", 'single') ---
+  function extractLiterals(fn) {
+    if (typeof fn !== "function") return "";
+    const src = Function.prototype.toString.call(fn);
+    const parts = [];
+
+    // backtick templates
+    const tplRe = /`([\s\S]*?)`/g;
+    let m;
+    while ((m = tplRe.exec(src))) parts.push(m[1]);
+
+    // double quotes
+    const dqRe = /"([^"\\]*(?:\\.[^"\\]*)*)"/g;
+    while ((m = dqRe.exec(src))) parts.push(m[1]);
+
+    // single quotes
+    const sqRe = /'([^'\\]*(?:\\.[^'\\]*)*)'/g;
+    while ((m = sqRe.exec(src))) parts.push(m[1]);
+
+    const text = parts.filter(s => s && s.trim()).join("\n");
+    return text.replace(/<\/template>/gi, "</ temp late>"); // safety
+  }
+
+  // --- build or ensure <template class="sql-index"> inside each scenario ---
+  function ensureSqlTemplates() {
+    const btns = document.querySelectorAll(".accordion-btn:not(.group-btn)");
+    btns.forEach(btn => {
+      const oc = btn.getAttribute("onclick") || "";
+      const m = oc.match(/'([^']+)'/);
+      if (!m) return;
+      const targetId = m[1];
+      const panel = document.getElementById(targetId);
+      if (!panel) return;
+
+      // already has template?
+      if (panel.querySelector("template.sql-index")) return;
+
+      // try to find showAllQueriesX
+      const scenNumMatch = targetId.match(/scenario(\d+)/i);
+      let sqlIndex = "";
+      if (scenNumMatch) {
+        const n = scenNumMatch[1];
+        const fn = window["showAllQueries" + n];
+        sqlIndex = extractLiterals(fn);
+      }
+
+      // if nothing found, at least index labels & headings so search still works
+      if (!sqlIndex) {
+        const labels = Array.from(panel.querySelectorAll("label")).map(l => l.innerText).join("\n");
+        sqlIndex = labels || "";
+      }
+
+      const tpl = document.createElement("template");
+      tpl.className = "sql-index";
+      tpl.innerHTML = sqlIndex;
+      panel.insertBefore(tpl, panel.firstChild);
+    });
+  }
+
+  // --- Smart search core ---
+  const ScenarioSearch = {
+    index: new Map(),
+    normalize(s){ return (s||"").toLowerCase().replace(/\s+/g," ").trim(); },
+    build(){
+      ensureSqlTemplates(); // make sure hidden SQL exists before indexing
+
+      const btns = document.querySelectorAll(".accordion-btn:not(.group-btn)");
+      btns.forEach(btn => {
+        const oc = btn.getAttribute("onclick") || "";
+        const m = oc.match(/'([^']+)'/);
+        if (!m) return;
+        const targetId = m[1];
+        const panel = document.getElementById(targetId);
+        if (!panel) return;
+
+        const title = btn.innerText || "";
+        const labels = Array.from(panel.querySelectorAll("label")).map(l => l.innerText).join(" ");
+        const staticText = panel.innerText || "";
+        const tpl = panel.querySelector("template.sql-index");
+        const hiddenSql = tpl ? tpl.content.textContent : "";
+        const extra = btn.dataset.keywords || "";
+
+        const all = this.normalize([title, labels, staticText, hiddenSql, extra].join(" "));
+        this.index.set(targetId, { text: all, button: btn, content: panel });
+      });
+    },
+    matches(haystack, query){
+      const tokens = [];
+      (query.toLowerCase().match(/"[^"]+"|\S+/g)||[]).forEach(tok=>{
+        if (tok.startsWith('"') && tok.endsWith('"')) tokens.push(tok.slice(1,-1));
+        else tokens.push(tok);
+      });
+      return tokens.every(t => haystack.includes(t));
+    },
+    search(q){
+      const query = this.normalize(q);
+      let anyVisible = false;
+      this.index.forEach(({text,button,content})=>{
+        const hit = query ? this.matches(text, query) : true;
+        // Respect your CSS: '' restores original; only hide when false.
+        button.style.display = hit ? "" : "none";
+        content.style.display = hit ? "" : "none";
+        anyVisible = anyVisible || hit;
+
+        // label highlights (safe)
+        Array.from(content.querySelectorAll("label")).forEach(label=>{
+          const raw = label.getAttribute("data-raw") || label.innerText;
+          label.setAttribute("data-raw", raw);
+          if(!query){ label.innerHTML = raw; return; }
+          const esc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          try {
+            label.innerHTML = raw.replace(new RegExp('(' + esc + ')','ig'), "<span class='highlight'>$1</span>");
+          } catch { label.innerHTML = raw; }
+        });
+      });
+
+      // Hide empty groups only
+      document.querySelectorAll(".scenario-group").forEach(group=>{
+        const hasVisible = group.querySelectorAll(".accordion-btn:not(.group-btn):not([style*='display: none'])").length > 0;
+        group.style.display = hasVisible ? "" : "none";
+      });
+
+      return anyVisible;
+    }
+  };
+
+  // Expose (and override any older versions)
+  window._ScenarioSearch = ScenarioSearch;
+  window.searchScenarios = function(){
+    const input = document.getElementById("searchInput");
+    ScenarioSearch.search(input ? input.value : "");
+  };
+  window.filterScenarios = window.searchScenarios; // shim
+  window.clearSearch = function(){
+    const input = document.getElementById("searchInput");
+    if (input) input.value = "";
+    ScenarioSearch.search("");
+  };
+
+  // Build after DOM is ready
+  document.addEventListener("DOMContentLoaded", ()=> {
+    try { ScenarioSearch.build(); } catch(e) { console.error("Search build failed:", e); }
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  // =========================
+  // 1) Hidden corpus for ALL scenarios (edit/extend freely)
+  // =========================
+  const CORPUS = {
+    scenario1: `
+Scenario 1: Triage Failing Process (QARCH)
+QARCH_TRAN_IMPEXP_STATUS, QARCH_TRAN_PROCESS, QARCH_TRAN, QCTRL_PROCESS
+PROCESS_ID, IMPEXP_ID, STATUS, START_DT, END_DT, ERROR, STACKTRACE, LOGFILE
+"QPEC SYSTEM ERROR", RETRY, FAILED, COMPLETED, IN PROGRESS
+`,
+
+    scenario2: `
+Scenario 2: AFE Workflow Breakdown
+AFE_NO, ID_WF_INBOX, WF_ROUTE_NM, ID_WF_ROUTE_SMPL_STEP, DESK_NM
+QWORKFLOWINBOX, QCTRL_WF_ROUTE, QCTRL_WF_STEP, WFROUTENM, WFSTATUSCD
+Inbox assignments, route samples, desk routing, approvals, escalations
+`,
+
+    scenario3: `
+Scenario 3: User Management
+USERACCOUNT, USERROLE, SECURITYROLE, PERMISSION, ASSIGNED_USER_ID
+USERKEY, IDBEOWNER, ACTIVE, LOCKED, LAST_LOGIN, ROLE MEMBERSHIP
+`,
+
+    scenario4: `
+Scenario 4: GL025 Batch Triage
+GL025, GENERALJOURNALLINE, ACCTG_MTH, DATEACCT, TRANS_TYPE
+Batch name LIKE, USERKEY, IDBEOWNER, CREATED_DT, STATUS != POSTED
+Accounting date range, journal batch validation and troubleshooting
+`,
+
+    scenario5: `
+Scenario 5: AP055 Batch Triage
+AP055, AP batch triage, TRANS_TYPE, ACCTG_MTH, USERKEY, IDBEOWNER
+Batch NAME LIKE, Created Date range, status != POSTED
+Duplicate batch detection (name + created date combination)
+`,
+
+    scenario6: `
+Scenario 6: Receipts / Deposits
+AUDITTRANSACTIONLOG, DEPOSITJOURNAL, BUSINESSENTITY
+BATCHDEPOSITWITHMATCHMASTER, BATCHDWMCUSTOMERS, BATCHDWMRECEIPTS
+IDBATCHMASTER, RECEIPTNUM, DEPOSITNUMBER, REFNUM
+`,
+
+    scenario7: `
+Scenario 7: Check Run - AP061
+BATCHCHECKRUNMASTER / IDBATCHECKRUNMASTER, CHECKNUM (LIKE), PAYAMT, USERKEY
+Remittance, payment validation, postings, exceptions
+`,
+
+    scenario8: `
+Scenario 8: Trace QCFS Imports
+JOURNAL_ID, TRANS_TYPE, ACCTG_MTH (YYYY-MM-DD)
+QSTAGXLSIMP, JOURNAL_ID_IMPORT, CORE INTERFACE IMPORT CONFIG
+Trace imports by month and type across QCFS pipelines
+`,
+
+    scenario9: `
+Scenario 9: Maintenance Application
+PROCESS_ID, IMPEXP_ID, FTP_ID, FTP_HOST_ID, EVENT_TYPE_CD, METADATA_PROFILE
+QARCH_TRAN_IMPEXP_STATUS, QARCH_TRAN_IMPEXP
+FTP_HOST, SCHEDULES, CRON-like timers, success/failure audit
+`,
+
+    scenario10: `
+Scenario 10: Batch Vouchers
+BATCHVOUCHERMASTER (BM), BATCHVOUCHERDETAIL (BD), BATCHVOUCHERGLDISTRIBUTION (BL)
+VOUNUM, IDBATINVMASTER, USERKEY, ASSIGNED_USER_ID,
+WFSTATUSCD, IDWFINSTANCE, WFROUTENMSELECTED, APRVSTATUS, POSTED
+Documents: DOCMASTER, DOCPROPS, DOC_CONTENT_TYPE_CD, DOC_NM, REFNUMDOC, DOC_PROP_VAL, DOC_ID
+`,
+
+    scenario11: `
+Scenario 11: Journal / Posting Exceptions
+POSTING ERRORS, UNBALANCED, MISSING ACCOUNT, INVALID SEGMENT
+WF approvals, posting queue, exception handling, requeue, rollback
+`,
+
+    scenario12: `
+Scenario 12: Customer Open Item Triaging
+CUSTOMEROPENITEM, CUSTOMER, BUSINESSENTITY
+LOCKEDTOBATCH (LIKE), USERKEY, IDBEOWNER, IDCUSTOMER
+Open item drilldown, batch locks, reconciliation
+`,
+
+    scenario13: `
+Scenario 13: General Batch, QCFS Export, QCFS Import, and Open Item Queries
+QARCH_TRAN_IMPEXP_STATUS (exports/imports)
+OPEN ITEM tables (CUSTOMEROPENITEM, OPENITEM_PROP_NO),
+IDBEOWNER, BA_NO, SET_ID, BUS_UNIT_CD, OWNER_BA_NO
+UPDT_DT, ACCTG_MTH (YYYY-MM-DD), PROCESS_PERIOD
+`,
+
+    scenario14: `
+Scenario 14: Business Associate (BA005 or BA Web)
+--Review Business Entities in BA005/BA Web:
+SELECT * FROM SCTRL_BA_ENTITY WHERE BA_NO IN ('')
+--Review Business Associate Address Tab in BA005/BA Web:
+SELECT * FROM SCTRL_BA_ADDRESS WHERE BA_NO IN ('')
+--Review Business Associate Contacts Tab in BA005/BA Web:
+SELECT * FROM SCTRL_CONTACT WHERE PRIMARY_BP_NO IN ('')
+--Review Business Associate Contacts Address Tab in BA005/BA Web:
+SELECT * FROM SCTRL_CONTACT_ADDRESS WHERE PRIMARY_BP_NO IN ('')
+--BA History / History of Changes:
+BA_HISTORY, HISTORY, HISTORICAL, HIST
+`,
+
+    scenario15: `
+Scenario 15: ADP Import (example via update date)
+QARCH_TRAN_IMPEXP_STATUS
+UPDT_DT BETWEEN 'YYYY-MM-DD' AND 'YYYY-MM-DD'
+ADP Import runs, status windows, processed vs failed lines
+`,
+
+    scenario16: `
+Scenario 16: Account Set Up - GL095 & Chart of Accounts - GL013
+KEYFULL, IDBEOWNER, BA_NO
+GL095, GL013, ACCOUNT, CHARTOFACCOUNTS, GLACCOUNTSEGMENT, SEGMENT RULES
+`,
+
+    scenario17: `
+Scenario 17: Cross Reference (MT100) / Journal Definitions (SM021) / Workflow Definitions (SM093) / Voucher Payment Term Definition (AP047)
+"--QSTAGXLSIMP - JOURNAL_ID & TRANS_ID determine file type (AR/AP/GL)"
+JOURNAL_ID_IMPORT
+SXREF_CORE_INTFC_QCFS_EXT
+QCTRL_CORE_INTEFACE_IMPORT_CONFIG_AFE / _DDA / _JIB  (TRANS_TYPE, JOURNAL_ID)
+Workflow definitions (SM093), Voucher payment term definitions (AP047)
+Two USERKEY inputs supported
+`,
+
+    scenario18: `
+Scenario 18: Resolve BU Information
+Match BU (USERKEY) to IDCUSTOMER in BUSINESSENTITY
+SELECT USERKEY, ID AS CUSTOMER_ID, NAME, * FROM BUSINESSENTITY WHERE USERKEY = ' '
+Related/audit trail terms: AUDIT, AUDIT LOG, AUDIT TRAIL, AUDITTRANSACTIONLOG, WORKFLOW INBOX
+`,
+
+    scenario19: `
+Scenario 19: POSTWKFL
+Posting workflow routing and statuses
+QWORKFLOWINBOX, BATCHMASTER, POSTING QUEUE, approvals, escalations
+`,
+
+    scenario20: `
+Scenario 20: Workflow Inbox & Approvals
+UVW_WORKFLOWINBOX, IDBATCHMASTER joins, step transitions
+ASSIGNED DESK, ROUTE, STATUS, AGE, SLA
+`,
+
+    scenario21: `
+Scenario 21: Import/Export Windows & Doc Links
+QARCH_TRAN_IMPEXP_STATUS by windows (UPDT_DT)
+Doc associations (DOCMASTER/DOCPROPS), REFNUMDOC, DOC_ID linking
+`,
+
+    scenario22: `
+Scenario 22: Voucher Lines & GL Distribution
+BATCHVOUCHERDETAIL, BATCHVOUCHERGLDISTRIBUTION
+Voucher detail line lookups, distribution validation, totals vs control
+`,
+
+  };
+
+  // =========================
+  // 2) Install corpus templates into each scenario once
+  // =========================
+  function installSearchCorpus(){
+    Object.entries(CORPUS).forEach(([id, text])=>{
+      const sc = document.getElementById(id);
+      if(!sc) return;
+      // Don't duplicate if already present
+      if (sc.querySelector("template.search-corpus")) return;
+
+      const t = document.createElement("template");
+      t.className = "search-corpus";
+      // Use text node to avoid HTML parsing in corpus
+      t.content.appendChild(document.createTextNode(text));
+      sc.appendChild(t);
+    });
+  }
+
+  // =========================
+  // 3) Smart search engine + “why matched”
+  // =========================
+  const norm = s => (s || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/\p{Diacritic}/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // Expand common fragments → synonyms/stems you care about
+  const STEM_SYNONYMS = {
+    "hist": ["history","historical","hist.","ba_history","change history","history of changes"],
+    "audit": ["audit","audit trail","audittransactionlog","audit log","auditing"],
+    "inv": ["invoice","invoices"],
+    "vou": ["voucher","vouchers"],
+    "wf": ["workflow","wfstatuscd","wfroutenm","workflow inbox","wfinstance"],
+    "gl": ["general journal","generaljournalline","chart of accounts","gl013","gl095"],
+    "ap": ["ap055","voucher","payable"],
+    "afe": ["afe","wf route","route sample","desk","wfinbox"],
+    "qcfs": ["qstagxlsimp","journal_id_import","core interface","export","import"],
+    "post": ["postwkfl","posting","posted","post workflow"]
+  };
+
+  function expandQuery(q){
+    const nq = norm(q);
+    const parts = [nq];
+    Object.keys(STEM_SYNONYMS).forEach(key=>{
+      if(nq.includes(key)) parts.push(...STEM_SYNONYMS[key]);
+    });
+    return [...new Set(parts)];
+  }
+
+  const SCENARIO_SELECTOR = ".tab-content[id^='scenario']";
+  const index = new Map(); // id -> { raw, norm, lines[] }
+
+  function buildIndex(){
+    index.clear();
+    document.querySelectorAll(SCENARIO_SELECTOR).forEach(sc=>{
+      const id = sc.id; // e.g., scenario14
+      const visibleBits = [];
+      visibleBits.push(sc.querySelector("h2")?.innerText || "");
+      sc.querySelectorAll("label").forEach(l=>visibleBits.push(l.innerText));
+      sc.querySelectorAll("input,textarea").forEach(el=>{
+        if(el.placeholder) visibleBits.push(el.placeholder);
+        if(el.defaultValue) visibleBits.push(el.defaultValue);
+      });
+      const corpusBits = [];
+      sc.querySelectorAll("template.search-corpus").forEach(t=>{
+        corpusBits.push(t.content.textContent || "");
+      });
+
+      const raw = (visibleBits.join("\n") + "\n" + corpusBits.join("\n"));
+      const n = norm(raw);
+      const lines = raw.split(/\r?\n/).map(l=>({ raw: l, norm: norm(l) }));
+
+      index.set(id, { raw, norm: n, lines });
+    });
+  }
+
+  function searchScenariosSmart(query){
+    const needles = expandQuery(query).filter(Boolean);
+    if(!needles.length) return [];
+
+    const results = [];
+    for (const [id, doc] of index.entries()){
+      let score = 0;
+      const snippets = new Set();
+
+      needles.forEach(n=>{
+        if (doc.norm.includes(n)) score += 5;
+        for (const ln of doc.lines){
+          if (ln.norm.includes(n)) {
+            let snippet = ln.raw.trim();
+            if (snippet.length > 160) snippet = snippet.slice(0,160) + "…";
+            snippets.add(snippet);
+            score += 1;
+            if (snippets.size >= 3) break;
+          }
+        }
+      });
+
+      if (score > 0) results.push({ id, score, hits: Array.from(snippets) });
+    }
+
+    results.sort((a,b)=>b.score - a.score);
+    return results;
+  }
+
+  function clearCorrelations(){
+    document.querySelectorAll(".search-correlation").forEach(n=>n.remove());
+  }
+
+  function renderSearchCorrelations(results){
+    clearCorrelations();
+    results.forEach(r=>{
+      const sc = document.getElementById(r.id);
+      if(!sc) return;
+      const anchor = sc.querySelector("h2") || sc;
+
+      const box = document.createElement("div");
+      box.className = "search-correlation";
+      box.style.cssText = "margin:8px 0 0 0; padding:8px; border:1px dashed #bbb; font-size:.9rem; opacity:.9;";
+
+      const title = document.createElement("div");
+      title.style.fontWeight = "600";
+      title.textContent = "Why this matched:";
+      box.appendChild(title);
+
+      const ul = document.createElement("ul");
+      ul.style.margin = "6px 0 0";
+      r.hits.forEach(h=>{
+        const li = document.createElement("li");
+        li.textContent = h;
+        ul.appendChild(li);
+      });
+      box.appendChild(ul);
+
+      anchor.insertAdjacentElement("afterend", box);
+    });
+  }
+
+  function highlightSearchNeedles(query){
+    const needles = expandQuery(query).filter(Boolean);
+    if(!needles.length) return;
+
+    const rx = new RegExp("(" + needles.map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|") + ")", "ig");
+    document.querySelectorAll(`${SCENARIO_SELECTOR} .search-correlation`).forEach(box=>{
+      box.innerHTML = box.innerHTML.replace(rx, "<mark>$1</mark>");
+    });
+  }
+
+  function setScenarioVisibility(sc, show){
+    const btn = sc.previousElementSibling && sc.previousElementSibling.classList?.contains("accordion-btn")
+      ? sc.previousElementSibling
+      : null;
+
+    sc.style.display = show ? "" : "none";
+    if (btn) btn.style.display = show ? "" : "none";
+  }
+
+  function revealOnly(matchesSet){
+    document.querySelectorAll(SCENARIO_SELECTOR).forEach(sc=>{
+      const show = matchesSet.has(sc.id);
+      setScenarioVisibility(sc, show);
+    });
+  }
+
+  function showAll(){
+    document.querySelectorAll(SCENARIO_SELECTOR).forEach(sc=>setScenarioVisibility(sc, true));
+  }
+
+  // Public: bind to a search input (defaults to #searchInput)
+  window.bindSmartSearchTo = function(inputSelector="#searchInput"){
+    const inp = document.querySelector(inputSelector);
+    if (!inp) return;
+
+    const handler = ()=>{
+      const q = inp.value.trim();
+      if (!q){
+        clearCorrelations();
+        showAll();
+        return;
+      }
+      const results = searchScenariosSmart(q);
+      const ids = new Set(results.map(r=>r.id));
+      revealOnly(ids);
+      renderSearchCorrelations(results);
+      highlightSearchNeedles(q);
+    };
+
+    inp.addEventListener("input", handler);
+    handler();
+  };
+
+  // =========================
+  // 4) Initialization order: install corpus → build index → bind search
+  // =========================
+  function initSmartSearch(){
+    installSearchCorpus();
+    buildIndex();
+    window.bindSmartSearchTo("#searchInput");
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSmartSearch);
+  } else {
+    initSmartSearch();
+  }
+})();
+</script>
+<style>
+  /* Optional: small visual touch for why-match box */
+  .search-correlation mark { padding: 0 .15em; border-radius: .2em; }
+</style>
+
+
+<script>
+function showAllGroups() {
+  document.querySelectorAll(".scenario-group").forEach(g => g.style.display = "block");
+}
+
+// Expand all scenarios (and show all groups)
+);
+  contents.forEach(content => content.classList.add("active"));
+}
+
+// Collapse all scenarios (and re-hide groups for a clean reset)
+);
+  contents.forEach(content => content.classList.remove("active"));
+}
+</script>
+
+<script>
+function showAllGroups() {
+  document.querySelectorAll(".scenario-group").forEach(g => g.style.display = "block");
+}
+
+// Expand all scenarios (and show all groups)
+function expandAll() {
+  showAllGroups();
+  const buttons = document.querySelectorAll(".accordion-btn:not(.group-btn)");
+  const contents = document.querySelectorAll(".tab-content");
+  buttons.forEach(btn => {
+    btn.classList.add("active");
+    btn.innerHTML = btn.innerHTML.replace(/^➕|➖/, '➖');
+  });
+  contents.forEach(content => content.classList.add("active"));
+}
+
+// Collapse all scenarios (re-hide groups, reset icons, and clear search box)
+function collapseAll() {
+  // Clear search input if present
+  const search = document.getElementById("searchInput");
+  if (search) search.value = "";
+
+  // Hide groups
+  document.querySelectorAll(".scenario-group").forEach(g => g.style.display = "none");
+
+  const buttons = document.querySelectorAll(".accordion-btn:not(.group-btn)");
+  const contents = document.querySelectorAll(".tab-content");
+  buttons.forEach(btn => {
+    btn.classList.remove("active");
+    btn.innerHTML = btn.innerHTML.replace(/^➕|➖/, '➕');
+  });
+  contents.forEach(content => content.classList.remove("active"));
+}
+</script>
 </body>
 </html>
 <script>
