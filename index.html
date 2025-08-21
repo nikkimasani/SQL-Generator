@@ -843,7 +843,7 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 ☰
 </button>
 <div class="container">
-<h1 class="stylish-header" style="font-size: 38px; font-weight: 800; margin-bottom: 14px; color: #1a237e; text-align: center;">🛠 SQL Generator Tool</h1><div class="compact-banner">💡 Looking to expand! If there are any Scenarios you’d like to see added, please send your suggestions to <a href="mailto:nikki.masani@quorumsoftware.com">nikki.masani@quorumsoftware.com</a></div>
+<h1 class="stylish-header" style="font-size: 38px; font-weight: 800; margin-bottom: 14px; color: #1a237e; text-align: center;">🛠 SQL Generator Tool</h1><div class="compact-banner">💡 Looking to expand! If there are any Scenarios you’d like to see added, please send your suggestions to <a href="mailto:nikki.masani@quorumsoftware.com?subject=SQL%20Generator%20Tool%3A%20Suggestions&amp;body=Here%20is%20what%20I%27d%20like%20to%20see%20added%20as%20a%20Scenario%20to%20the%20SQL%20Generator%20Tool%3A%0AScenario%20Title%3A%0AQuery%20Comment%20%28What%20the%20query%20does%29%3A%0ARaw%20Query%3A%0AWhat%20inputs%20the%20the%20query%20requires.%20If%20none%2C%20please%20state%20%22none%22%3A%0AModule%3A%0AAny%20other%20notes%3F%20%28ex%3A%20This%20query%20REQUIRES%20multiple%20inputs%20for%20it%20to%20generate.%20Here%20are%20the%20required%20inputs.%29%3A%0A%0A%2A%2APlease%20repeat%20the%20above%20template%20for%20each%20query%20you%20would%20like%20to%20add.%2A%2A">nikki.masani@quorumsoftware.com</a></div>
 <!--Navigation Bar-->
 <div class="sidebar-nav">
 <h3 class="sidebar-title">🧰 Support Toolbox</h3>
@@ -879,7 +879,7 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 </div><button class="accordion-btn group-btn" onclick="toggleGroup('group1')" style="background: linear-gradient(to right, #007BFF, #0056b3); color: #fff; font-weight: bold; border-radius: 6px; padding: 10px 15px; box-shadow: 0 3px 6px rgba(0,0,0,0.3);">📂 Group 1: ESuite, QCA, QCFS</button>
 <div class="scenario-group" id="group1" style="display: none;">
 <!-- Scenario 1 Starts-->
-<button class="accordion-btn" data-keywords="step process queue message log trace lock" onclick="toggleAccordion(this,'scenario1')">➕ Scenario 1: Triage Failing Process</button><div class="tab-content" id="scenario1">
+<button class="accordion-btn" data-keywords="step process queue message log trace lock" onclick="toggleAccordion(this,'scenario1')">➕ Scenario 1.1: Triage Failing Process</button><div class="tab-content" id="scenario1">
 <template class="sql-index">
 ---Query the Process Queue table to view the status and other relevant details about the process:
 SELECT START_DT,PROCESS_QUEUE_ID,PROCESS_ID,STATUS_CD,USER_ID, PARENT_PROCESS_QUEUE_ID, MASTER_PROCESS_QUEUE_ID,DATEDIFF (MINUTE, START_DT, END_DT) as TIMEDIFF_IN_MIN,USER_ID,* 
@@ -918,7 +918,7 @@ FROM QARCH_LOCK
 WHERE PROCESS_QUEUE_ID = ' ' 
 ORDER BY UPDT_DT DESC;
 </template>
-<h2>Scenario 1: Triage Failing Process</h2>
+<h2>Scenario 1.1: Triage Failing Process</h2>
 <label>PROCESS_QUEUE_ID(If multiple values, please separate with commas.)</label>
 <input id="processQueueId" placeholder="e.g., 1371670,1371671 "/>
 <label>PROCESS_ID(Optional, used for additional filtering.)</label>
@@ -935,7 +935,7 @@ ORDER BY UPDT_DT DESC;
 <button class="btn export" onclick="exportSQL('output1')">💾 Export</button>
 <!-- Scenario 1 Ends -->
 <!-- Scenario 2 Starts-->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario2')">➕ Scenario 2: AFE Workflow Triage</button><div class="tab-content" id="scenario2">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario2')">➕ Scenario 1.2: AFE Workflow Triage</button><div class="tab-content" id="scenario2">
 <template class="sql-index">
 --View AFE Details : 
 SELECT AFE_NO, ORIG_DESKID_NO, APRV_DESKID_NO, ENGR_DESKID_NO,WF_ROUTE_NM_SELECTED,WF_ROUTE_NM_OVERRIDE, * 
@@ -989,7 +989,7 @@ SELECT *
 FROM QXREF_AFE_AFFILIATES 
 WHERE PRIMARY_AFE_NO = ' ';
 </template>
-<h2>Scenario 2: AFE Workflow Triage</h2>
+<h2>Scenario 1.2: AFE Workflow Triage</h2>
 <label>AFE_NO (If multiple values, please separate with commas.)</label>
 <input id="afe2" placeholder="e.g., 180777,R15025"/>
 <label>ID_WF_INBOX (If multiple values, please separate with commas.)</label>
@@ -1008,7 +1008,7 @@ WHERE PRIMARY_AFE_NO = ' ';
 <button class="btn export" onclick="exportSQL('output2')">💾 Export</button>
 <!-- Scenario 2 Ends -->
 <!-- Scenario 3 Starts-->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario3')">➕ Scenario 3: User Management Triage</button><div class="tab-content" id="scenario3">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario3')">➕ Scenario 1.3: User Management Triage</button><div class="tab-content" id="scenario3">
 <template class="sql-index">
 SELECT
 QSGM.UPDT_DT,
@@ -1024,7 +1024,7 @@ WHERE QSGM.GRP_ID = QSG.GRP_ID
 AND QSGM.SEC_USER_ID = QSU.SEC_USER_ID
 AND QSGM.SEC_USER_ID = '';
 </template>
-<h2>Scenario 3: User Management Triage</h2>
+<h2>Scenario 1.3: User Management Triage</h2>
 <label>SEC_USER_ID</label>
 <input id="secuserid3" placeholder="e.g., JIM_BEAN"/>
 <button class="btn generate" onclick="generateSQL3()">⚙️ Generate SQL</button>
@@ -1035,7 +1035,7 @@ AND QSGM.SEC_USER_ID = '';
 <button class="btn export" onclick="exportSQL('output3')">💾 Export</button>
 <!-- Scenario 3 Ends -->
 <!-- Scenario 4 Starts -->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario4')">➕ Scenario 4: GL025 Batch Triage</button><div class="tab-content" id="scenario4">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario4')">➕ Scenario 1.4: GL025 Batch Triage</button><div class="tab-content" id="scenario4">
 <template class="sql-index">
 --Query the BATCHINVOICEMASTER tables to view INVOICE details: 
 SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
@@ -1045,7 +1045,7 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-<h2>Scenario 4: GL025 Batch Triage</h2>
+<h2>Scenario 1.4: GL025 Batch Triage</h2>
 <label>ACCTG_MTH (YYYY-MM-DD)</label>
 <input id="acctgMth4" placeholder="e.g., 2025-07-01"/>
 <label>USERKEY (If multiple values, please separate with commas.)</label>
@@ -1066,7 +1066,7 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn export" onclick="exportSQL('output4')">💾 Export</button>
 <!-- Scenario 4 Ends -->
 <!-- Scenario 5 Starts-->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario5')">➕ Scenario 5: AP055 and AP076 Batch Triage</button><div class="tab-content" id="scenario5">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario5')">➕ Scenario 1.5: AP055 and AP076 Batch Triage</button><div class="tab-content" id="scenario5">
 <template class="sql-index">
 --Query the BATCHINVOICEMASTER tables to view INVOICE details: 
 SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
@@ -1076,7 +1076,7 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-<h2>Scenario 5: AP055 and AP076 Batch Triage</h2>
+<h2>Scenario 1.5: AP055 and AP076 Batch Triage</h2>
 <label>ACCTG_MTH (YYYY-MM-DD)</label>
 <input id="acctgMth5" placeholder="e.g., 2025-07-01"/>
 <label>USERKEY (If multiple values, please separate with commas.)</label>
@@ -1097,7 +1097,7 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn export" onclick="exportSQL('output5')">💾 Export</button>
 <!-- Scenario 5 Ends -->
 <!-- Scenario 6 Starts -->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario6')">➕ Scenario 6: BR005 Bank Reconcilation</button><div class="tab-content" id="scenario6">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario6')">➕ Scenario 1.6: BR005 Bank Reconcilation</button><div class="tab-content" id="scenario6">
 <template class="sql-index">
 --Query the BATCHINVOICEMASTER tables to view INVOICE details: 
 SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
@@ -1107,7 +1107,7 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-<h2>Scenario 6: BR005 Bank Reconcilation</h2>
+<h2>Scenario 1.6: BR005 Bank Reconcilation</h2>
 <label>USERKEY (If multiple values, please separate with commas.)</label>
 <input id="userkey6" placeholder="e.g., BR00000006,BR00000007"/>
 <button class="btn generate" onclick="generateSQL6()">⚙️ Generate SQL</button>
@@ -1118,7 +1118,7 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn export" onclick="exportSQL('output6')">💾 Export</button>
 <!-- Scenario 6 Ends -->
 <!-- Scenario 7 Starts -->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario7')">➕ Scenario 7: Check Run (AP061) Batches</button><div class="tab-content" id="scenario7">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario7')">➕ Scenario 1.7: Check Run (AP061) Batches</button><div class="tab-content" id="scenario7">
 <template class="sql-index">
 --Query the BATCHINVOICEMASTER tables to view INVOICE details: 
 SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
@@ -1128,7 +1128,7 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-<h2>Scenario 7: Check Run (AP061) Batches</h2>
+<h2>Scenario 1.7: Check Run (AP061) Batches</h2>
 <label>USERKEY (If multiple values, please separate with commas.):</label>
 <input id="input7_userkey" placeholder="e.g., BCK0000001,BCK0000002"/>
 <label>IDBATCHECKRUNMASTER:</label>
@@ -1145,7 +1145,7 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn export" onclick="exportSQL('output7')">💾 Export</button>
 <!-- Scenario 7 Ends -->
 <!-- Scenario 8 Starts-->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario8')">➕ Scenario 8: QCFS Imports</button><div class="tab-content" id="scenario8">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario8')">➕ Scenario 1.8: QCFS Imports</button><div class="tab-content" id="scenario8">
 <template class="sql-index">
 --Query the BATCHINVOICEMASTER tables to view INVOICE details: 
 SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
@@ -1155,7 +1155,7 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-<h2>Scenario 8: QCFS Imports</h2>
+<h2>Scenario 1.8: QCFS Imports</h2>
 <div class="footnote">All three inputs (JOURNAL_ID, TRANS_TYPE, and ACCTG_MTH) are required to generate the SQL.</div>
 <label>JOURNAL_ID (If multiple values, please separate with commas.):</label>
 <input id="input8_journal_id" placeholder="e.g., QCFS, QRAREV"/>
@@ -1171,7 +1171,7 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn export" onclick="exportSQL('output8')">💾 Export</button>
 <!-- Scenario 8 Ends -->
 <!-- Scenario 9 Starts-->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario9')">➕ Scenario 9: Maintenance Application</button><div class="tab-content" id="scenario9">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario9')">➕ Scenario 1.9: Maintenance Application</button><div class="tab-content" id="scenario9">
 <template class="sql-index">
 --Query the BATCHINVOICEMASTER tables to view INVOICE details: 
 SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
@@ -1181,7 +1181,7 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-<h2>Scenario 9: Maintenance Application</h2>
+<h2>Scenario 1.9: Maintenance Application</h2>
 <label>PROCESS_ID:</label>
 <input id="input9_process_id" placeholder="e.g., ADPUPLOAD"/>
 <label>IMPEXP_ID :</label>
@@ -1202,7 +1202,7 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn export" onclick="exportSQL('output9')">💾 Export</button>
 <!-- Scenario 9 Ends -->
 <!-- Scenario 10 Starts-->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario10')">➕ Scenario 10: Batch Vouchers</button><div class="tab-content" id="scenario10">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario10')">➕ Scenario 1.10: Batch Vouchers</button><div class="tab-content" id="scenario10">
 <template class="sql-index">
 --Query the BATCHINVOICEMASTER tables to view INVOICE details: 
 SELECT BM.WEB_IND,BM.CREATED,BM.DATEACCT,BM.DATETOPOST, BM.DELETED, BM.USERKEY, BM.NAME, BM.IDWORKFLOWDEF, BM.STATUSWORKFLOW, BM.INBOXSTATUS, BD.VOUNUM,BD.IDWFINSTANCE, BD.APRVSTATUS, BD.WFROUTENMSELECTED, BD.WFSTATUSCD, BD.POSTED, BM.CONTROLTOTAL,
@@ -1212,7 +1212,7 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-<h2>Scenario 10: Batch Vouchers</h2>
+<h2>Scenario 1.10: Batch Vouchers</h2>
 <label>VOUNUM (If multiple values, please separate with commas.):</label>
 <input id="input10_vounum" placeholder="e.g., VM00000030, VM00000041"/>
 <label>USERKEY (optional for extra filters):</label>
@@ -1254,7 +1254,7 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn export" onclick="exportSQL('output10')">💾 Export</button>
 <!-- Scenario 10 Ends -->
 <!-- Scenario 11 Starts-->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario11')">➕ Scenario 11: Deposit Batches (AR308)</button><div class="tab-content" id="scenario11">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario11')">➕ Scenario 1.11: Deposit Batches (AR308)</button><div class="tab-content" id="scenario11">
 <template class="sql-index">
 --Query the Batch Deposit tables to view Deposit Batch details:
 SELECT E.USERKEY, A.USERKEY, A.STATUSWORKFLOW, * 
@@ -1295,7 +1295,7 @@ WHERE IDBATCHMASTER IN (
   WHERE BATCHUSERKEY IN ('')
 );
 </template>
-<h2>Scenario 11: Deposit Batches (AR308)</h2>
+<h2>Scenario 1.11: Deposit Batches (AR308)</h2>
 <label>USERKEY (If multiple values, please separate with commas.):</label>
 <input id="input11_userkey" placeholder="e.g., BD00000018, BD00000019"/>
 <button class="btn generate" onclick="generateSQL11()">⚙️ Generate SQL</button>
@@ -1307,7 +1307,7 @@ WHERE IDBATCHMASTER IN (
 <button class="btn export" onclick="exportSQL('output11')">💾 Export</button>
 <!-- Scenario 11 Ends -->
 <!-- Scenario 12 Starts -->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario12')">➕ Scenario 12: JIB</button><div class="tab-content" id="scenario12">
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario12')">➕ Scenario 1.12: JIB</button><div class="tab-content" id="scenario12">
 <template class="sql-index">
 --Review the processes tied to the JB005 for an accounting month:
 SELECT MASTER_PROCESS_QUEUE_ID, PROCESS_QUEUE_ID, PROCESS_ID,STATUS_CD, START_DT, END_DT, DATEDIFF (MINUTE, START_DT, END_DT) as TIMEDIFF_IN_MIN,USER_ID,
@@ -1404,7 +1404,7 @@ WHERE PROCESS_PERIOD = ''
 SELECT COUNT (1) from JBADT_JIB_JOURNAL_HISTORY 
 WHERE PROCESS_PERIOD = ' '
 </template>
-<h2>Scenario 12: JIB</h2>
+<h2>Scenario 1.12: JIB</h2>
 <label>START_DT ≥ (YYYY-MM-DD):</label>
 <input id="input12_start_dt" placeholder="e.g., 2025-06-01"/>
 <label>PROCESS_QUEUE_ID (If multiple values, please separate with commas.):</label>
@@ -1421,7 +1421,7 @@ WHERE PROCESS_PERIOD = ' '
 <button class="btn export" onclick="exportSQL('output12')">💾 Export</button>
 <!-- Scenario 12 Ends -->
 <!-- Scenario 13 Starts -->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario13')">➕ Scenario 13: General Batch, QCFS Export/Import, Open Item</button>
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario13')">➕ Scenario 1.13: General Batch, QCFS Export/Import, Open Item</button>
 <div class="tab-content" id="scenario13">
 <template class="sql-index">
 --Query to retreive details for any Invoice Adjustments: 
@@ -1436,7 +1436,7 @@ on A.IDBEOWNER = E.ID
 where A.USERKEY= ''
 --Input is USERKEY
 </template>
-<h2>Scenario 13: General Batch, QCFS Export/Import, Open Item</h2>
+<h2>Scenario 1.13: General Batch, QCFS Export/Import, Open Item</h2>
 <label>USERKEY (If multiple values, please separate with commas.):</label>
 <input id="input13_userkey" placeholder="e.g., BPA00000015, BPA00000017"/>
 <div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
@@ -1498,7 +1498,7 @@ where A.USERKEY= ''
 </template>
  -->
 <!-- Scenario 14 Starts-->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario14')">➕ Scenario 14: Business Associate (BA005 or BA WEB)</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario14')">➕ Scenario 1.14: Business Associate (BA005 or BA WEB)</button>
 <div class="tab-content" id="scenario14">
 <!-- Replace Scenario 14's template with this -->
 <template class="sql-index">
@@ -1517,7 +1517,7 @@ SELECT * FROM SCTRL_CONTACT_ADDRESS WHERE PRIMARY_BP_NO IN ('');
 --BA History / History of Changes:
 BA_HISTORY, HISTORY, HISTORICAL, HIST
 </template>
-<h2>Scenario 14: Business Associate (BA005 or BA WEB)</h2>
+<h2>Scenario 1.14: Business Associate (BA005 or BA WEB)</h2>
 <label>BA_NO (If multiple values, please separate with commas.):</label>
 <input id="input14_bano" placeholder="e.g., 12345, 67890"/>
 <label>PRIMARY_BP_NO (If multiple values, please separate with commas.):</label>
@@ -1535,7 +1535,7 @@ BA_HISTORY, HISTORY, HISTORICAL, HIST
 <!-- Scenario 14 Ends -->
 </div>
 <!-- Scenario 15 Starts -->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario15')">➕ Scenario 15: ADPUPLOAD</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario15')">➕ Scenario 1.15: ADPUPLOAD</button>
 <div class="tab-content" id="scenario15">
 <template class="sql-index">
 --Query details for ADP Import using an update date:
@@ -1544,7 +1544,7 @@ where IMPEXP_ID = 'ADPQSTAGCOREIMP'
 and UPDT_DT BETWEEN '' AND ''
 --Input will be UPDT_DT - Provide both a starting and ending update date (in YYYY-MM-DD format). Both are required.
 </template>
-<h2>Scenario 15: ADPUPLOAD</h2>
+<h2>Scenario 1.15: ADPUPLOAD</h2>
 <label>Start UPDT_DT (YYYY-MM-DD):</label>
 <input id="input15_start" placeholder="e.g., 2025-01-01"/>
 <label>End UPDT_DT (YYYY-MM-DD):</label>
@@ -1558,7 +1558,7 @@ and UPDT_DT BETWEEN '' AND ''
 </div>
 <!-- Scenario 15 Ends -->
 <!-- Scenario 16 Starts -->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario16')">➕ Scenario 16: Account Set Up (GL095) &amp; Chart of Accounts (GL013)</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario16')">➕ Scenario 1.16: Account Set Up (GL095) &amp; Chart of Accounts (GL013)</button>
 <div class="tab-content" id="scenario16">
 <template class="sql-index">
 --Query existing account details on GL095:
@@ -1590,7 +1590,7 @@ SELECT ...
 -- (omitted for brevity, full long SQL query from your input goes here exactly as is, ending in:)
 WHERE KEYFULL = ''
 </template>
-<h2>Scenario 16: Account Set Up (GL095) &amp; Chart of Accounts (GL013)</h2>
+<h2>Scenario 1.16: Account Set Up (GL095) &amp; Chart of Accounts (GL013)</h2>
 <label>KEYFULL (Format: xxxx-xxxx):</label>
 <input id="input16_keyfull" placeholder="e.g., 1200-2234"/>
 <label>IDBEOWNER (Business Unit ID):</label>
@@ -1606,12 +1606,12 @@ WHERE KEYFULL = ''
 </div>
 <!-- Scenario 16 Ends -->
 <!-- Scenario 17 Starts-->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">➕ Scenario 17: Cross Reference(MT100) / Journal Definitions (SM021)/Workflow Definitions (SM093)/Voucher Payment Term Definition (AP047)</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">➕ Scenario 1.17: Cross Reference(MT100) / Journal Definitions (SM021)/Workflow Definitions (SM093)/Voucher Payment Term Definition (AP047)</button>
 <div class="tab-content" id="scenario17">
 <template class="sql-index">
 --MT100 &gt; ${label}\n
 </template>
-<h2>Scenario 17: Cross Reference(MT100) / Journal Definitions (SM021)/Workflow Definitions (SM093)/Voucher Payment Term Definition (AP047)</h2>
+<h2>Scenario 1.17: Cross Reference(MT100) / Journal Definitions (SM021)/Workflow Definitions (SM093)/Voucher Payment Term Definition (AP047)</h2>
 <label>TRANS_TYPE (If multiple values, please separate with commas.):</label>
 <input id="input17_transtype" placeholder="e.g., GL, AP, AR"/>
 <label>JOURNAL_ID (If multiple values, please separate with commas.):</label>
@@ -1635,12 +1635,12 @@ WHERE KEYFULL = ''
 <!-- Scenario 17 Ends -->
 </div>
 <!-- Scenario 18 Starts-->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario18')">➕ Scenario 18: Resolve BU Information</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario18')">➕ Scenario 1.18: Resolve BU Information</button>
 <div class="tab-content" id="scenario18">
 <template class="sql-index">
 --Audit of batches posted during a POSTWKFLOW Run\n
 </template>
-<h2>Scenario 18: Resolve BU Information</h2>
+<h2>Scenario 1.18: Resolve BU Information</h2>
 <label>USERKEY (BU Number):</label>
 <input id="input18_bu_userkey" placeholder="e.g., BJE0000001"/>
 <label>USERKEY (BA Number):</label>
@@ -1659,12 +1659,12 @@ WHERE KEYFULL = ''
 </div>
 <!-- Scenario 18 Ends -->
 <!-- Scenario 19 Starts -->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario19')">➕ Scenario 19: POSTWKFL</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario19')">➕ Scenario 1.19: POSTWKFL</button>
 <div class="tab-content" id="scenario19">
 <template class="sql-index">
 --Query the Process Tables to identify any jobs that are running an Archive step: \n
 </template>
-<h2>Scenario 19: POSTWKFL</h2>
+<h2>Scenario 1.19: POSTWKFL</h2>
 <label>Created Start Date (YYYY-MM-DD)Both "From" AND "To" Dates are required</label>
 <input id="input19_createdStart" placeholder="e.g., 2025-08-01"/>
 <label>Created End Date (YYYY-MM-DD)Both "From" AND "To" Dates are required</label>
@@ -1693,7 +1693,7 @@ WHERE KEYFULL = ''
 <!-- Scenario 19 Ends -->
 <!-- Scenario 20 Starts-->
 <!-- Scenario 20 Starts-->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario20')">➕ Scenario 20: Archive &amp; Purge</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario20')">➕ Scenario 1.20: Archive &amp; Purge</button>
 <div class="tab-content" id="scenario20">
 <template class="sql-index">
 --Query the Process Tables to identify any jobs that are running an Archive step: 
@@ -1708,7 +1708,7 @@ order by A.PROCESS_QUEUE_ID desc
 
 --No input will be required. This query will auto generate.
 </template>
-<h2>Scenario 20: Archive &amp; Purge</h2>
+<h2>Scenario 1.20: Archive &amp; Purge</h2>
 <label>Update Date (YYYY-MM-DD) — must be older than 30 days:</label>
 <input id="input20_updatedt" placeholder="e.g., 2025-07-01"/>
 <button class="btn generate" onclick="generateSQL20()">⚙️ Generate SQL</button>
@@ -1719,7 +1719,7 @@ order by A.PROCESS_QUEUE_ID desc
 <button class="btn export" onclick="exportSQL('output20')">💾 Export</button>
 <!-- Scenario 20 Ends -->
 <!-- Scenario 21 Starts-->
-</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario21')">➕ Scenario 21: Processing Time Assessments (QCFSIMPCYC, POSTWKFL)</button>
+</div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario21')">➕ Scenario 1.21: Processing Time Assessments (QCFSIMPCYC, POSTWKFL)</button>
 <div class="tab-content" id="scenario21">
 <template class="sql-index">
 --QUERIES FOR QCFSIMPCYC ELAPSED: 
@@ -1787,7 +1787,7 @@ AND START_DT &lt;= '' --POSTWKFL_END_DT
 AND STATUS_CD NOT IN ('SXI', 'SXL')
 ORDER BY START_DT;
 </template>
-<h2>Scenario 21: Processing Time Assessments (QCFSIMPCYC, POSTWKFL)</h2>
+<h2>Scenario 1.21: Processing Time Assessments (QCFSIMPCYC, POSTWKFL)</h2>
 <label>DATEACCT Start (YYYY-MM-DD):</label>
 <input id="input21_dateacct_start" placeholder="e.g., 2025-07-01"/>
 <label>DATEACCT End (YYYY-MM-DD):</label>
@@ -1817,7 +1817,7 @@ ORDER BY START_DT;
 </div>
 <!-- Scenario 21 Ends -->
 <!-- Scenario 22 Starts-->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario22')">➕ Scenario 22: GL Accounts Configuration and Setup</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario22')">➕ Scenario 1.22: GL Accounts Configuration and Setup</button>
 <div class="tab-content" id="scenario22">
 <template class="sql-index">
 --JB500 Updates: 
@@ -1838,7 +1838,7 @@ AND UA.JIBGROUP &lt;&gt; 'PREPAY'
 ORDER BY A.KEYFULL
 --No Input is required. This query will auto generate.
 </template>
-<h2>Scenario 22: GL Accounts Configuration and Setup</h2>
+<h2>Scenario 1.22: GL Accounts Configuration and Setup</h2>
 <label>ACCOUNT_KEYFULL (xxxx-xxxx format):</label>
 <input id="input22_account_keyfull" placeholder="e.g., 1150-100"/>
 <div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
