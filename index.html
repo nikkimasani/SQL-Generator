@@ -6,7 +6,40 @@
 <meta charset="utf-8"/>
 <title>SQL Generator Tool</title>
 <!-- Body (Styling Elements/CSS)-->
-<style>textarea[id^="sqlOutput"] {
+<style>
+.compact-banner {
+  margin: 12px auto 18px auto;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  background-color: #fff9db;
+  color: #5a4400;
+  border-left: 4px solid #ffd43b;
+  border-radius: 6px;
+  max-width: 720px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  text-align: center;
+  animation: fadeInSlideDown 0.6s ease-in-out;
+  line-height: 1.4;
+}
+.compact-banner a {
+  color: #007acc;
+  font-weight: 600;
+  text-decoration: none;
+}
+.compact-banner a:hover {
+  text-decoration: underline;
+}
+@keyframes fadeInSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+textarea[id^="sqlOutput"] {
   height: 400px;
   width: 100%;
   font-family: Consolas, monospace;
@@ -427,6 +460,41 @@ body.dark-mode .sidebar-nav .nav-btn:hover {
   background-color: #666;
 }
 
+
+.floating-banner {
+  display: inline-block;
+  background-color: #fff7c4;
+  color: #444;
+  font-size: 14px;
+  padding: 10px 18px;
+  margin: 10px auto 20px auto;
+  border-left: 4px solid #fbc02d;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  animation: slideInFade 1s ease-out;
+  text-align: center;
+  max-width: 800px;
+}
+
+.floating-banner a {
+  color: #007acc;
+  text-decoration: none;
+  font-weight: bold;
+}
+.floating-banner a:hover {
+  text-decoration: underline;
+}
+
+@keyframes slideInFade {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>
 <style>
 body {
@@ -748,7 +816,6 @@ button.btn-secondary, .btn-secondary {
   color: #333;
 }
 </style>
-
 <style>
 textarea.output, textarea[class^="sqlOutput"] {
   background: #f9f9f9;
@@ -771,23 +838,19 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 }
 </style>
 </head>
-
 <body>
 <button onclick="toggleSidebar()" style="position: fixed; top: 20px; left: 10px; z-index: 100; padding: 6px 10px; font-size: 14px; border-radius: 4px; background-color: #007acc; color: white; border: none; cursor: pointer;">
 ☰
 </button>
-
 <div class="container">
-<h1 class="stylish-header" style="font-size: 38px; font-weight: 800; margin-bottom: 14px; color: #1a237e; text-align: center;">🛠 SQL Generator Tool</h1>
+<h1 class="stylish-header" style="font-size: 38px; font-weight: 800; margin-bottom: 14px; color: #1a237e; text-align: center;">🛠 SQL Generator Tool</h1><div class="compact-banner">💡 Looking to expand! If there are any Scenarios you’d like to see added, please send your suggestions to <a href="mailto:nikki.masani@quorumsoftware.com">nikki.masani@quorumsoftware.com</a></div>
 <!--Navigation Bar-->
-
 <div class="sidebar-nav">
-  <h3 class="sidebar-title">🧰 Support Toolbox</h3>
-  <a class="nav-btn" href="custom.html">✨ Custom Scenario Builder</a>
-  <a class="nav-btn" href="client-lookup.html">🔍 Client Lookup Tool</a>
-  <a class="nav-btn" href="KB Generator.html">📘 KB Generator (BETA)</a>
+<h3 class="sidebar-title">🧰 Support Toolbox</h3>
+<a class="nav-btn" href="custom.html">✨ Custom Scenario Builder</a>
+<a class="nav-btn" href="client-lookup.html">🔍 Client Lookup Tool</a>
+<a class="nav-btn" href="KB Generator.html">📘 KB Generator (BETA)</a>
 </div>
-
 <!--Instructions-->
 <div class="instructions-card fade-in">
 <button class="instructions-toggle" onclick="toggleInstructions()">📘 How to Use This Tool ▸</button>
@@ -811,14 +874,10 @@ textarea.output:focus, textarea[class^="sqlOutput"]:focus {
 <button class="btn reset" onclick="collapseAll()">Collapse All</button>
 <button class="btn export" onclick="toggleTheme()">🌓 Toggle Theme</button>
 <button class="btn reset" onclick="resetAllFields()">🧹 Reset All</button>
-
-
 <!--GUI Buttons-->
 <!-- Group 1: ESUITE, QCA, QCFS -->
 </div><button class="accordion-btn group-btn" onclick="toggleGroup('group1')" style="background: linear-gradient(to right, #007BFF, #0056b3); color: #fff; font-weight: bold; border-radius: 6px; padding: 10px 15px; box-shadow: 0 3px 6px rgba(0,0,0,0.3);">📂 Group 1: ESuite, QCA, QCFS</button>
 <div class="scenario-group" id="group1" style="display: none;">
-
-
 <!-- Scenario 1 Starts-->
 <button class="accordion-btn" data-keywords="step process queue message log trace lock" onclick="toggleAccordion(this,'scenario1')">➕ Scenario 1: Triage Failing Process</button><div class="tab-content" id="scenario1">
 <template class="sql-index">
@@ -859,7 +918,6 @@ FROM QARCH_LOCK
 WHERE PROCESS_QUEUE_ID = ' ' 
 ORDER BY UPDT_DT DESC;
 </template>
-
 <h2>Scenario 1: Triage Failing Process</h2>
 <label>PROCESS_QUEUE_ID(If multiple values, please separate with commas.)</label>
 <input id="processQueueId" placeholder="e.g., 1371670,1371671 "/>
@@ -876,8 +934,6 @@ ORDER BY UPDT_DT DESC;
 <button class="btn reset" onclick="resetFields('processQueueId','processId','masterProcessQueueId','registeredSqlName','output1')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output1')">💾 Export</button>
 <!-- Scenario 1 Ends -->
-
-
 <!-- Scenario 2 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario2')">➕ Scenario 2: AFE Workflow Triage</button><div class="tab-content" id="scenario2">
 <template class="sql-index">
@@ -933,7 +989,6 @@ SELECT *
 FROM QXREF_AFE_AFFILIATES 
 WHERE PRIMARY_AFE_NO = ' ';
 </template>
-
 <h2>Scenario 2: AFE Workflow Triage</h2>
 <label>AFE_NO (If multiple values, please separate with commas.)</label>
 <input id="afe2" placeholder="e.g., 180777,R15025"/>
@@ -952,8 +1007,6 @@ WHERE PRIMARY_AFE_NO = ' ';
 <button class="btn reset" onclick="resetFields('afe2','inbox2','route2','step2','desk2','output2')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output2')">💾 Export</button>
 <!-- Scenario 2 Ends -->
-
-
 <!-- Scenario 3 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario3')">➕ Scenario 3: User Management Triage</button><div class="tab-content" id="scenario3">
 <template class="sql-index">
@@ -971,7 +1024,6 @@ WHERE QSGM.GRP_ID = QSG.GRP_ID
 AND QSGM.SEC_USER_ID = QSU.SEC_USER_ID
 AND QSGM.SEC_USER_ID = '';
 </template>
-
 <h2>Scenario 3: User Management Triage</h2>
 <label>SEC_USER_ID</label>
 <input id="secuserid3" placeholder="e.g., JIM_BEAN"/>
@@ -982,8 +1034,6 @@ AND QSGM.SEC_USER_ID = '';
 <button class="btn reset" onclick="resetFields('secuserid3','output3')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output3')">💾 Export</button>
 <!-- Scenario 3 Ends -->
-
-
 <!-- Scenario 4 Starts -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario4')">➕ Scenario 4: GL025 Batch Triage</button><div class="tab-content" id="scenario4">
 <template class="sql-index">
@@ -995,7 +1045,6 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-
 <h2>Scenario 4: GL025 Batch Triage</h2>
 <label>ACCTG_MTH (YYYY-MM-DD)</label>
 <input id="acctgMth4" placeholder="e.g., 2025-07-01"/>
@@ -1016,8 +1065,6 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn reset" onclick="resetFields('acctgMth4','userkey4','idbeowner4','batchname4','dateFrom4','dateTo4','output4')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output4')">💾 Export</button>
 <!-- Scenario 4 Ends -->
-
-
 <!-- Scenario 5 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario5')">➕ Scenario 5: AP055 and AP076 Batch Triage</button><div class="tab-content" id="scenario5">
 <template class="sql-index">
@@ -1029,7 +1076,6 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-
 <h2>Scenario 5: AP055 and AP076 Batch Triage</h2>
 <label>ACCTG_MTH (YYYY-MM-DD)</label>
 <input id="acctgMth5" placeholder="e.g., 2025-07-01"/>
@@ -1050,8 +1096,6 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn reset" onclick="resetFields('acctgMth5','userkey5','idbeowner5','batchname5','dateFrom5','dateTo5','output5')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output5')">💾 Export</button>
 <!-- Scenario 5 Ends -->
-
-
 <!-- Scenario 6 Starts -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario6')">➕ Scenario 6: BR005 Bank Reconcilation</button><div class="tab-content" id="scenario6">
 <template class="sql-index">
@@ -1063,7 +1107,6 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-
 <h2>Scenario 6: BR005 Bank Reconcilation</h2>
 <label>USERKEY (If multiple values, please separate with commas.)</label>
 <input id="userkey6" placeholder="e.g., BR00000006,BR00000007"/>
@@ -1074,8 +1117,6 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn reset" onclick="resetFields('userkey6','output6')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output6')">💾 Export</button>
 <!-- Scenario 6 Ends -->
-
-
 <!-- Scenario 7 Starts -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario7')">➕ Scenario 7: Check Run (AP061) Batches</button><div class="tab-content" id="scenario7">
 <template class="sql-index">
@@ -1087,7 +1128,6 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-
 <h2>Scenario 7: Check Run (AP061) Batches</h2>
 <label>USERKEY (If multiple values, please separate with commas.):</label>
 <input id="input7_userkey" placeholder="e.g., BCK0000001,BCK0000002"/>
@@ -1104,8 +1144,6 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn reset" onclick="resetFields('input7_userkey','input7_idbatcheckrunmaster','input7_checknum','input7_payamt','output7')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output7')">💾 Export</button>
 <!-- Scenario 7 Ends -->
-
-
 <!-- Scenario 8 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario8')">➕ Scenario 8: QCFS Imports</button><div class="tab-content" id="scenario8">
 <template class="sql-index">
@@ -1117,7 +1155,6 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-
 <h2>Scenario 8: QCFS Imports</h2>
 <div class="footnote">All three inputs (JOURNAL_ID, TRANS_TYPE, and ACCTG_MTH) are required to generate the SQL.</div>
 <label>JOURNAL_ID (If multiple values, please separate with commas.):</label>
@@ -1133,8 +1170,6 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn reset" onclick="resetFields('input8_journal_id','input8_trans_type','input8_acctg_mth','output8')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output8')">💾 Export</button>
 <!-- Scenario 8 Ends -->
-
-
 <!-- Scenario 9 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario9')">➕ Scenario 9: Maintenance Application</button><div class="tab-content" id="scenario9">
 <template class="sql-index">
@@ -1146,7 +1181,6 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-
 <h2>Scenario 9: Maintenance Application</h2>
 <label>PROCESS_ID:</label>
 <input id="input9_process_id" placeholder="e.g., ADPUPLOAD"/>
@@ -1167,8 +1201,6 @@ WHERE BD.VOUNUM IN ('')
 <button class="btn reset" onclick="resetFields('input9_process_id','input9_impexp_id','input9_ftp_id','input9_ftp_host_id','input9_event_type_cd','input9_metadata_profile','output9')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output9')">💾 Export</button>
 <!-- Scenario 9 Ends -->
-
-
 <!-- Scenario 10 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario10')">➕ Scenario 10: Batch Vouchers</button><div class="tab-content" id="scenario10">
 <template class="sql-index">
@@ -1180,54 +1212,38 @@ JOIN BATCHVOUCHERGLDISTRIBUTION BL ON BD.ID = BL.IDBATVOUDETAIL
 --WHERE USERKEY IN ('') 
 WHERE BD.VOUNUM IN ('')
 </template>
-
 <h2>Scenario 10: Batch Vouchers</h2>
-
 <label>VOUNUM (If multiple values, please separate with commas.):</label>
 <input id="input10_vounum" placeholder="e.g., VM00000030, VM00000041"/>
-
 <label>USERKEY (optional for extra filters):</label>
 <input id="input10_userkey" placeholder="e.g., BV00000001"/>
-
 <label>IDBATINVMASTER (If multiple values, please separate with commas.):</label>
 <input id="input10_idbatinv" placeholder="e.g. 4567, 8910"/>
-
 <label>ASSIGNED_USER_ID (Queried as a %like% value):</label>
 <input id="input10_assigneduser" placeholder="e.g. EQC_VJENNINGS"/>
-
 <label>DOC_CONTENT_TYPE_CD:</label>
 <input id="input10_doctype" placeholder="e.g. AP_INV"/>
-
 <label>DOC_NM (Queried as a %like% value):</label>
 <input id="input10_docnm" placeholder="e.g. 0genPdf272704965202508011202340.pdf"/>
-
 <label>WFSTATUSCD:</label>
 <input id="input10_wfstatus" placeholder="e.g. Approved"/>
-
 <label>REFNUMDOC:</label>
 <input id="input10_refnumdoc" placeholder="e.g. CM207039"/>
-
 <label>DOC_PROP_VAL:</label>
 <input id="input10_docpropval" placeholder="e.g. 10936"/>
-
 <label>DOC_ID:</label>
 <input id="input10_docid" placeholder="e.g. 0genPdf272704965202508011202340"/>
-
 <label>REFNUM (for Audit Workflow Log):</label>
 <input id="input10_refnum" placeholder="e.g. 21561"/>
-
 <label>Batch Name (Queried as a %like% value)</label>
 <input id="input10_batchname" placeholder="e.g. AP Import 2025-08"/>
-
 <label>BATCHUSERKEY (Used for GL096):</label>
 <input id="input10_batchuserkey" placeholder="e.g. BV00000001"/>
-
 <label>JECUSTOMCODEBLOCK__NOTES (optional):</label>
 <input id="input10_notes" placeholder="e.g. APCONV-"/>
-
 <button class="btn generate" onclick="generateSQL10()">⚙️ Generate SQL</button>
 <button class="btn default" onclick="showAllQueries10()">🗃 Show All Queries</button>
-<textarea id="output10" placeholder="SQL will appear here." readonly></textarea><button class="btn" onclick="toggleEditable('output10')" title="Edit Output" type="button">✏️</button>
+<textarea id="output10" placeholder="SQL will appear here." readonly=""></textarea><button class="btn" onclick="toggleEditable('output10')" title="Edit Output" type="button">✏️</button>
 <button class="btn copy" onclick="copySQL('output10')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields(
         'input10_vounum','input10_userkey','input10_idbatinv','input10_assigneduser',
@@ -1237,10 +1253,6 @@ WHERE BD.VOUNUM IN ('')
       )">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output10')">💾 Export</button>
 <!-- Scenario 10 Ends -->
-
-
-
-
 <!-- Scenario 11 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario11')">➕ Scenario 11: Deposit Batches (AR308)</button><div class="tab-content" id="scenario11">
 <template class="sql-index">
@@ -1283,7 +1295,6 @@ WHERE IDBATCHMASTER IN (
   WHERE BATCHUSERKEY IN ('')
 );
 </template>
-
 <h2>Scenario 11: Deposit Batches (AR308)</h2>
 <label>USERKEY (If multiple values, please separate with commas.):</label>
 <input id="input11_userkey" placeholder="e.g., BD00000018, BD00000019"/>
@@ -1295,9 +1306,6 @@ WHERE IDBATCHMASTER IN (
 <button class="btn reset" onclick="resetFields('input11_userkey','output11')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output11')">💾 Export</button>
 <!-- Scenario 11 Ends -->
-
-
-
 <!-- Scenario 12 Starts -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario12')">➕ Scenario 12: JIB</button><div class="tab-content" id="scenario12">
 <template class="sql-index">
@@ -1305,7 +1313,7 @@ WHERE IDBATCHMASTER IN (
 SELECT MASTER_PROCESS_QUEUE_ID, PROCESS_QUEUE_ID, PROCESS_ID,STATUS_CD, START_DT, END_DT, DATEDIFF (MINUTE, START_DT, END_DT) as TIMEDIFF_IN_MIN,USER_ID,
 * FROM QARCH_QUEU_PROCESS A WHERE PROCESS_ID IN ('JBLDWCVOL','JBCALCCOMP','JBMISCOH','JBOPENBILL','JBPRODOH','JBVEHCALC',
 'JBGLIMPORT','JBLOADCSL','JBPROPALLC','JBREBILL','JBOWNALLOC','JBRBINVMN','JBINVMNPRC','JBJOURNAL','JBLDJE2CAS','JBROLLDATE')
-AND START_DT >= '' ORDER BY QUEUE_DT DESC
+AND START_DT &gt;= '' ORDER BY QUEUE_DT DESC
 
 --Review the JIB journal tables in QCA:
 SELECT * FROM JBTRN_JIB_JOURNAL WHERE PROCESS_QUEUE_ID = ' '
@@ -1349,7 +1357,7 @@ join SEXTN_CORE_INTFC_JIB B
 on A.ID = B.IDCOREINTFC
 where JOURNAL_ID = 'QCFS'
 and TRANS_TYPE = 'PP'
-AND UPDT_DT >= ''
+AND UPDT_DT &gt;= ''
 
 --Review the path and count data of the JIBLINK Export
 select EXPORTED_ROWS, UPDT_DT, * 
@@ -1396,7 +1404,6 @@ WHERE PROCESS_PERIOD = ''
 SELECT COUNT (1) from JBADT_JIB_JOURNAL_HISTORY 
 WHERE PROCESS_PERIOD = ' '
 </template>
-
 <h2>Scenario 12: JIB</h2>
 <label>START_DT ≥ (YYYY-MM-DD):</label>
 <input id="input12_start_dt" placeholder="e.g., 2025-06-01"/>
@@ -1413,8 +1420,6 @@ WHERE PROCESS_PERIOD = ' '
 <button class="btn reset" onclick="resetFields('input12_start_dt','input12_proc_queue_id','input12_updt_dt','input12_process_period','output12')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output12')">💾 Export</button>
 <!-- Scenario 12 Ends -->
-
-
 <!-- Scenario 13 Starts -->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario13')">➕ Scenario 13: General Batch, QCFS Export/Import, Open Item</button>
 <div class="tab-content" id="scenario13">
@@ -1431,60 +1436,43 @@ on A.IDBEOWNER = E.ID
 where A.USERKEY= ''
 --Input is USERKEY
 </template>
-
 <h2>Scenario 13: General Batch, QCFS Export/Import, Open Item</h2>
-
 <label>USERKEY (If multiple values, please separate with commas.):</label>
 <input id="input13_userkey" placeholder="e.g., BPA00000015, BPA00000017"/>
 <div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
    The USERKEY input is used to retrieve Payment Application Batches.
 </div>
-
 <label>IDBEOWNER:</label>
 <input id="input13_idbeowner" placeholder="e.g., 17"/>
-
 <label>IDCUSTOMER (If multiple values, please separate with commas.):</label>
 <input id="input13_idcustomer" placeholder="e.g., 101,102"/>
-
 <label>BA_NO:</label>
 <input id="input13_ba_no" placeholder="e.g., 100"/>
-
 <label>SET_ID:</label>
 <input id="input13_set_id" placeholder="e.g., 53f4aee1-05c5-43e8-bbda-1e9b78b67022"/>
-
 <label>Customer Open Item ID (If multiple values, please separate with commas.):</label>
 <input id="input13_open_item_id" placeholder="e.g. 21,22"/>
-
 <label>UPDT_DT &gt; (YYYY-MM-DD):</label>
 <input id="input13_updt_dt" placeholder="e.g. 2025-08-01"/>
-
 <label>BUS_UNIT_CD:</label>
 <input id="input13_bus_unit_cd" placeholder="e.g. BU01"/>
-
 <label>OWNER_BA_NO:</label>
 <input id="input13_owner_ba_no" placeholder="e.g. 100"/>
-
 <label>OPENITEM_PROP_NO:</label>
 <input id="input13_openitem_prop_no" placeholder="e.g. 77001"/>
-
 <label>ORIG_BUS_UNIT_CD:</label>
 <input id="input13_orig_bus_unit_cd" placeholder="e.g. BU01"/>
-
 <label>OWNER_BA_NO (JTRN_GL_MTD):</label>
 <input id="input13_owner_ba_no_jtrn" placeholder="e.g. 100"/>
-
 <label>PROP_NO:</label>
 <input id="input13_prop_no" placeholder="e.g. 55001"/>
-
 <label>ACCTG_MTH (YYYY-MM-DD):</label>
 <input id="input13_acctg_mth" placeholder="e.g. 2025-07-31"/>
-
 <label>PROCESS_PERIOD (YYYY-MM-DD):</label>
 <input id="input13_process_period" placeholder="e.g. 2025-07-31"/>
-
 <button class="btn generate" onclick="generateSQL13()">⚙️ Generate SQL</button>
 <button class="btn default" onclick="showAllQueries13()">🗃 Show All Queries</button>
-<textarea id="output13" placeholder="SQL will appear here." readonly></textarea><button class="btn" onclick="toggleEditable('output13')" title="Edit Output" type="button">✏️</button>
+<textarea id="output13" placeholder="SQL will appear here." readonly=""></textarea><button class="btn" onclick="toggleEditable('output13')" title="Edit Output" type="button">✏️</button>
 <button class="btn copy" onclick="copySQL('output13')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields(
   'input13_userkey','input13_idbeowner','input13_idcustomer','input13_ba_no','input13_set_id',
@@ -1509,7 +1497,6 @@ where A.USERKEY= ''
 --Input is USERKEY
 </template>
  -->
-
 <!-- Scenario 14 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario14')">➕ Scenario 14: Business Associate (BA005 or BA WEB)</button>
 <div class="tab-content" id="scenario14">
@@ -1530,33 +1517,23 @@ SELECT * FROM SCTRL_CONTACT_ADDRESS WHERE PRIMARY_BP_NO IN ('');
 --BA History / History of Changes:
 BA_HISTORY, HISTORY, HISTORICAL, HIST
 </template>
-
-
 <h2>Scenario 14: Business Associate (BA005 or BA WEB)</h2>
-
 <label>BA_NO (If multiple values, please separate with commas.):</label>
 <input id="input14_bano" placeholder="e.g., 12345, 67890"/>
-
 <label>PRIMARY_BP_NO (If multiple values, please separate with commas.):</label>
 <input id="input14_primarybpno" placeholder="e.g., 12345, 67890"/>
-
 <div class="footnote">
   ⚠️ Only queries matching provided input fields will generate. Queries with no required input will always show.
 </div>
-
 <button class="btn generate" onclick="generateSQL14()">⚙️ Generate SQL</button>
 <button class="btn default" onclick="showAllQueries14()">🗃 Show All Queries</button>
-<textarea id="output14" placeholder="SQL will appear here..." readonly></textarea>
+<textarea id="output14" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn" onclick="toggleEditable('output14')" title="Edit Output" type="button">✏️</button>
 <button class="btn copy" onclick="copySQL('output14')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('input14_bano','input14_primarybpno','output14')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output14')">💾 Export</button>
 <!-- Scenario 14 Ends -->
 </div>
-
-
-
-
 <!-- Scenario 15 Starts -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario15')">➕ Scenario 15: ADPUPLOAD</button>
 <div class="tab-content" id="scenario15">
@@ -1567,7 +1544,6 @@ where IMPEXP_ID = 'ADPQSTAGCOREIMP'
 and UPDT_DT BETWEEN '' AND ''
 --Input will be UPDT_DT - Provide both a starting and ending update date (in YYYY-MM-DD format). Both are required.
 </template>
-
 <h2>Scenario 15: ADPUPLOAD</h2>
 <label>Start UPDT_DT (YYYY-MM-DD):</label>
 <input id="input15_start" placeholder="e.g., 2025-01-01"/>
@@ -1581,8 +1557,6 @@ and UPDT_DT BETWEEN '' AND ''
 <button class="btn export" onclick="exportSQL('output15')">💾 Export</button>
 </div>
 <!-- Scenario 15 Ends -->
-
-
 <!-- Scenario 16 Starts -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario16')">➕ Scenario 16: Account Set Up (GL095) &amp; Chart of Accounts (GL013)</button>
 <div class="tab-content" id="scenario16">
@@ -1616,7 +1590,6 @@ SELECT ...
 -- (omitted for brevity, full long SQL query from your input goes here exactly as is, ending in:)
 WHERE KEYFULL = ''
 </template>
-
 <h2>Scenario 16: Account Set Up (GL095) &amp; Chart of Accounts (GL013)</h2>
 <label>KEYFULL (Format: xxxx-xxxx):</label>
 <input id="input16_keyfull" placeholder="e.g., 1200-2234"/>
@@ -1632,89 +1605,65 @@ WHERE KEYFULL = ''
 <button class="btn export" onclick="exportSQL('output16')">💾 Export</button>
 </div>
 <!-- Scenario 16 Ends -->
-
 <!-- Scenario 17 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario17')">➕ Scenario 17: Cross Reference(MT100) / Journal Definitions (SM021)/Workflow Definitions (SM093)/Voucher Payment Term Definition (AP047)</button>
 <div class="tab-content" id="scenario17">
 <template class="sql-index">
---MT100 > ${label}\n
+--MT100 &gt; ${label}\n
 </template>
-
 <h2>Scenario 17: Cross Reference(MT100) / Journal Definitions (SM021)/Workflow Definitions (SM093)/Voucher Payment Term Definition (AP047)</h2>
-
 <label>TRANS_TYPE (If multiple values, please separate with commas.):</label>
 <input id="input17_transtype" placeholder="e.g., GL, AP, AR"/>
-
 <label>JOURNAL_ID (If multiple values, please separate with commas.):</label>
 <input id="input17_journalid" placeholder="e.g., AFE, JIB"/>
-
 <label>IDBEOWNER (Required with USERKEY):</label>
 <input id="input17_idbeowner" placeholder="e.g., 11, 13"/>
-
 <label>USERKEY (For SM021/SM093/AP100- IDBEOWNER is required):</label>
 <input id="input17_userkey1" placeholder="e.g., APVOU, INVOICE"/>
-
 <label>USERKEY (For AP047-IDBEOWNER is required):</label>
 <input id="input17_userkey2" placeholder="e.g., NET15, DUEONREC"/>
-
 <div class="footnote">
   ⚠️ To generate queries for SM021, SM093, AP100, or AP047, both <strong>IDBEOWNER</strong> and the appropriate <strong>USERKEY</strong> must be provided. Queries will not appear if one is missing.
 </div>
-
 <button class="btn generate" onclick="generateSQL17()">⚙️ Generate SQL</button>
 <button class="btn default" onclick="showAllQueries17()">🗃 Show All Queries</button>
-<textarea id="output17" placeholder="SQL will appear here..." readonly></textarea>
+<textarea id="output17" placeholder="SQL will appear here..." readonly=""></textarea>
 <button class="btn" onclick="toggleEditable('output17')" title="Edit Output" type="button">✏️</button>
 <button class="btn copy" onclick="copySQL('output17')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('input17_transtype','input17_journalid','input17_idbeowner','input17_userkey1','input17_userkey2','output17')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output17')">💾 Export</button>
 <!-- Scenario 17 Ends -->
 </div>
-
-
-
-
-
-
-
 <!-- Scenario 18 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario18')">➕ Scenario 18: Resolve BU Information</button>
 <div class="tab-content" id="scenario18">
 <template class="sql-index">
 --Audit of batches posted during a POSTWKFLOW Run\n
 </template>
-
-  <h2>Scenario 18: Resolve BU Information</h2>
-
-  <label>USERKEY (BU Number):</label>
-  <input id="input18_bu_userkey" placeholder="e.g., BJE0000001" />
-
-  <label>USERKEY (BA Number):</label>
-  <input id="input18_ba_userkey" placeholder="e.g., BI00000089" />
-
-  <div class="footnote">
+<h2>Scenario 18: Resolve BU Information</h2>
+<label>USERKEY (BU Number):</label>
+<input id="input18_bu_userkey" placeholder="e.g., BJE0000001"/>
+<label>USERKEY (BA Number):</label>
+<input id="input18_ba_userkey" placeholder="e.g., BI00000089"/>
+<div class="footnote">
     USERKEY (BU Number) is used to retrieve BUSINESSENTITY.ID, which is matched in the nested query.<br/>
     USERKEY (BA Number) is used in the CUSTOMER table lookup.
   </div>
-
-  <button class="btn generate" onclick="generateSQL18()">⚙️ Generate SQL</button>
-  <button class="btn default" onclick="showAllQueries18()">🗃 Show All Queries</button>
-  <textarea id="output18" placeholder="SQL will appear here..." readonly></textarea>
-  <button class="btn" onclick="toggleEditable('output18')" title="Edit Output" type="button">✏️</button>
-  <button class="btn copy" onclick="copySQL('output18')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('input18_bu_userkey','input18_ba_userkey','output18')">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output18')">💾 Export</button>
+<button class="btn generate" onclick="generateSQL18()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries18()">🗃 Show All Queries</button>
+<textarea id="output18" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn" onclick="toggleEditable('output18')" title="Edit Output" type="button">✏️</button>
+<button class="btn copy" onclick="copySQL('output18')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields('input18_bu_userkey','input18_ba_userkey','output18')">🔄 Reset</button>
+<button class="btn export" onclick="exportSQL('output18')">💾 Export</button>
 </div>
 <!-- Scenario 18 Ends -->
-
-
 <!-- Scenario 19 Starts -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario19')">➕ Scenario 19: POSTWKFL</button>
 <div class="tab-content" id="scenario19">
 <template class="sql-index">
 --Query the Process Tables to identify any jobs that are running an Archive step: \n
 </template>
-
 <h2>Scenario 19: POSTWKFL</h2>
 <label>Created Start Date (YYYY-MM-DD)Both "From" AND "To" Dates are required</label>
 <input id="input19_createdStart" placeholder="e.g., 2025-08-01"/>
@@ -1742,10 +1691,9 @@ WHERE KEYFULL = ''
 <button class="btn export" onclick="exportSQL('output19')">💾 Export</button>
 </div>
 <!-- Scenario 19 Ends -->
-
 <!-- Scenario 20 Starts-->
 <!-- Scenario 20 Starts-->
-<button class="accordion-btn" onclick="toggleAccordion(this,'scenario20')">➕ Scenario 20: Archive & Purge</button>
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario20')">➕ Scenario 20: Archive &amp; Purge</button>
 <div class="tab-content" id="scenario20">
 <template class="sql-index">
 --Query the Process Tables to identify any jobs that are running an Archive step: 
@@ -1760,20 +1708,16 @@ order by A.PROCESS_QUEUE_ID desc
 
 --No input will be required. This query will auto generate.
 </template>
-
-<h2>Scenario 20: Archive & Purge</h2>
-
+<h2>Scenario 20: Archive &amp; Purge</h2>
 <label>Update Date (YYYY-MM-DD) — must be older than 30 days:</label>
 <input id="input20_updatedt" placeholder="e.g., 2025-07-01"/>
-
 <button class="btn generate" onclick="generateSQL20()">⚙️ Generate SQL</button>
 <button class="btn default" onclick="showAllQueries20()">🗃 Show All Queries</button>
-<textarea id="output20" placeholder="SQL will appear here." readonly></textarea><button class="btn" onclick="toggleEditable('output20')" title="Edit Output" type="button">✏️</button>
+<textarea id="output20" placeholder="SQL will appear here." readonly=""></textarea><button class="btn" onclick="toggleEditable('output20')" title="Edit Output" type="button">✏️</button>
 <button class="btn copy" onclick="copySQL('output20')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields('input20_updatedt','output20')">🔄 Reset</button>
 <button class="btn export" onclick="exportSQL('output20')">💾 Export</button>
 <!-- Scenario 20 Ends -->
-
 <!-- Scenario 21 Starts-->
 </div><button class="accordion-btn" onclick="toggleAccordion(this,'scenario21')">➕ Scenario 21: Processing Time Assessments (QCFSIMPCYC, POSTWKFL)</button>
 <div class="tab-content" id="scenario21">
@@ -1811,9 +1755,9 @@ ORDER BY A.PROCESS_PERIOD;
 SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, DATEDIFF(minute, START_DT, END_DT) DATEDIFFMINS
 FROM QARCH_QUEU_PROCESS
 WHERE PROCESS_ID = 'QCFSIMPCYC'
-AND START_DT >= '' --QCFSIMPCYC_START_DT
-AND START_DT <= '' --QCFSIMPCYC_END_DT
-AND STATUS_CD <> 'SXI'
+AND START_DT &gt;= '' --QCFSIMPCYC_START_DT
+AND START_DT &lt;= '' --QCFSIMPCYC_END_DT
+AND STATUS_CD &lt;&gt; 'SXI'
 ORDER BY START_DT;
 
 --QUERIES FOR POSTWKFL ELAPSED
@@ -1838,41 +1782,31 @@ ORDER BY A.DATEACCT;
 SELECT PROCESS_ID, PROCESS_QUEUE_ID, END_DT, DATEDIFF(minute, START_DT, END_DT) DATEDIFFMINS
 FROM QARCH_QUEU_PROCESS
 WHERE PROCESS_ID = 'POSTWKFL'
-AND START_DT >= '' --QCFSIMPCYC_END_DT
-AND START_DT <= '' --POSTWKFL_END_DT
+AND START_DT &gt;= '' --QCFSIMPCYC_END_DT
+AND START_DT &lt;= '' --POSTWKFL_END_DT
 AND STATUS_CD NOT IN ('SXI', 'SXL')
 ORDER BY START_DT;
 </template>
-
 <h2>Scenario 21: Processing Time Assessments (QCFSIMPCYC, POSTWKFL)</h2>
-
 <label>DATEACCT Start (YYYY-MM-DD):</label>
 <input id="input21_dateacct_start" placeholder="e.g., 2025-07-01"/>
-
 <label>DATEACCT End (YYYY-MM-DD):</label>
 <input id="input21_dateacct_end" placeholder="e.g., 2025-07-31"/>
-
 <label>PROCESS_PERIOD Start (YYYY-MM-DD):</label>
 <input id="input21_process_period_start" placeholder="e.g., 2025-07-01"/>
-
 <label>PROCESS_PERIOD End (YYYY-MM-DD):</label>
 <input id="input21_process_period_end" placeholder="e.g., 2025-07-31"/>
-
-<label>QCFSIMPCYC START_DT (>=) (YYYY-MM-DD):</label>
+<label>QCFSIMPCYC START_DT (&gt;=) (YYYY-MM-DD):</label>
 <input id="input21_qcfsimp_startdt" placeholder="e.g., 2025-07-01"/>
-
-<label>QCFSIMPCYC END_DT (<=) (YYYY-MM-DD):</label>
+<label>QCFSIMPCYC END_DT (&lt;=) (YYYY-MM-DD):</label>
 <input id="input21_qcfsimp_enddt" placeholder="e.g., 2025-07-31"/>
-
-<label>POSTWKFL START_DT (>=) (YYYY-MM-DD):</label>
+<label>POSTWKFL START_DT (&gt;=) (YYYY-MM-DD):</label>
 <input id="input21_postwkfl_startdt" placeholder="e.g., 2025-07-01"/>
-
-<label>POSTWKFL END_DT (<=) (YYYY-MM-DD):</label>
+<label>POSTWKFL END_DT (&lt;=) (YYYY-MM-DD):</label>
 <input id="input21_postwkfl_enddt" placeholder="e.g., 2025-07-31"/>
-
 <button class="btn generate" onclick="generateSQL21()">⚙️ Generate SQL</button>
 <button class="btn default" onclick="showAllQueries21()">🗃 Show All Queries</button>
-<textarea id="output21" placeholder="SQL will appear here." readonly></textarea>
+<textarea id="output21" placeholder="SQL will appear here." readonly=""></textarea>
 <button class="btn" onclick="toggleEditable('output21')" title="Edit Output" type="button">✏️</button>
 <button class="btn copy" onclick="copySQL('output21')">📋 Copy</button>
 <button class="btn reset" onclick="resetFields(
@@ -1882,8 +1816,6 @@ ORDER BY START_DT;
 <button class="btn export" onclick="exportSQL('output21')">💾 Export</button>
 </div>
 <!-- Scenario 21 Ends -->
-
-
 <!-- Scenario 22 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario22')">➕ Scenario 22: GL Accounts Configuration and Setup</button>
 <div class="tab-content" id="scenario22">
@@ -1902,49 +1834,35 @@ AND J.KEYWORD_ID = '191'
 WHERE UA.JIBGROUP IS NOT NULL
 AND J.ACCOUNT IS NULL
 AND A.HEADERACCOUNT = 0
-AND UA.JIBGROUP <> 'PREPAY'
+AND UA.JIBGROUP &lt;&gt; 'PREPAY'
 ORDER BY A.KEYFULL
 --No Input is required. This query will auto generate.
 </template>
-
-  <h2>Scenario 22: GL Accounts Configuration and Setup</h2>
-
-  <label>ACCOUNT_KEYFULL (xxxx-xxxx format):</label>
-  <input id="input22_account_keyfull" placeholder="e.g., 1150-100"/>
-
-  <div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
-    All queries except Query&nbsp;6 will auto-generate without input. Only provide <strong>ACCOUNT_KEYFULL</strong> if you want Query&nbsp;6 to return filtered results.
+<h2>Scenario 22: GL Accounts Configuration and Setup</h2>
+<label>ACCOUNT_KEYFULL (xxxx-xxxx format):</label>
+<input id="input22_account_keyfull" placeholder="e.g., 1150-100"/>
+<div style="font-size: 0.9em; color: gray; margin-bottom: 10px;">
+    All queries except Query 6 will auto-generate without input. Only provide <strong>ACCOUNT_KEYFULL</strong> if you want Query 6 to return filtered results.
   </div>
-
-  <button class="btn generate" onclick="generateSQL22()">⚙️ Generate SQL</button>
-  <button class="btn default" onclick="showAllQueries22()">🗃 Show All Queries</button>
-  <textarea id="output22" placeholder="SQL will appear here." readonly></textarea>
-  <button class="btn" onclick="toggleEditable('output22')" title="Edit Output" type="button">✏️</button>
-  <button class="btn copy" onclick="copySQL('output22')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('input22_account_keyfull','output22')">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output22')">💾 Export</button>
+<button class="btn generate" onclick="generateSQL22()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries22()">🗃 Show All Queries</button>
+<textarea id="output22" placeholder="SQL will appear here." readonly=""></textarea>
+<button class="btn" onclick="toggleEditable('output22')" title="Edit Output" type="button">✏️</button>
+<button class="btn copy" onclick="copySQL('output22')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields('input22_account_keyfull','output22')">🔄 Reset</button>
+<button class="btn export" onclick="exportSQL('output22')">💾 Export</button>
 </div>
 <!-- Scenario 22 Ends -->
-
-
-
 </div><!-- closes the Group 1 container -->
-
 <!--End of Group 1-->
-
-
-
-
 <!-- ✅ BEGIN Group 2 -->
-
 <!-- 📂 Group 2: QDO, QRA -->
 <button class="accordion-btn group-btn" onclick="toggleGroup('group2')" style="background: linear-gradient(to right, #8e44ad, #6c3483); color: #fff; font-weight: bold; border-radius: 6px; padding: 10px 15px; box-shadow: 0 3px 6px rgba(0,0,0,0.3);">📂 Group 2: QDO, QRA </button>
 <div class="scenario-group" id="group2" style="display: none;">
-
 <!-- Scenario 2.1 -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario201')">➕ Scenario 2.1: Max Sequence in QDO Transaction</button>
 <div class="tab-content" id="scenario201">
-  <template class="sql-index">
+<template class="sql-index">
 --Query to find the max sequence number in all related DONL tables:
 SELECT Max(TRANS_GRP_SEQ_NO)
 FROM (
@@ -1968,59 +1886,71 @@ FROM (
 --Query to find TRANS_GRP_SEQ_NO setup:
 SELECT * FROM QARCH_TRAN_SEQ WHERE SEQ_NM = 'TRANS_GRP_SEQ_NO';
   </template>
-  <h2>Scenario 2.1: Max Sequence in QDO Transaction</h2>
-  <div class="footnote">⚠️ No input required. Click "Generate SQL" or "Show All Queries" to populate queries.</div>
-  <button class="btn generate" onclick="generateSQL201()">⚙️ Generate SQL</button>
-  <button class="btn default" onclick="showAllQueries201()">🗃 Show All Queries</button>
-  <textarea id="output201" placeholder="SQL will appear here..." readonly></textarea>
-  <button class="btn copy" onclick="copySQL('output201')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('output201')">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output201')">💾 Export</button>
+<h2>Scenario 2.1: Max Sequence in QDO Transaction</h2>
+<div class="footnote">⚠️ No input required. Click "Generate SQL" or "Show All Queries" to populate queries.</div>
+<button class="btn generate" onclick="generateSQL201()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries201()">🗃 Show All Queries</button>
+<textarea id="output201" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn copy" onclick="copySQL('output201')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields('output201')">🔄 Reset</button>
+<button class="btn export" onclick="exportSQL('output201')">💾 Export</button>
 </div>
-
 <!-- Scenario 2.2 -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario202')">➕ Scenario 2.2: Funds Transfer by Group Number</button>
 <div class="tab-content" id="scenario202">
-  <template class="sql-index">
+<template class="sql-index">
 --Query to find Funds transfer information based on a Group Number:
 SELECT H.*, DTL.*
 FROM DONL_INT_FUNDS_XFER_HDR H
 JOIN DONL_INT_FUNDS_XFER_DTL DTL ON H.TRANS_SEQ_NO = DTL.TRANS_SEQ_NO
 WHERE H.GRP_NO = '';
   </template>
-  <h2>Scenario 2.2: Funds Transfer by Group Number</h2>
-  <label>GRP_NO</label>
-  <input id="input202_grpno" placeholder="e.g., 40395"/>
-  <button class="btn generate" onclick="generateSQL202()">⚙️ Generate SQL</button>
-  <button class="btn default" onclick="showAllQueries202()">🗃 Show All Queries</button>
-  <textarea id="output202" placeholder="SQL will appear here..." readonly></textarea>
-  <button class="btn copy" onclick="copySQL('output202')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('input202_grpno','output202')">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output202')">💾 Export</button>
+<h2>Scenario 2.2: Funds Transfer by Group Number</h2>
+<label>GRP_NO</label>
+<input id="input202_grpno" placeholder="e.g., 40395"/>
+<button class="btn generate" onclick="generateSQL202()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries202()">🗃 Show All Queries</button>
+<textarea id="output202" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn copy" onclick="copySQL('output202')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields('input202_grpno','output202')">🔄 Reset</button>
+<button class="btn export" onclick="exportSQL('output202')">💾 Export</button>
 </div>
-
 <!-- Scenario 2.3 -->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario203')">➕ Scenario 2.3: Maintenance Group Status</button>
 <div class="tab-content" id="scenario203">
-  <template class="sql-index">
+<template class="sql-index">
 --Query to confirm Status Code description:
 SELECT * FROM GCDE_GRP_STAT;
 
 --Query to review Maintenance Group information:
 SELECT GRP_STAT_CD, * FROM DONL_DVD_GRP ORDER BY UPDT_DT DESC;
   </template>
-  <h2>Scenario 2.3: Maintenance Group Status</h2>
-  <div class="footnote">⚠️ No input required. Click "Generate SQL" or "Show All Queries" to populate queries.</div>
-  <button class="btn generate" onclick="generateSQL203()">⚙️ Generate SQL</button>
-  <button class="btn default" onclick="showAllQueries203()">🗃 Show All Queries</button>
-  <textarea id="output203" placeholder="SQL will appear here..." readonly></textarea>
-  <button class="btn copy" onclick="copySQL('output203')">📋 Copy</button>
-  <button class="btn reset" onclick="resetFields('output203')">🔄 Reset</button>
-  <button class="btn export" onclick="exportSQL('output203')">💾 Export</button>
+<h2>Scenario 2.3: Maintenance Group Status</h2>
+<div class="footnote">⚠️ No input required. Click "Generate SQL" or "Show All Queries" to populate queries.</div>
+<button class="btn generate" onclick="generateSQL203()">⚙️ Generate SQL</button>
+<button class="btn default" onclick="showAllQueries203()">🗃 Show All Queries</button>
+<textarea id="output203" placeholder="SQL will appear here..." readonly=""></textarea>
+<button class="btn copy" onclick="copySQL('output203')">📋 Copy</button>
+<button class="btn reset" onclick="resetFields('output203')">🔄 Reset</button>
+<button class="btn export" onclick="exportSQL('output203')">💾 Export</button>
 </div>
-
 </div> <!-- end group2 -->
-
+<!-- 📂 Group 3: QLS (Placeholder) -->
+<button class="accordion-btn group-btn" onclick="toggleGroup('group3')" style="background: linear-gradient(to right, #607d8b, #455a64); color: #fff; font-weight: bold; border-radius: 6px; padding: 10px 15px; box-shadow: 0 3px 6px rgba(0,0,0,0.3);">📂 Group 3: QLS</button>
+<div class="scenario-group" id="group3" style="display: none;">
+<!-- Scenario 3.1 Placeholder -->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario301')">➕ Scenario 3.1: [Coming Soon]</button>
+<div class="tab-content" id="scenario301">
+<h2>Scenario 3.1: QLS - Under Construction</h2>
+<div class="instructions-card" style="text-align:center;">
+<div class="instructions-body">
+<p>🚧 This section is currently under construction.</p>
+<p>Future QLS scenarios will appear here when development is complete.</p>
+<p>Please check back soon!</p>
+</div>
+</div>
+</div>
+</div> <!-- end group3 -->
 <!-- Footer -->
 <footer style="text-align:center; margin-top:40px; color:#555; font-size:0.9em;">
   Created by Nikki Masani.<br/>
@@ -5778,15 +5708,12 @@ function searchScenarios() {
   });
 }
 </script>
-
 <script>
 function toggleSidebar() {
   const sidebar = document.querySelector('.sidebar-nav');
   sidebar.classList.toggle('collapsed');
 }
 </script>
-
-
 <!-- Smart Search v3 (self-healing): robust mapping + auto hidden-SQL indexing -->
 <style>
   .highlight { background: yellow; }
@@ -5938,8 +5865,6 @@ function toggleSidebar() {
   });
 })();
 </script>
-
-
 <script>
 (function(){
   // =========================
@@ -6318,8 +6243,6 @@ Voucher detail line lookups, distribution validation, totals vs control
   /* Optional: small visual touch for why-match box */
   .search-correlation mark { padding: 0 .15em; border-radius: .2em; }
 </style>
-
-
 <script>
 function showAllGroups() {
   document.querySelectorAll(".scenario-group").forEach(g => g.style.display = "block");
@@ -6335,7 +6258,6 @@ function showAllGroups() {
   contents.forEach(content => content.classList.remove("active"));
 }
 </script>
-
 <script>
 function showAllGroups() {
   document.querySelectorAll(".scenario-group").forEach(g => g.style.display = "block");
