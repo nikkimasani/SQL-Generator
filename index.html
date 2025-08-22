@@ -1816,6 +1816,7 @@ ORDER BY START_DT;
 <button class="btn export" onclick="exportSQL('output21')">💾 Export</button>
 </div>
 <!-- Scenario 21 Ends -->
+
 <!-- Scenario 22 Starts-->
 <button class="accordion-btn" onclick="toggleAccordion(this,'scenario22')">➕ Scenario 1.22: GL Accounts Configuration and Setup</button>
 <div class="tab-content" id="scenario22">
@@ -1853,6 +1854,33 @@ ORDER BY A.KEYFULL
 <button class="btn export" onclick="exportSQL('output22')">💾 Export</button>
 </div>
 <!-- Scenario 22 Ends -->
+
+<!-- Scenario 23 Starts-->
+<button class="accordion-btn" onclick="toggleAccordion(this,'scenario23')">➕ Scenario 1.23: Process Locks</button>
+<div class="tab-content" id="scenario23">
+  <template class="sql-index">
+--Query the Lock Type Code Setup (Each process requies a lock type that it needs to acquire. If there are concurrent or overlapping processes, both of them cannot acquire the lock simultaneously): 
+select * from QARCH_LOCK_MASTER_PROCESS where LOCK_TYPE_CD = '';
+
+--Query the LOCK table to query for any active locks:
+SELECT * FROM QARCH_LOCK;
+
+--Query the LOCK audit table for Lock History:
+select * from QARCH_HIST_LOCK;
+  </template>
+  <h2>Scenario 1.23: Process Locks</h2>
+  <label>LOCK_TYPE_CD</label>
+  <input id="input23_locktypecd" placeholder="e.g., GLLOCK, POSTLOCK"/>
+  <button class="btn generate" onclick="generateSQL23()">⚙️ Generate SQL</button>
+  <button class="btn default" onclick="showAllQueries23()">🗃 Show All Queries</button>
+  <textarea id="output23" placeholder="SQL will appear here..." readonly></textarea>
+  <button class="btn" onclick="toggleEditable('output23')" title="Edit Output" type="button">✏️</button>
+  <button class="btn copy" onclick="copySQL('output23')">📋 Copy</button>
+  <button class="btn reset" onclick="resetFields('input23_locktypecd','output23')">🔄 Reset</button>
+  <button class="btn export" onclick="exportSQL('output23')">💾 Export</button>
+</div>
+<!--Scenario 23 Ends-->
+
 </div><!-- closes the Group 1 container -->
 <!--End of Group 1-->
 <!-- ✅ BEGIN Group 2 -->
@@ -3785,6 +3813,25 @@ function generateSQL22() {
   document.getElementById('output22').value = sql;
 }
 
+//Scenario 23
+function generateSQL23() {
+  var lockType = document.getElementById("input23_locktypecd").value.trim();
+  var sql = "";
+
+  sql += "--Query the Lock Type Code Setup (Each process requies a lock type that it needs to acquire. If there are concurrent or overlapping processes, both of them cannot acquire the lock simultaneously):\n";
+  sql += "select * from QARCH_LOCK_MASTER_PROCESS where LOCK_TYPE_CD = '" + lockType + "';\n\n";
+
+  sql += "--Query the LOCK table to query for any active locks:\n";
+  sql += "SELECT * FROM QARCH_LOCK;\n\n";
+
+  sql += "--Query the LOCK audit table for Lock History:\n";
+  sql += "select * from QARCH_HIST_LOCK;\n";
+
+  document.getElementById("output23").value = sql;
+}
+
+
+
 //Scenario 1 (Group 2)
 function generateSQL201() {
   let output = `--Query to find the max sequence number in all related DONL tables: 
@@ -5511,6 +5558,23 @@ No Input is required. This query will auto generate.`
 
   document.getElementById('output22').value = queries.join("\n\n");
 }
+
+
+function showAllQueries23() {
+  var sql = "";
+
+  sql += "--Query the Lock Type Code Setup (Each process requies a lock type that it needs to acquire. If there are concurrent or overlapping processes, both of them cannot acquire the lock simultaneously):\n";
+  sql += "select * from QARCH_LOCK_MASTER_PROCESS where LOCK_TYPE_CD = '';\n\n";
+
+  sql += "--Query the LOCK table to query for any active locks:\n";
+  sql += "SELECT * FROM QARCH_LOCK;\n\n";
+
+  sql += "--Query the LOCK audit table for Lock History:\n";
+  sql += "select * from QARCH_HIST_LOCK;\n";
+
+  document.getElementById("output23").value = sql;
+}
+
 
 function showAllQueries201() {
   let output = `--Query to find the max sequence number in all related DONL tables: 
